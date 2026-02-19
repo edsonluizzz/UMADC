@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UMADC Curitiba — Planejamento 2026</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #050a14;
+            --primary: #0056D2;
+            --accent: #F59E0B;
+            --text: #FFFFFF;
+            --muted: #94A3B8;
+            --glass: rgba(255,255,255,0.03);
+            --glass-border: rgba(255,255,255,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { width: 4px; background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+        body {
+            font-family: "MuseoModerno", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100svh;
+            overflow-x: hidden;
+        }
+
+        /* FUNDO */
+        .bg-overlay {
+            position: fixed; top:0; left:0; width:100vw; height:100vh;
+            background-image: url('fundo.png');
+            background-size: cover; background-position: center;
+            opacity: 0.12; z-index: -2; pointer-events: none;
+            filter: contrast(120%) brightness(80%);
+        }
+        .noise {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            pointer-events: none; z-index: -1; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        canvas#particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.35; pointer-events:none; }
+
+        /* HEADER */
+        header {
+            padding: 1.5rem 2.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; z-index: 10;
+            border-bottom: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px);
+            background: rgba(5,10,20,0.6);
+            position: sticky; top: 0;
+        }
+        .logos { display: flex; gap: 2rem; align-items: center; }
+        .logo { height: 40px; width: auto; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255,255,255,0.15)); }
+        .year-badge {
+            background: rgba(245,158,11,0.15);
+            border: 1px solid rgba(245,158,11,0.4);
+            color: var(--accent);
+            padding: 6px 18px; border-radius: 30px;
+            font-weight: 700; font-size: 0.85rem; letter-spacing: 2px;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+            position: relative;
+        }
+        .hero-label {
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 4px;
+            text-transform: uppercase; color: var(--accent);
+            margin-bottom: 1rem; display: block;
+            opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+        }
+        .hero h1 {
+            font-size: clamp(2.8rem, 7vw, 7rem);
+            font-weight: 900; line-height: 0.9;
+            letter-spacing: -3px;
+            background: linear-gradient(180deg, #fff 40%, #64748b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            opacity: 0; animation: fadeUp 0.8s 0.35s forwards;
+        }
+        .hero-slogan {
+            font-size: clamp(1rem, 2.2vw, 1.6rem);
+            font-weight: 900;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-top: 1.2rem;
+            opacity: 0; animation: fadeUp 0.8s 0.45s forwards;
+        }
+        .hero-sub {
+            font-size: clamp(0.85rem, 1.6vw, 1.1rem);
+            color: var(--muted); margin-top: 0.6rem; font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0; animation: fadeUp 0.8s 0.58s forwards;
+        }
+
+        /* LIDERANÇA */
+        .lideranca-strip {
+            max-width: 1100px; margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+        .lideranca-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+        .lider-item {
+            display: flex; align-items: center; gap: 1rem;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            transition: border-color 0.3s;
+        }
+        .lider-item:hover { border-color: rgba(245,158,11,0.3); }
+        .lider-item.lider-destaque {
+            border-color: rgba(245,158,11,0.25);
+            background: rgba(245,158,11,0.04);
+        }
+        .lider-foto {
+            font-size: 1.6rem;
+            width: 44px; height: 44px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .lider-destaque .lider-foto { background: rgba(245,158,11,0.12); }
+        .lider-cargo {
+            font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--muted); margin-bottom: 3px;
+        }
+        .lider-destaque .lider-cargo { color: var(--accent); }
+        .lider-nome {
+            font-size: 0.95rem; font-weight: 700; color: white; line-height: 1.2;
+        }
+
+        .hero-stats {
+            display: flex; gap: 3rem; justify-content: center;
+            margin-top: 3rem;
+            opacity: 0; animation: fadeUp 0.8s 0.65s forwards;
+        }
+        .stat { text-align: center; }
+        .stat-number { font-size: 2.5rem; font-weight: 900; color: var(--accent); line-height: 1; }
+        .stat-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+
+        /* DIVIDER */
+        .section-title {
+            text-align: center; padding: 2rem 2rem 1.5rem;
+            font-size: 0.7rem; letter-spacing: 5px; color: var(--muted);
+            text-transform: uppercase; font-weight: 600;
+        }
+        .section-title span {
+            position: relative;
+            padding: 0 1.5rem;
+        }
+        .section-title span::before, .section-title span::after {
+            content: '';
+            position: absolute; top: 50%; width: 60px; height: 1px;
+            background: var(--glass-border);
+        }
+        .section-title span::before { right: 100%; }
+        .section-title span::after { left: 100%; }
+
+        /* GRID DE REGIONAIS */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            padding: 0 2rem 4rem;
+            max-width: 1300px; margin: 0 auto;
+        }
+
+        .card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.8rem;
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text);
+            display: block;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.2,0.8,0.2,1),
+                        border-color 0.35s ease,
+                        box-shadow 0.35s ease;
+            opacity: 0;
+            animation: cardIn 0.6s ease forwards;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(0,86,210,0.08), transparent 60%);
+            opacity: 0; transition: opacity 0.35s;
+        }
+        .card:hover::before { opacity: 1; }
+        
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(245,158,11,0.5);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(245,158,11,0.2);
+        }
+
+        /* Número da regional (decorativo) */
+        .card-num {
+            position: absolute; top: 1rem; right: 1.5rem;
+            font-size: 3.5rem; font-weight: 900;
+            color: rgba(255,255,255,0.04); line-height: 1;
+            pointer-events: none;
+        }
+
+        .card-badge {
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 3px;
+            text-transform: uppercase; color: var(--primary);
+            background: rgba(0,86,210,0.15);
+            border: 1px solid rgba(0,86,210,0.3);
+            padding: 3px 10px; border-radius: 20px;
+            display: inline-block; margin-bottom: 1rem;
+        }
+
+        .card h2 {
+            font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+            font-weight: 800; letter-spacing: -0.5px;
+            line-height: 1.1; margin-bottom: 0.8rem;
+            transition: color 0.3s;
+        }
+        .card:hover h2 { color: var(--accent); }
+
+        .card-coord {
+            display: flex; flex-direction: column; gap: 2px;
+            margin-top: 0.8rem;
+            padding: 0.6rem 0.8rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border-left: 2px solid var(--accent);
+        }
+        .coord-label {
+            font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--accent); font-weight: 700;
+        }
+        .coord-nome {
+            font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.85);
+        }
+
+        .card-info {
+            display: flex; gap: 1.5rem; margin-top: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+        .info-item { display: flex; flex-direction: column; gap: 2px; }
+        .info-value { font-size: 1.4rem; font-weight: 800; color: white; line-height: 1; }
+        .info-label { font-size: 0.6rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+
+        .card-arrow {
+            position: absolute; bottom: 1.5rem; right: 1.5rem;
+            width: 32px; height: 32px; border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; color: var(--muted);
+            transition: all 0.3s;
+        }
+        .card:hover .card-arrow {
+            background: var(--accent); border-color: var(--accent);
+            color: black; transform: translateX(3px);
+        }
+
+        /* Card destaque — CIC */
+        .card.featured {
+            border-color: rgba(245,158,11,0.3);
+            background: rgba(245,158,11,0.04);
+        }
+        .card.featured .card-badge {
+            background: rgba(245,158,11,0.2);
+            border-color: rgba(245,158,11,0.4);
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center; padding: 2rem;
+            font-size: 0.75rem; color: rgba(255,255,255,0.2);
+            border-top: 1px solid var(--glass-border);
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeUp {
+            from { opacity:0; transform: translateY(20px); }
+            to { opacity:1; transform: translateY(0); }
+        }
+        @keyframes cardIn {
+            from { opacity:0; transform: translateY(25px) scale(0.97); }
+            to { opacity:1; transform: translateY(0) scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            .hero { padding: 3.5rem 1.5rem 2rem; }
+            .hero-stats { gap: 2rem; }
+            .grid { padding: 0 1rem 3rem; gap: 1rem; }
+            .logos { gap: 1rem; }
+            header { padding: 1rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-overlay"></div>
+    <div class="noise"></div>
+    <canvas id="particles"></canvas>
+
+    <header>
+        <div class="logos">
+            <img src="logo-ieadc.png" alt="IEADC" class="logo">
+            <img src="logo-umadc.png" alt="UMADC" class="logo">
+        </div>
+        <div class="year-badge">PLANEJAMENTO 2026</div>
+    </header>
+
+    <section class="hero">
+        <span class="hero-label">Assembleia de Deus em Curitiba · Gestão 2026/2027</span>
+        <h1>10 REGIONAIS<br>1 VISÃO</h1>
+        <p class="hero-slogan">ATÉ QUE TODOS OUÇAM</p>
+        <p class="hero-sub">Território · Juventude · Expansão</p>
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-number" id="count-igrejas">0</div>
+                <div class="stat-label">Congregações</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Regionais</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="count-pop">0</div>
+                <div class="stat-label">Mil habitantes</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-title"><span>Liderança UMADC 2026/2027</span></div>
+
+    <div class="lideranca-strip">
+        <div class="lideranca-grid">
+            <div class="lider-item lider-destaque">
+                <div class="lider-foto">✝</div>
+                <div class="lider-info">
+                    <div class="lider-cargo">Pastor Presidente IEADC</div>
+                    <div class="lider-nome">Pr. Wagner Gaby</div>
+                </div>
+            </div>
+            <div class="lider-item lider-destaque">
+                <div class="lider-foto">🎯</div>
+                <div class="lider-info">
+                    <div class="lider-cargo">Coordenador Geral UMADC</div>
+                    <div class="lider-nome">Pr. Rogério Marchiore</div>
+                </div>
+            </div>
+            <div class="lider-item">
+                <div class="lider-foto">①</div>
+                <div class="lider-info">
+                    <div class="lider-cargo">1º Vice Coordenador</div>
+                    <div class="lider-nome">Ev. Vinicius de Paula</div>
+                </div>
+            </div>
+            <div class="lider-item">
+                <div class="lider-foto">②</div>
+                <div class="lider-info">
+                    <div class="lider-cargo">2º Vice Coordenador</div>
+                    <div class="lider-nome">Coop. Everton Rodrigues</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title"><span>Selecione a Regional</span></div>
+
+    <div class="grid" id="grid"></div>
+
+    <footer>UMADC Curitiba · Sistema de Planejamento Regional 2026</footer>
+
+    <script>
+        // ============================================================
+        // DADOS DAS REGIONAIS
+        // Fonte: Censo IBGE 2022 / IPPUC Curitiba
+        // ============================================================
+        const regionais = [
+            {
+                id: 'boa-vista',
+                nome: 'Boa Vista',
+                congregacoes: 28,
+                populacao: 268,
+                densidade: 4300,
+                jovens: 67000,
+                bairros: 13,
+                descricao: 'Maior regional em habitantes. Norte da cidade.',
+                featured: false,
+                coordenador: 'Dc. Daniel Tararan',
+                congregacao: 'IEADC Vila Leonice'
+            },
+            {
+                id: 'cajuru',
+                nome: 'Cajuru',
+                congregacoes: 25,
+                populacao: 241,
+                densidade: 6800,
+                jovens: 60000,
+                bairros: 9,
+                descricao: 'Alta densidade. Leste da cidade.',
+                featured: false,
+                coordenador: 'Coop. Paulo Sérgio de Oliveira',
+                congregacao: 'IEADC Vila Reno'
+            },
+            {
+                id: 'cic',
+                nome: 'CIC',
+                congregacoes: 22,
+                populacao: 224,
+                densidade: 4100,
+                jovens: 61500,
+                bairros: 8,
+                descricao: 'Bairro mais populoso de Curitiba. Oeste.',
+                featured: true,
+                coordenador: 'Coop. Edson Luiz da Silva',
+                congregacao: 'IEADC Porto Belo'
+            },
+            {
+                id: 'bairro-novo',
+                nome: 'Bairro Novo',
+                congregacoes: 19,
+                populacao: 212,
+                densidade: 8200,
+                jovens: 65000,
+                bairros: 7,
+                descricao: 'Alta densidade. Sul da cidade.',
+                featured: false,
+                coordenador: 'Coop. Marcos Moreira dos Santos',
+                congregacao: 'IEADC Bairro Novo IV'
+            },
+            {
+                id: 'boqueirao',
+                nome: 'Boqueirão',
+                congregacoes: 17,
+                populacao: 180,
+                densidade: 6100,
+                jovens: 45000,
+                bairros: 6,
+                descricao: 'Corredor sul. Alta circulação.',
+                featured: false,
+                coordenador: 'Coop. JimmyAlan de Oliveira',
+                congregacao: 'IEADC Santa Inês'
+            },
+            {
+                id: 'tatuquara',
+                nome: 'Tatuquara',
+                congregacoes: 13,
+                populacao: 153,
+                densidade: 3900,
+                jovens: 55000,
+                bairros: 4,
+                descricao: 'Regional mais jovem. Forte crescimento.',
+                featured: false,
+                coordenador: 'Coop. Dyenison Santos',
+                congregacao: 'IEADC Moradias Paraná'
+            },
+            {
+                id: 'pinheirinho',
+                nome: 'Pinheirinho',
+                congregacoes: 15,
+                populacao: 145,
+                densidade: 5500,
+                jovens: 40000,
+                bairros: 7,
+                descricao: 'Sul da cidade. Perfil popular.',
+                featured: false,
+                coordenador: 'Presb. Caio Vinícius Rezende',
+                congregacao: 'IEADC Vila Pluma'
+            },
+            {
+                id: 'portao',
+                nome: 'Portão',
+                congregacoes: 12,
+                populacao: 155,
+                densidade: 7200,
+                jovens: 38000,
+                bairros: 9,
+                descricao: 'Centro-sul. Mix comercial e residencial.',
+                featured: false,
+                coordenador: 'Coop. Pedro Henrique A. Ritter',
+                congregacao: 'IEADC Portão'
+            },
+            {
+                id: 'santa-felicidade',
+                nome: 'Santa Felicidade',
+                congregacoes: 13,
+                populacao: 110,
+                densidade: 2800,
+                jovens: 27000,
+                bairros: 11,
+                descricao: 'Oeste. Área mais arborizada da cidade.',
+                featured: false,
+                coordenador: 'Coop. Lucas Wagner Andrade',
+                congregacao: 'IEADC Santa Felicidade'
+            },
+            {
+                id: 'matriz',
+                nome: 'Matriz',
+                congregacoes: 5,
+                populacao: 103,
+                densidade: 9500,
+                jovens: 22000,
+                bairros: 18,
+                descricao: 'Centro histórico. Alta circulação diária.',
+                featured: false,
+                coordenador: 'Coop. Charles de Oliveira',
+                congregacao: 'IEADC Água Verde'
+            }
+        ];
+
+        // Totais para header
+        const totalIgrejas = regionais.reduce((a,r) => a + r.congregacoes, 0);
+        const totalPop = regionais.reduce((a,r) => a + r.populacao, 0);
+
+        // Render grid
+        const grid = document.getElementById('grid');
+        regionais.forEach((r, i) => {
+            const a = document.createElement('a');
+            a.href = `regional.html?regional=${encodeURIComponent(r.nome)}`;
+            a.className = 'card' + (r.featured ? ' featured' : '');
+            a.style.animationDelay = `${0.05 * i + 0.2}s`;
+            a.innerHTML = `
+                <div class="card-num">${String(i+1).padStart(2,'0')}</div>
+                <div class="card-badge">Regional</div>
+                <h2>${r.nome}</h2>
+                <p style="font-size:0.85rem; color:var(--muted); line-height:1.4; padding-right:2rem;">${r.descricao}</p>
+                <div class="card-coord">
+                    <span class="coord-label">Coordenador</span>
+                    <span class="coord-nome">${r.coordenador}</span>
+                </div>
+                <div class="card-info">
+                    <div class="info-item">
+                        <span class="info-value">${r.congregacoes}</span>
+                        <span class="info-label">Congregações</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value">${r.populacao}k</span>
+                        <span class="info-label">Habitantes</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-value">${(r.jovens/1000).toFixed(0)}k</span>
+                        <span class="info-label">Jovens 18-39</span>
+                    </div>
+                </div>
+                <div class="card-arrow">→</div>
+            `;
+            grid.appendChild(a);
+        });
+
+        // Contador animado
+        function countUp(el, target, suffix='', duration=2000) {
+            let start = null;
+            const step = ts => {
+                if (!start) start = ts;
+                const p = Math.min((ts - start) / duration, 1);
+                const ease = p * (2 - p);
+                el.textContent = Math.floor(ease * target) + suffix;
+                if (p < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+        }
+
+        setTimeout(() => {
+            countUp(document.getElementById('count-igrejas'), totalIgrejas);
+            countUp(document.getElementById('count-pop'), Math.round(totalPop / 10) * 10, '+');
+        }, 800);
+
+        // Partículas
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let W, H, particles = [];
+        function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+        window.addEventListener('resize', resize); resize();
+        class P {
+            constructor() { this.x=Math.random()*W; this.y=Math.random()*H; this.vx=(Math.random()-.5)*.4; this.vy=(Math.random()-.5)*.4; this.r=Math.random()*1.5; this.a=Math.random()*.4; }
+            update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0)this.x=W; if(this.x>W)this.x=0; if(this.y<0)this.y=H; if(this.y>H)this.y=0; }
+            draw() { ctx.fillStyle=`rgba(255,255,255,${this.a})`; ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill(); }
+        }
+        for(let i=0;i<60;i++) particles.push(new P());
+        (function anim(){ ctx.clearRect(0,0,W,H); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(anim); })();
+    </script>
+</body>
+</html>
