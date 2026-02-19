@@ -90,7 +90,32 @@
         .reg-lider2 { font-size:0.75rem; color:var(--muted); margin-top:2px; }
         .reg-cong { font-size:0.65rem; color:rgba(255,255,255,0.3); margin-top:3px; }
 
-        /* ── REGIONAIS TAB ── */
+        /* ── CARDS COM FOTO (Presidência & Assessorias) ── */
+        .foto-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.2rem; margin-bottom:0.5rem; }
+        .foto-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:16px; padding:1.6rem 1.4rem 1.4rem; display:flex; flex-direction:column; align-items:center; text-align:center; gap:0.9rem; transition:border-color 0.3s, transform 0.3s; position:relative; overflow:hidden; }
+        .foto-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--primary),#3b82f6); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; }
+        .foto-card:hover { border-color:rgba(245,158,11,0.4); transform:translateY(-4px); }
+        .foto-card:hover::before { transform:scaleX(1); }
+        .foto-card.gold { border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.04); }
+        .foto-card.gold::before { background:linear-gradient(90deg,var(--accent),#fbbf24); }
+        .foto-card.blue { border-color:rgba(0,86,210,0.3); background:rgba(0,86,210,0.04); }
+
+        .foto-avatar { width:80px; height:80px; border-radius:50%; overflow:hidden; flex-shrink:0; position:relative; border:2px solid rgba(255,255,255,0.1); }
+        .foto-card.gold .foto-avatar { border-color:rgba(245,158,11,0.5); box-shadow:0 0 20px rgba(245,158,11,0.2); }
+        .foto-card.blue .foto-avatar { border-color:rgba(0,86,210,0.5); box-shadow:0 0 20px rgba(0,86,210,0.2); }
+        .foto-avatar img { width:100%; height:100%; object-fit:cover; object-position:center top; display:block; }
+        .foto-avatar .foto-iniciais { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; font-weight:900; letter-spacing:-1px; }
+        .foto-card.gold .foto-iniciais { background:rgba(245,158,11,0.15); color:var(--accent); }
+        .foto-card.blue .foto-iniciais { background:rgba(0,86,210,0.15); color:#60a5fa; }
+        .foto-iniciais { background:rgba(255,255,255,0.07); color:var(--muted); }
+
+        .foto-cargo { font-size:0.55rem; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-weight:700; }
+        .foto-card.gold .foto-cargo { color:var(--accent); }
+        .foto-card.blue .foto-cargo { color:#60a5fa; }
+        .foto-nome { font-size:0.95rem; font-weight:800; color:white; line-height:1.2; }
+        .foto-sub { font-size:0.72rem; color:rgba(255,255,255,0.35); margin-top:-4px; }
+        .foto-funcao { font-size:0.72rem; color:rgba(255,255,255,0.45); line-height:1.4; margin-top:-2px; }
+
         .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.2rem; padding:0 0 4rem; }
         .card { background:var(--glass); border:1px solid var(--glass-border); border-radius:16px; padding:1.8rem; cursor:pointer; text-decoration:none; color:var(--text); display:block; position:relative; overflow:hidden; transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1), border-color 0.35s, box-shadow 0.35s; opacity:0; animation:cardIn 0.6s ease forwards; }
         .card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(0,86,210,0.08),transparent 60%); opacity:0; transition:opacity 0.35s; }
@@ -172,6 +197,7 @@
     <button class="tab-btn active"  onclick="switchTab('home',this)">Home</button>
     <button class="tab-btn"         onclick="switchTab('diretoria',this)">Diretoria</button>
     <button class="tab-btn"         onclick="switchTab('regionais',this)">Regionais</button>
+    <button class="tab-btn"         onclick="switchTab('agenda',this)">Agenda</button>
     <button class="tab-btn"         onclick="switchTab('projetos',this)">Projetos</button>
 </nav>
 
@@ -212,20 +238,63 @@
 <div class="page-wrap">
 
     <div class="sec-label">Presidência &amp; Coordenação Geral</div>
-    <div class="dir-grid">
-        <div class="dir-card gold"><div class="dir-icon">✝</div><div><div class="dir-cargo">Pastor Presidente da IEADC</div><div class="dir-nome">Pr. Wagner Gaby</div></div></div>
-        <div class="dir-card gold"><div class="dir-icon">⛪</div><div><div class="dir-cargo">Pastor Superintendente da Família</div><div class="dir-nome">Pr. Linderson Marcos Romano</div></div></div>
-        <div class="dir-card gold"><div class="dir-icon">🎯</div><div><div class="dir-cargo">Coordenador Geral UMADC</div><div class="dir-nome">Pr. Rogério Marchiore</div><div class="dir-funcao">Visão, unidade e direção espiritual</div></div></div>
-        <div class="dir-card"><div class="dir-icon">①</div><div><div class="dir-cargo">1º Vice Coordenador UMADC</div><div class="dir-nome">Ev. Vinicius de Paula</div><div class="dir-funcao">Elo de ligação com os regionais</div></div></div>
-        <div class="dir-card"><div class="dir-icon">②</div><div><div class="dir-cargo">2º Vice Coordenador UMADC</div><div class="dir-nome">Coop. Everton Rodrigues</div><div class="dir-funcao">Elo de ligação com líderes locais</div></div></div>
+    <div class="foto-grid">
+        <div class="foto-card gold">
+            <div class="foto-avatar"><img src="fotos/wagner-gaby.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">WG</div></div>
+            <div class="foto-cargo">Pastor Presidente da IEADC</div>
+            <div class="foto-nome">Pr. Wagner Gaby</div>
+        </div>
+        <div class="foto-card gold">
+            <div class="foto-avatar"><img src="fotos/linderson-romano.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">LR</div></div>
+            <div class="foto-cargo">Pastor Superintendente da Família</div>
+            <div class="foto-nome">Pr. Linderson Marcos Romano</div>
+        </div>
+        <div class="foto-card gold">
+            <div class="foto-avatar"><img src="fotos/rogerio-marchiore.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">RM</div></div>
+            <div class="foto-cargo">Coordenador Geral UMADC</div>
+            <div class="foto-nome">Pr. Rogério Marchiore</div>
+            <div class="foto-funcao">Visão, unidade e direção espiritual</div>
+        </div>
+        <div class="foto-card">
+            <div class="foto-avatar"><img src="fotos/vinicius-paula.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">VP</div></div>
+            <div class="foto-cargo">1º Vice Coordenador UMADC</div>
+            <div class="foto-nome">Ev. Vinicius de Paula</div>
+            <div class="foto-funcao">Elo de ligação com os regionais</div>
+        </div>
+        <div class="foto-card">
+            <div class="foto-avatar"><img src="fotos/everton-rodrigues.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">ER</div></div>
+            <div class="foto-cargo">2º Vice Coordenador UMADC</div>
+            <div class="foto-nome">Coop. Everton Rodrigues</div>
+            <div class="foto-funcao">Elo de ligação com líderes locais</div>
+        </div>
     </div>
 
     <div class="sec-label">Assessorias</div>
-    <div class="dir-grid">
-        <div class="dir-card blue"><div class="dir-icon">🔗</div><div><div class="dir-cargo">Assessor das Regionais</div><div class="dir-nome">Pb. Caio Rezende</div><div class="dir-sub">Pluma</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📋</div><div><div class="dir-cargo">Assessor da Coordenação</div><div class="dir-nome">Coop. Leonardo Ribeiro</div><div class="dir-sub">Vila Hauer</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📋</div><div><div class="dir-cargo">Assessor da Coordenação</div><div class="dir-nome">Coop. Thiago Abdala</div><div class="dir-sub">Jardim União</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📋</div><div><div class="dir-cargo">Assessor da Coordenação</div><div class="dir-nome">Coop. Matheus Felipe</div><div class="dir-sub">Jardim União</div></div></div>
+    <div class="foto-grid">
+        <div class="foto-card blue">
+            <div class="foto-avatar"><img src="fotos/caio-rezende.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">CR</div></div>
+            <div class="foto-cargo">Assessor das Regionais</div>
+            <div class="foto-nome">Pb. Caio Rezende</div>
+            <div class="foto-sub">Pluma</div>
+        </div>
+        <div class="foto-card">
+            <div class="foto-avatar"><img src="fotos/leonardo-ribeiro.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">LR</div></div>
+            <div class="foto-cargo">Assessor da Coordenação</div>
+            <div class="foto-nome">Coop. Leonardo Ribeiro</div>
+            <div class="foto-sub">IEADC Diagonal</div>
+        </div>
+        <div class="foto-card">
+            <div class="foto-avatar"><img src="fotos/thiago-abdala.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">TA</div></div>
+            <div class="foto-cargo">Assessor da Coordenação</div>
+            <div class="foto-nome">Coop. Thiago Abdala</div>
+            <div class="foto-sub">Jardim União</div>
+        </div>
+        <div class="foto-card">
+            <div class="foto-avatar"><img src="fotos/matheus-felipe.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">MF</div></div>
+            <div class="foto-cargo">Assessor da Coordenação</div>
+            <div class="foto-nome">Coop. Matheus Felipe</div>
+            <div class="foto-sub">Jardim União</div>
+        </div>
     </div>
 
     <div class="sec-label">Secretaria &amp; Tesouraria</div>
@@ -257,6 +326,7 @@
         <div class="dir-card"><div class="dir-icon">🚛</div><div><div class="dir-cargo">Logística</div><div class="dir-nome">Dc. Josué</div><div class="dir-sub">Capão da Imbuia</div></div></div>
         <div class="dir-card"><div class="dir-icon">🤝</div><div><div class="dir-cargo">Recepção</div><div class="dir-nome">Coop. Magdiel · Renata</div><div class="dir-sub">Caximba</div></div></div>
         <div class="dir-card"><div class="dir-icon">📣</div><div><div class="dir-cargo">Recebimento de Pregadores</div><div class="dir-nome">Pb. Alder</div><div class="dir-sub">Boqueirão</div></div></div>
+        <div class="dir-card"><div class="dir-icon">📣</div><div><div class="dir-cargo">Recebimento de Pregadores</div><div class="dir-nome">Coop. Isaque Romano</div><div class="dir-sub">Vila Hauer</div></div></div>
     </div>
 
     <div class="sec-label">Evangelismo, Ação Social &amp; Novos Convertidos</div>
@@ -304,9 +374,9 @@
 </div>
 
 <!-- ══════════════════════════════════════
-     ABA PROJETOS
+     ABA AGENDA
 ══════════════════════════════════════ -->
-<div id="tab-projetos" class="tab-panel">
+<div id="tab-agenda" class="tab-panel">
 <div class="page-wrap">
 
     <div class="sec-label">Agenda Oficial 2026</div>
@@ -331,6 +401,15 @@
             <tr><td><span class="a-mes">Novembro</span></td><td><span class="a-dia">29</span></td><td><span class="a-hora">12h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Almoço – Confraternização UMADC</span><br><span class="a-tag t-esp">Especial</span></td></tr>
         </tbody>
     </table>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ABA PROJETOS
+══════════════════════════════════════ -->
+<div id="tab-projetos" class="tab-panel">
+<div class="page-wrap">
 
     <div class="sec-label">Ações Externas — Evangelismo na Cidade</div>
     <div class="proj-grid">
