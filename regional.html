@@ -411,7 +411,7 @@
                 <p style="font-size:clamp(1.2rem,2.5vw,2rem); color:white; margin-top:1rem; letter-spacing:2px;">
                     Território <span class="destaque">•</span> Juventude <span class="destaque">•</span> Expansão
                 </p>
-                <button onclick="abrirLideres()" style="margin-top:2.5rem;padding:0.75rem 2rem;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.5);color:#F59E0B;font-family:inherit;font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:30px;cursor:pointer;transition:all 0.3s;backdrop-filter:blur(10px);">👥 Líderes da Regional</button>
+                <button id="btn-lideres" onclick="abrirLideres()" style="margin-top:2.5rem;padding:0.75rem 2rem;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.5);color:#F59E0B;font-family:inherit;font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:30px;cursor:pointer;transition:all 0.3s;backdrop-filter:blur(10px);">👥 Líderes da Regional</button>
             </div>
         </section>
 
@@ -431,7 +431,7 @@
                 <div style="padding:0.8rem 1.4rem;border-bottom:1px solid rgba(255,255,255,0.05);flex-shrink:0;">
                     <input id="busca-lider" type="text" placeholder="🔍  Buscar congregação ou líder..." oninput="filtrarLideres()" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:white;font-family:inherit;font-size:0.85rem;padding:0.6rem 1rem;border-radius:10px;outline:none;">
                 </div>
-                <div id="lista-lideres" style="overflow-y:auto;padding:1rem 1.2rem;flex:1;display:flex;flex-direction:column;gap:0.55rem;"></div>
+                <div id="lista-lideres" style="overflow-y:auto;-webkit-overflow-scrolling:touch;padding:1rem 1.2rem;flex:1;display:flex;flex-direction:column;gap:0.55rem;overscroll-behavior:contain;"></div>
             </div>
         </div>
 
@@ -1205,6 +1205,32 @@
     // ============================================================
     // NAVEGAÇÃO
     // ============================================================
+    // ── INDICADOR DE SLIDES ──────────────────────────────────
+    (function() {
+        const deck = document.getElementById('deck');
+        const dotsContainer = document.createElement('div');
+        dotsContainer.id = 'slide-dots';
+        dotsContainer.style.cssText = 'position:fixed;right:1.2rem;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:8px;pointer-events:auto;';
+        document.body.appendChild(dotsContainer);
+        const slides = deck ? deck.querySelectorAll('.slide') : [];
+        slides.forEach((slide, i) => {
+            const dot = document.createElement('div');
+            dot.style.cssText = 'width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.25);transition:all 0.3s;cursor:pointer;';
+            dot.addEventListener('click', () => slide.scrollIntoView({ behavior:'smooth' }));
+            dotsContainer.appendChild(dot);
+        });
+        function updateDots() {
+            if (!deck) return;
+            const active = Math.round(deck.scrollTop / deck.clientHeight);
+            dotsContainer.querySelectorAll('div').forEach((dot, i) => {
+                dot.style.background = i === active ? '#F59E0B' : 'rgba(255,255,255,0.25)';
+                dot.style.transform = i === active ? 'scale(1.4)' : 'scale(1)';
+            });
+        }
+        if (deck) deck.addEventListener('scroll', updateDots, { passive: true });
+        updateDots();
+    })();
+
     function nextSlide() {
         const a = document.querySelector('.slide.active');
         if (a && a.nextElementSibling) a.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
@@ -1225,6 +1251,49 @@
         if (e.key === 'ArrowDown' || e.key === 'ArrowRight') nextSlide();
         if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') prevSlide();
     });
+
+    // ============================================================
+    // COORDENADORES REGIONAIS — bloco fixo slide 1
+    // ============================================================
+    const COORDENADORES = {
+        'Bairro Novo':      { nome:'Marcos Moreira dos Santos',     funcao:'Cooperador', wpp:'https://wa.me/5541991841894' },
+        'Boa Vista':        { nome:'Daniel Tararan',                funcao:'Diácono',    wpp:'https://wa.me/5541995899160' },
+        'Boqueirão':        { nome:'JimmyAlan de Oliveira',         funcao:'Cooperador', wpp:'https://wa.me/5541998138156' },
+        'Cajuru':           { nome:'Paulo Sérgio de Oliveira',      funcao:'Cooperador', wpp:'https://wa.me/5541995675449' },
+        'CIC':              { nome:'Edson Luiz da Silva',           funcao:'Cooperador', wpp:'https://wa.me/5541999888951' },
+        'Matriz':           { nome:'Charles de Oliveira',           funcao:'Cooperador', wpp:'https://wa.me/5551993822488' },
+        'Portão':           { nome:'Pedro Henrique Afonso Ritter',  funcao:'Cooperador', wpp:'https://wa.me/5541997228642' },
+        'Pinheirinho':      { nome:'Caio Vinícius Rezende',         funcao:'Presbítero', wpp:'https://wa.me/5541997199130' },
+        'Santa Felicidade': { nome:'Lucas Wagner Andrade da Silva', funcao:'Cooperador', wpp:'https://wa.me/5541998415278' },
+        'Tatuquara':        { nome:'Dyenison Santos',               funcao:'Cooperador', wpp:'https://wa.me/5541984647631' }
+    };
+
+    const coordData = COORDENADORES[R.nome];
+    if (coordData) {
+        const wppSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg>`;
+        const blocoCoord = document.createElement('div');
+        blocoCoord.style.cssText = `position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%);z-index:150;display:flex;align-items:center;gap:0.8rem;background:rgba(5,10,20,0.75);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);border-radius:40px;padding:0.55rem 1rem 0.55rem 1.2rem;box-shadow:0 8px 30px rgba(0,0,0,0.4);transition:opacity 0.3s;`;
+        blocoCoord.innerHTML = `
+            <div style="text-align:left;line-height:1.3;">
+                <div style="font-size:0.52rem;letter-spacing:2px;text-transform:uppercase;color:#F59E0B;font-weight:700;">Coordenador Regional</div>
+                <div style="font-size:0.85rem;font-weight:700;color:white;line-height:1.2;">${coordData.nome}</div>
+                <div style="font-size:0.65rem;color:#94A3B8;margin-top:1px;">${coordData.funcao}</div>
+            </div>
+            <a href="${coordData.wpp}" target="_blank" style="display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;text-decoration:none;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">${wppSvg}</a>
+        `;
+        document.body.appendChild(blocoCoord);
+
+        // Mostrar só no slide 1 via IntersectionObserver no #deck
+        const s1 = document.getElementById('slide-1');
+        const deckEl = document.getElementById('deck');
+        if (s1 && deckEl) {
+            const obs = new IntersectionObserver(([entry]) => {
+                blocoCoord.style.opacity = entry.isIntersecting ? '1' : '0';
+                blocoCoord.style.pointerEvents = entry.isIntersecting ? 'auto' : 'none';
+            }, { root: deckEl, threshold: 0.5 });
+            obs.observe(s1);
+        }
+    }
 
     // ============================================================
     // PARTÍCULAS
@@ -2298,6 +2367,7 @@
     let _lideresFiltrados = [];
 
     function abrirLideres() {
+        document.body.style.overflow = 'hidden';
         const reg = R.nome;
         const lista = LIDERES[reg] || [];
         _lideresFiltrados = lista;
@@ -2312,6 +2382,7 @@
 
     function fecharLideres() {
         document.getElementById('modal-lideres').style.display = 'none';
+        document.body.style.overflow = '';
     }
 
     function filtrarLideres() {
