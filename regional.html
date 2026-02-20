@@ -225,14 +225,12 @@
             transition: transform 0.3s, color 0.3s;
             flex-shrink: 0;
         }
-        .estrategia-card.open .estrategia-toggle { transform: rotate(45deg); color: var(--accent); }
 
         .estrategia-body {
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.2,0.8,0.2,1), opacity 0.4s ease;
-            opacity: 0;
+            overflow: hidden;
+            transition: none;
+            opacity: 1;
         }
-        .estrategia-card.open .estrategia-body { max-height: 400px; opacity: 1; }
 
         .estrategia-body-inner {
             padding-top: 1.5rem;
@@ -574,20 +572,19 @@
             <div class="slide-content" style="text-align:center;">
                 <div class="badge">A Proposta</div>
                 <h1 style="color:var(--accent); margin-bottom:0.5rem;">PROJETO "OCUPAR"</h1>
-                <p style="margin-bottom:2rem; font-size:clamp(0.9rem,1.5vw,1.2rem);">Cada igreja assume 3 frentes estratégicas. Clique para expandir.</p>
+                <p style="margin-bottom:2rem; font-size:clamp(0.9rem,1.5vw,1.2rem);">Cada congregação assume 3 frentes estratégicas de presença.</p>
                 
                 <div class="grid-3" style="gap:1.2rem; text-align:left;">
                     
                     <!-- ESTRATÉGIA 1 -->
-                    <div class="estrategia-card open" onclick="toggleEstrategia(this)">
+                    <div class="estrategia-card open">
                         <div class="estrategia-head">
                             <div class="estrategia-icon">📚</div>
                             <div>
                                 <div class="estrategia-title">1 Escola</div>
                                 <div class="estrategia-subtitle">Presença Educacional</div>
                             </div>
-                            <div class="estrategia-toggle">+</div>
-                        </div>
+                                        </div>
                         <div class="estrategia-body">
                             <div class="estrategia-body-inner">
                                 <p>Cada congregação adota uma escola pública ou privada de sua área e estabelece presença ativa e contínua naquele espaço.</p>
@@ -607,15 +604,14 @@
                     </div>
 
                     <!-- ESTRATÉGIA 2 -->
-                    <div class="estrategia-card" onclick="toggleEstrategia(this)">
+                    <div class="estrategia-card open">
                         <div class="estrategia-head">
                             <div class="estrategia-icon">🌳</div>
                             <div>
                                 <div class="estrategia-title">1 Praça</div>
                                 <div class="estrategia-subtitle">Presença Territorial</div>
                             </div>
-                            <div class="estrategia-toggle">+</div>
-                        </div>
+                                        </div>
                         <div class="estrategia-body">
                             <div class="estrategia-body-inner">
                                 <p>Transformar uma praça, parque ou espaço público da vizinhança em ponto de referência da congregação — onde a comunidade nos veja e nos conheça.</p>
@@ -635,15 +631,14 @@
                     </div>
 
                     <!-- ESTRATÉGIA 3 -->
-                    <div class="estrategia-card" onclick="toggleEstrategia(this)">
+                    <div class="estrategia-card open">
                         <div class="estrategia-head">
                             <div class="estrategia-icon">🤝</div>
                             <div>
                                 <div class="estrategia-title">1 Ação Social</div>
                                 <div class="estrategia-subtitle">Presença Compassiva</div>
                             </div>
-                            <div class="estrategia-toggle">+</div>
-                        </div>
+                                        </div>
                         <div class="estrategia-body">
                             <div class="estrategia-body-inner">
                                 <p>A ação social não é programa — é postura. A congregação identifica uma necessidade real do bairro e responde a ela com consistência e amor concreto.</p>
@@ -673,28 +668,59 @@
         <!-- SLIDE 9: INDICADORES -->
         <section class="slide" id="slide-9">
             <div class="slide-content" style="text-align:center;">
-                <h2>Indicadores 2026</h2>
-                <p style="margin-bottom:2rem;">Métricas que cada congregação deve acompanhar mensalmente:</p>
-                <div class="grid-4" style="margin-top:1.5rem; gap:1rem;">
-                    <div class="indicator-card">
+                <div class="badge">Métricas 2026</div>
+                <h1 style="color:var(--accent);margin-bottom:0.3rem;" id="ind-titulo">Indicadores da Regional</h1>
+                <p style="margin-bottom:0.4rem;font-size:clamp(0.8rem,1.2vw,1rem);color:var(--muted);">
+                    Metas anuais definidas pela coordenação da regional · <strong style="color:white;" id="ind-igrejas">—</strong> congregações
+                </p>
+                <p style="font-size:0.7rem;color:rgba(255,255,255,0.3);letter-spacing:2px;margin-bottom:2rem;">CADA CONGREGAÇÃO REGISTRA E REPASSA AO COORDENADOR MENSALMENTE</p>
+
+                <div class="grid-4" style="margin-top:0.5rem; gap:1rem;">
+                    <div class="indicator-card" style="border-color:rgba(245,158,11,0.3);">
                         <div class="indicator-label">Visitantes / Mês</div>
-                        <div class="indicator-value">Meta</div>
-                        <div class="indicator-sub">Acompanhar crescimento</div>
+                        <div class="indicator-value" id="ind-visitantes" style="color:var(--accent);">—</div>
+                        <div class="indicator-sub">Meta anual ÷ 12 meses</div>
+                        <div style="margin-top:0.8rem;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+                            <div id="bar-visitantes" style="height:100%;background:linear-gradient(90deg,#F59E0B,#d97706);border-radius:2px;width:0%;transition:width 1s ease;"></div>
+                        </div>
+                        <div style="font-size:0.6rem;color:rgba(255,255,255,0.25);margin-top:4px;letter-spacing:1px;">META DO ANO</div>
                     </div>
-                    <div class="indicator-card">
-                        <div class="indicator-label">Conversões</div>
-                        <div class="indicator-value">Meta</div>
-                        <div class="indicator-sub">Registro de decisões</div>
+                    <div class="indicator-card" style="border-color:rgba(59,130,246,0.3);">
+                        <div class="indicator-label">Conversões / Ano</div>
+                        <div class="indicator-value" id="ind-conversoes" style="color:#60a5fa;">—</div>
+                        <div class="indicator-sub">Média por congregação</div>
+                        <div style="margin-top:0.8rem;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+                            <div id="bar-conversoes" style="height:100%;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:2px;width:0%;transition:width 1s ease;"></div>
+                        </div>
+                        <div style="font-size:0.6rem;color:rgba(255,255,255,0.25);margin-top:4px;letter-spacing:1px;">REGISTRO OBRIGATÓRIO</div>
                     </div>
-                    <div class="indicator-card">
-                        <div class="indicator-label">Retenção (3 meses)</div>
-                        <div class="indicator-value">Meta</div>
-                        <div class="indicator-sub">Quem ficou depois de 90 dias</div>
+                    <div class="indicator-card" style="border-color:rgba(34,197,94,0.3);">
+                        <div class="indicator-label">Retenção (90 dias)</div>
+                        <div class="indicator-value" id="ind-retencao" style="color:#4ade80;">70%</div>
+                        <div class="indicator-sub">Meta mínima para todos</div>
+                        <div style="margin-top:0.8rem;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+                            <div style="height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:2px;width:70%;"></div>
+                        </div>
+                        <div style="font-size:0.6rem;color:rgba(255,255,255,0.25);margin-top:4px;letter-spacing:1px;">QUEM FICOU APÓS 90 DIAS</div>
                     </div>
-                    <div class="indicator-card">
+                    <div class="indicator-card" style="border-color:rgba(168,85,247,0.3);">
                         <div class="indicator-label">Ações Externas</div>
-                        <div class="indicator-value">Meta</div>
+                        <div class="indicator-value" id="ind-acoes" style="color:#c084fc;">3</div>
                         <div class="indicator-sub">Escola + Praça + Social</div>
+                        <div style="margin-top:0.8rem;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;">
+                            <div style="height:100%;background:linear-gradient(90deg,#a855f7,#c084fc);border-radius:2px;width:100%;"></div>
+                        </div>
+                        <div style="font-size:0.6rem;color:rgba(255,255,255,0.25);margin-top:4px;letter-spacing:1px;">META FIXA POR CONGREGAÇÃO</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:2rem;padding:1.2rem 1.5rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:16px;text-align:left;max-width:700px;margin-left:auto;margin-right:auto;">
+                    <div style="font-size:0.58rem;letter-spacing:3px;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:0.8rem;">Como funciona o acompanhamento</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;">
+                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);display:flex;gap:0.5rem;align-items:flex-start;"><span style="color:var(--accent);font-weight:700;flex-shrink:0;">01</span> Cada líder local registra suas métricas mensalmente</div>
+                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);display:flex;gap:0.5rem;align-items:flex-start;"><span style="color:var(--accent);font-weight:700;flex-shrink:0;">02</span> Repassa ao coordenador regional até o dia 25</div>
+                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);display:flex;gap:0.5rem;align-items:flex-start;"><span style="color:var(--accent);font-weight:700;flex-shrink:0;">03</span> Coordenador consolida e apresenta na Reunião de Líderes</div>
+                        <div style="font-size:0.78rem;color:rgba(255,255,255,0.6);display:flex;gap:0.5rem;align-items:flex-start;"><span style="color:var(--accent);font-weight:700;flex-shrink:0;">04</span> Presidência acompanha o avanço por regional mensalmente</div>
                     </div>
                 </div>
             </div>
@@ -1251,6 +1277,29 @@
         if (e.key === 'ArrowDown' || e.key === 'ArrowRight') nextSlide();
         if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') prevSlide();
     });
+
+    // ============================================================
+    // INDICADORES POR REGIONAL ───────────────────────────────
+    (function() {
+        const igrejas = R.congregacoes || 0;
+        const visitantesMeta = igrejas * 2;
+        const conversoesMeta = Math.round(igrejas * 0.5 * 12);
+        const maxIgrejas = 28;
+        const pct = Math.min(100, Math.round((igrejas / maxIgrejas) * 100));
+
+        const setEl = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        setEl('ind-titulo', 'Indicadores · Regional ' + R.nome);
+        setEl('ind-igrejas', igrejas);
+        setEl('ind-visitantes', visitantesMeta + '/mês');
+        setEl('ind-conversoes', conversoesMeta + '/ano');
+
+        setTimeout(() => {
+            ['bar-visitantes','bar-conversoes'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.width = pct + '%';
+            });
+        }, 800);
+    })();
 
     // ============================================================
     // COORDENADORES REGIONAIS — bloco fixo slide 1
