@@ -196,7 +196,31 @@
             .tab-btn{padding:0.75rem 0.9rem;font-size:0.68rem;letter-spacing:1px;}
             .agenda-table td,.agenda-table th{padding:0.5rem 0.4rem;font-size:0.75rem;}
         }
-    </style>
+    
+        /* ── ABA MATERIAL ── */
+        .material-section { margin-bottom: 2.5rem; }
+        .material-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .material-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 1.2rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; cursor: pointer; transition: border-color 0.3s, transform 0.3s; text-decoration: none; color: var(--text); }
+        .material-card:hover { border-color: rgba(245,158,11,0.4); transform: translateY(-3px); }
+        .material-card img { width: 100%; max-height: 90px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
+        .material-card-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-align: center; color: rgba(255,255,255,0.7); }
+        .material-card-sub { font-size: 0.6rem; color: var(--muted); text-align: center; margin-top: -4px; }
+        .material-download-btn { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.4rem; font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(245,158,11,0.3); padding: 3px 10px; border-radius: 20px; transition: background 0.2s; }
+        .material-card:hover .material-download-btn { background: rgba(245,158,11,0.1); }
+        .material-doc-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 1.4rem 1.6rem; display: flex; align-items: center; gap: 1.2rem; cursor: pointer; transition: border-color 0.3s, transform 0.3s; text-decoration: none; color: var(--text); }
+        .material-doc-card:hover { border-color: rgba(245,158,11,0.4); transform: translateY(-2px); }
+        .material-doc-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+        .material-doc-info { flex: 1; }
+        .material-doc-title { font-size: 0.95rem; font-weight: 700; color: white; }
+        .material-doc-sub { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+        .cor-swatch { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
+        .cor-grid { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+        .cor-item { display: flex; align-items: center; gap: 0.8rem; }
+        .cor-info { font-size: 0.75rem; }
+        .cor-nome { font-weight: 700; color: white; }
+        .cor-hex { color: var(--muted); font-size: 0.65rem; letter-spacing: 1px; }
+
+</style>
 </head>
 <body>
 
@@ -220,6 +244,7 @@
     <button class="tab-btn"         onclick="switchTab('regionais',this)">Regionais</button>
     <button class="tab-btn"         onclick="switchTab('agenda',this)">Agenda</button>
     <button class="tab-btn"         onclick="switchTab('projetos',this)">Projetos</button>
+    <button class="tab-btn"         onclick="switchTab('material',this)">Material</button>
 </nav>
 
 <!-- ══════════════════════════════════════
@@ -410,7 +435,13 @@
 <div id="tab-agenda" class="tab-panel">
 <div class="page-wrap">
 
-    <div class="sec-label">Agenda Oficial 2026</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding:2.5rem 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">
+        <span style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;">Agenda Oficial 2026</span>
+        <button onclick="gerarPDFAgenda()" style="display:flex;align-items:center;gap:0.5rem;padding:0.55rem 1.2rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.4);color:#F59E0B;font-family:inherit;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:20px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='rgba(245,158,11,0.2)'" onmouseout="this.style.background='rgba(245,158,11,0.1)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar PDF
+        </button>
+    </div>
     <table class="agenda-table">
         <thead><tr><th>Mês</th><th>Dia</th><th>Hora</th><th>Local</th><th>Evento</th></tr></thead>
         <tbody>
@@ -606,6 +637,304 @@ for(let i=0;i<55;i++) particles.push(new P());
 <!-- PWA: service worker + install + push opt-in -->
 <script src="pwa.js" defer></script>
 <script src="push.js" defer></script>
+
+
+<!-- ══════════════════════════════════════
+     ABA MATERIAL GRÁFICO
+══════════════════════════════════════ -->
+<div id="tab-material" class="tab-panel">
+<div class="page-wrap">
+
+    <!-- PLANO ANUAL -->
+    <div class="material-section">
+        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:2.5rem 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Documentos Oficiais</div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+            <div class="material-doc-card" onclick="alert('Anexe o arquivo do Plano Anual para ativar o download.')">
+                <div class="material-doc-icon" style="background:rgba(245,158,11,0.15);">📋</div>
+                <div class="material-doc-info">
+                    <div class="material-doc-title">Plano Anual UMADC 2026</div>
+                    <div class="material-doc-sub">Documento completo · Gestão 2026/2027 · "Até que todos ouçam"</div>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" style="flex-shrink:0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGOS -->
+    <div class="material-section">
+        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Identidade Visual — Logos</div>
+        <div class="material-grid">
+            <a href="logotipos/UMADC-OHS.png" download class="material-card">
+                <img src="logotipos/UMADC-OHS.png" alt="UMADC OHS" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
+                <div class="material-card-label">UMADC</div>
+                <div class="material-card-sub">Versão Branca</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+            <a href="logotipos/UMADC-OHS-PRETO.png" download class="material-card">
+                <img src="logotipos/UMADC-OHS-PRETO.png" alt="UMADC Preto" style="background:white;border-radius:8px;padding:8px;">
+                <div class="material-card-label">UMADC</div>
+                <div class="material-card-sub">Versão Preta</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+            <a href="logotipos/familia branco.png" download class="material-card">
+                <img src="logotipos/familia branco.png" alt="Família Branco" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
+                <div class="material-card-label">Família UMADC</div>
+                <div class="material-card-sub">Versão Branca</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+            <a href="logotipos/familia preto.png" download class="material-card">
+                <img src="logotipos/familia preto.png" alt="Família Preto" style="background:white;border-radius:8px;padding:8px;">
+                <div class="material-card-label">Família UMADC</div>
+                <div class="material-card-sub">Versão Preta</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+            <a href="logotipos/Logo IEADC.png" download class="material-card">
+                <img src="logotipos/Logo IEADC.png" alt="IEADC" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
+                <div class="material-card-label">IEADC</div>
+                <div class="material-card-sub">Logo Oficial</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+            <a href="logotipos/Logo IEADC Branca.png" download class="material-card">
+                <img src="logotipos/Logo IEADC Branca.png" alt="IEADC Branca" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
+                <div class="material-card-label">IEADC</div>
+                <div class="material-card-sub">Versão Branca</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- TEMA 2026 -->
+    <div class="material-section">
+        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Tema 2026 — Versões</div>
+        <div class="material-grid">
+            <a href="logotipos/Tema 26 1 Colorido.png" download class="material-card">
+                <img src="logotipos/Tema 26 1 Colorido.png" alt="Tema Colorido 1" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
+                <div class="material-card-label">Tema 2026 v1</div>
+                <div class="material-card-sub">Colorido</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+            <a href="logotipos/Tema 26 2 Colorido.png" download class="material-card">
+                <img src="logotipos/Tema 26 2 Colorido.png" alt="Tema Colorido 2" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
+                <div class="material-card-label">Tema 2026 v2</div>
+                <div class="material-card-sub">Colorido</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+            <a href="logotipos/Tema 26 2 Branco.png" download class="material-card">
+                <img src="logotipos/Tema 26 2 Branco.png" alt="Tema Branco" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
+                <div class="material-card-label">Tema 2026</div>
+                <div class="material-card-sub">Versão Branca</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+            <a href="logotipos/Tema 26 2 Preto.png" download class="material-card">
+                <img src="logotipos/Tema 26 2 Preto.png" alt="Tema Preto" style="background:white;border-radius:8px;padding:8px;">
+                <div class="material-card-label">Tema 2026</div>
+                <div class="material-card-sub">Versão Preta</div>
+                <div class="material-download-btn">↓ Download</div>
+            </a>
+        </div>
+    </div>
+
+    <!-- PALETA DE CORES -->
+    <div class="material-section">
+        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Paleta de Cores Oficial</div>
+        <div class="cor-grid">
+            <div class="cor-item">
+                <div class="cor-swatch" style="background:#0056D2;"></div>
+                <div class="cor-info"><div class="cor-nome">Azul Primário</div><div class="cor-hex">#0056D2</div></div>
+            </div>
+            <div class="cor-item">
+                <div class="cor-swatch" style="background:#F59E0B;"></div>
+                <div class="cor-info"><div class="cor-nome">Dourado</div><div class="cor-hex">#F59E0B</div></div>
+            </div>
+            <div class="cor-item">
+                <div class="cor-swatch" style="background:#050a14;border:1px solid rgba(255,255,255,0.15);"></div>
+                <div class="cor-info"><div class="cor-nome">Fundo Escuro</div><div class="cor-hex">#050A14</div></div>
+            </div>
+            <div class="cor-item">
+                <div class="cor-swatch" style="background:#FFFFFF;"></div>
+                <div class="cor-info"><div class="cor-nome">Branco</div><div class="cor-hex">#FFFFFF</div></div>
+            </div>
+            <div class="cor-item">
+                <div class="cor-swatch" style="background:#94A3B8;"></div>
+                <div class="cor-info"><div class="cor-nome">Cinza Texto</div><div class="cor-hex">#94A3B8</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIPOGRAFIA -->
+    <div class="material-section">
+        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Tipografia Oficial</div>
+        <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:1.8rem 2rem;display:flex;flex-direction:column;gap:1.2rem;">
+            <div>
+                <div style="font-size:0.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">Família tipográfica</div>
+                <div style="font-family:'MuseoModerno',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;color:white;line-height:1;">MuseoModerno</div>
+                <div style="font-family:'MuseoModerno',sans-serif;font-size:1rem;font-weight:400;color:var(--muted);margin-top:0.4rem;">Regular · Medium · Bold · Black · Todos os pesos disponíveis</div>
+            </div>
+            <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+                <div style="flex:1;min-width:200px;background:rgba(255,255,255,0.03);border-radius:10px;padding:1rem;">
+                    <div style="font-size:0.55rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;">Títulos</div>
+                    <div style="font-family:'MuseoModerno',sans-serif;font-size:1.4rem;font-weight:900;color:white;">Peso 900 — Black</div>
+                </div>
+                <div style="flex:1;min-width:200px;background:rgba(255,255,255,0.03);border-radius:10px;padding:1rem;">
+                    <div style="font-size:0.55rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;">Corpo de texto</div>
+                    <div style="font-family:'MuseoModerno',sans-serif;font-size:1rem;font-weight:400;color:rgba(255,255,255,0.8);">Peso 400 — Regular</div>
+                </div>
+                <div style="flex:1;min-width:200px;background:rgba(255,255,255,0.03);border-radius:10px;padding:1rem;">
+                    <div style="font-size:0.55rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;">Labels / Badges</div>
+                    <div style="font-family:'MuseoModerno',sans-serif;font-size:0.7rem;font-weight:700;color:var(--accent);letter-spacing:3px;text-transform:uppercase;">700 · UPPERCASE</div>
+                </div>
+            </div>
+            <div>
+                <div style="font-size:0.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:0.6rem;">Download da fonte</div>
+                <a href="fontes/MuseoModerno-VariableFont_wght.ttf" download style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1.2rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#F59E0B;text-decoration:none;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:background 0.2s;" onmouseover="this.style.background='rgba(245,158,11,0.2)'" onmouseout="this.style.background='rgba(245,158,11,0.1)'">
+                    ↓ MuseoModerno Variable Font
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- INSTRUÇÃO: FUNDO -->
+    <div class="material-section">
+        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Padrão de Fundo</div>
+        <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;overflow:hidden;">
+            <img src="fundo.png" alt="Fundo padrão UMADC" style="width:100%;max-height:200px;object-fit:cover;opacity:0.7;">
+            <div style="padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+                <div>
+                    <div style="font-size:0.85rem;font-weight:700;color:white;">Fundo Oficial — Ondas</div>
+                    <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">Use com opacidade entre 10–15% sobre fundo escuro</div>
+                </div>
+                <a href="fundo.png" download style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 1rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#F59E0B;text-decoration:none;border-radius:20px;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;">↓ Download</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+</div><!-- /tab-material -->
+
+<!-- jsPDF para exportar agenda -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+function gerarPDFAgenda() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const W = doc.internal.pageSize.getWidth();
+    const H = doc.internal.pageSize.getHeight();
+
+    // ── FUNDO ESCURO ──
+    doc.setFillColor(5, 10, 20);
+    doc.rect(0, 0, W, H, 'F');
+
+    // ── FAIXA SUPERIOR DOURADA ──
+    doc.setFillColor(245, 158, 11);
+    doc.rect(0, 0, W, 1.5, 'F');
+
+    // ── FAIXA INFERIOR ──
+    doc.setFillColor(0, 86, 210);
+    doc.rect(0, H - 1.5, W, 1.5, 'F');
+
+    // ── HEADER ──
+    doc.setFontSize(7);
+    doc.setTextColor(245, 158, 11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ASSEMBLEIA DE DEUS EM CURITIBA  ·  UMADC  ·  GESTÃO 2026/2027', W / 2, 12, { align: 'center' });
+
+    doc.setFontSize(22);
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.text('AGENDA OFICIAL 2026', W / 2, 24, { align: 'center' });
+
+    doc.setFontSize(8);
+    doc.setTextColor(148, 163, 184);
+    doc.setFont('helvetica', 'normal');
+    doc.text('ATÉ QUE TODOS OUÇAM  ·  Romanos 10.14', W / 2, 31, { align: 'center' });
+
+    // ── LINHA SEPARADORA ──
+    doc.setDrawColor(255, 255, 255, 0.1);
+    doc.setLineWidth(0.3);
+    doc.line(14, 35, W - 14, 35);
+
+    // ── TABELA ──
+    const eventos = [
+        ['Fev', '23', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
+        ['Mar', '16', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
+        ['Abr', '09', '19h45', 'Anfiteatro FCC', 'Aula Magna – EJP UMADC', 'EJP'],
+        ['Abr', '11', '23h00', 'A definir', 'Vigília Geral da UMADC', 'Vigília'],
+        ['Abr', '20', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
+        ['Mai', '01', '14h00', 'A definir', 'UMADC+', 'Especial'],
+        ['Jun', '15', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
+        ['Jul', '11', '23h00', 'A definir', 'Vigília Geral da UMADC', 'Vigília'],
+        ['Jul', '16–18', '19h30', 'Sede', 'Escola Bíblica de Jovens UMADC', 'EBJ'],
+        ['Ago', '17', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
+        ['Set', '21', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
+        ['Out', '10', '23h00', 'A definir', 'Vigília Geral da UMADC', 'Vigília'],
+        ['Out', '19', '20h00', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
+        ['Out', '23', '19h45', 'Anfiteatro FCC', 'Workshop – Jovens Empreendedores', 'Especial'],
+        ['Nov', '26–27', '19h45', 'A definir', 'Encerramento EJP UMADC', 'EJP'],
+        ['Nov', '29', '12h00', 'A definir', 'Almoço – Confraternização UMADC', 'Especial'],
+    ];
+
+    const tagColors = {
+        'Líderes':  [30, 64, 175],
+        'EJP':      [120, 53, 15],
+        'Vigília':  [88, 28, 135],
+        'EBJ':      [5, 78, 22],
+        'Especial': [15, 118, 110],
+    };
+
+    doc.autoTable({
+        startY: 40,
+        head: [['Mês', 'Dia', 'Hora', 'Local', 'Evento', 'Tipo']],
+        body: eventos,
+        theme: 'plain',
+        styles: {
+            font: 'helvetica',
+            fontSize: 8.5,
+            textColor: [220, 230, 240],
+            cellPadding: { top: 3.5, right: 4, bottom: 3.5, left: 4 },
+            lineColor: [255, 255, 255, 0.06],
+            lineWidth: 0.2,
+        },
+        headStyles: {
+            fillColor: [245, 158, 11],
+            textColor: [5, 10, 20],
+            fontStyle: 'bold',
+            fontSize: 7.5,
+            halign: 'left',
+        },
+        alternateRowStyles: { fillColor: [12, 20, 35] },
+        rowStyles: { fillColor: [8, 15, 28] },
+        columnStyles: {
+            0: { cellWidth: 10, fontStyle: 'bold', textColor: [245, 158, 11] },
+            1: { cellWidth: 14, fontStyle: 'bold' },
+            2: { cellWidth: 14 },
+            3: { cellWidth: 32 },
+            4: { cellWidth: 80, fontStyle: 'bold', textColor: [255, 255, 255] },
+            5: { cellWidth: 22, halign: 'center' },
+        },
+        didParseCell(data) {
+            if (data.column.index === 5 && data.section === 'body') {
+                const tag = data.cell.raw;
+                const color = tagColors[tag] || [50, 50, 80];
+                data.cell.styles.textColor = [255, 255, 255];
+                data.cell.styles.fillColor = color;
+                data.cell.styles.fontStyle = 'bold';
+                data.cell.styles.fontSize = 7;
+            }
+        },
+        margin: { left: 14, right: 14 },
+    });
+
+    // ── RODAPÉ ──
+    const finalY = doc.lastAutoTable.finalY + 8;
+    doc.setFontSize(7);
+    doc.setTextColor(100, 120, 140);
+    doc.text('UMADC Curitiba  ·  Planejamento Anual 2026  ·  "Até que todos ouçam" — Romanos 10.14', W / 2, finalY, { align: 'center' });
+    doc.text('Documento gerado em ' + new Date().toLocaleDateString('pt-BR'), W / 2, finalY + 5, { align: 'center' });
+
+    doc.save('UMADC-Agenda-2026.pdf');
+}
+</script>
 
 </body>
 </html>
