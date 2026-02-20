@@ -1,1256 +1,1533 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Planejamento Regional 2026</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 
-```
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        /* ================================================
+           VARIÁVEIS & RESET
+        ================================================ */
+        :root {
+            --bg: #050a14;
+            --primary: #0056D2;
+            --accent: #F59E0B;
+            --text: #FFFFFF;
+            --muted: #94A3B8;
+            --gradient: linear-gradient(135deg, var(--primary), #3b82f6);
+            --glass: rgba(255,255,255,0.02);
+            --glass-border: 1px solid rgba(255,255,255,0.08);
+        }
 
-<style>
-    /* ================================================
-       VARIÁVEIS & RESET
-    ================================================ */
-    :root {
-        --bg: #050a14;
-        --primary: #0056D2;
-        --accent: #F59E0B;
-        --text: #FFFFFF;
-        --muted: #94A3B8;
-        --gradient: linear-gradient(135deg, var(--primary), #3b82f6);
-        --glass: rgba(255,255,255,0.02);
-        --glass-border: 1px solid rgba(255,255,255,0.08);
-    }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        ::-webkit-scrollbar { width:0; background:transparent; }
 
-    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    ::-webkit-scrollbar { width:0; background:transparent; }
+        body {
+            font-family: "MuseoModerno", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            width: 100vw; height: 100svh;
+        }
 
-    body {
-        font-family: "MuseoModerno", sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        overflow: hidden;
-        width: 100vw; height: 100svh;
-    }
+        /* ================================================
+           FUNDO
+        ================================================ */
+        .bg-overlay {
+            position:fixed; top:0; left:0; width:100vw; height:100vh;
+            background-image: url('fundo.png');
+            background-size: cover; background-position: center;
+            opacity: 0.15; z-index:-2; pointer-events:none;
+            filter: contrast(120%) brightness(80%);
+        }
+        .noise {
+            position:fixed; top:0; left:0; width:100%; height:100%;
+            pointer-events:none; z-index:-1; opacity:0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        canvas#particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.4; pointer-events:none; }
 
-    /* ================================================
-       FUNDO
-    ================================================ */
-    .bg-overlay {
-        position:fixed; top:0; left:0; width:100vw; height:100vh;
-        background-image: url('fundo.png');
-        background-size: cover; background-position: center;
-        opacity: 0.15; z-index:-2; pointer-events:none;
-        filter: contrast(120%) brightness(80%);
-    }
-    .noise {
-        position:fixed; top:0; left:0; width:100%; height:100%;
-        pointer-events:none; z-index:-1; opacity:0.03;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-    canvas#particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.4; pointer-events:none; }
+        /* ================================================
+           HEADER & NAV
+        ================================================ */
+        header {
+            position:fixed; top:0; left:0; width:100%;
+            padding: 1.2rem 2rem;
+            display:flex; justify-content:space-between; align-items:center;
+            z-index:100; pointer-events:none;
+        }
+        .logo { height:40px; width:auto; object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,255,255,0.2)); pointer-events:auto; }
 
-    /* ================================================
-       HEADER & NAV
-    ================================================ */
-    header {
-        position:fixed; top:0; left:0; width:100%;
-        padding: 1.2rem 2rem;
-        display:flex; justify-content:space-between; align-items:center;
-        z-index:100; pointer-events:none;
-    }
-    .logo { height:40px; width:auto; object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,255,255,0.2)); pointer-events:auto; }
+        .back-btn {
+            position:fixed; top:1.2rem; left:50%; transform:translateX(-50%);
+            background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+            color:var(--muted); padding:6px 16px; border-radius:30px;
+            cursor:pointer; z-index:1000; font-family:inherit; font-weight:600;
+            font-size:12px; backdrop-filter:blur(5px); transition:all 0.3s;
+            text-decoration:none; letter-spacing:1px;
+            pointer-events:auto;
+        }
+        .back-btn:hover { background:var(--accent); color:black; border-color:var(--accent); }
 
-    .back-btn {
-        position:fixed; top:1.2rem; left:50%; transform:translateX(-50%);
-        background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
-        color:var(--muted); padding:6px 16px; border-radius:30px;
-        cursor:pointer; z-index:1000; font-family:inherit; font-weight:600;
-        font-size:12px; backdrop-filter:blur(5px); transition:all 0.3s;
-        text-decoration:none; letter-spacing:1px;
-        pointer-events:auto;
-    }
-    .back-btn:hover { background:var(--accent); color:black; border-color:var(--accent); }
+        .fullscreen-btn {
+            position:fixed; top:1.2rem; right:2rem;
+            background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
+            color:var(--muted); padding:6px 14px; border-radius:30px;
+            cursor:pointer; z-index:1000; font-family:inherit; font-weight:500;
+            font-size:12px; backdrop-filter:blur(5px); transition:all 0.3s;
+        }
+        .fullscreen-btn:hover { background:var(--accent); color:black; border-color:var(--accent); }
 
-    .fullscreen-btn {
-        position:fixed; top:1.2rem; right:2rem;
-        background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
-        color:var(--muted); padding:6px 14px; border-radius:30px;
-        cursor:pointer; z-index:1000; font-family:inherit; font-weight:500;
-        font-size:12px; backdrop-filter:blur(5px); transition:all 0.3s;
-    }
-    .fullscreen-btn:hover { background:var(--accent); color:black; border-color:var(--accent); }
+        .nav-prev, .nav-next {
+            position:fixed; top:50%; transform:translateY(-50%);
+            width:60px; height:100px;
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; z-index:999;
+            color:rgba(255,255,255,0.2); font-size:30px;
+            transition:all 0.3s; border:none; background:transparent;
+        }
+        .nav-prev:hover, .nav-next:hover { color:var(--accent); background:linear-gradient(to right, rgba(0,0,0,0.5), transparent); }
+        .nav-prev { left:0; border-radius:0 10px 10px 0; }
+        .nav-next { right:0; border-radius:10px 0 0 10px; background:linear-gradient(to left, rgba(0,0,0,0.1), transparent); }
+        .nav-next:hover { background:linear-gradient(to left, rgba(0,0,0,0.5), transparent); }
 
-    .nav-prev, .nav-next {
-        position:fixed; top:50%; transform:translateY(-50%);
-        width:60px; height:100px;
-        display:flex; align-items:center; justify-content:center;
-        cursor:pointer; z-index:999;
-        color:rgba(255,255,255,0.2); font-size:30px;
-        transition:all 0.3s; border:none; background:transparent;
-    }
-    .nav-prev:hover, .nav-next:hover { color:var(--accent); background:linear-gradient(to right, rgba(0,0,0,0.5), transparent); }
-    .nav-prev { left:0; border-radius:0 10px 10px 0; }
-    .nav-next { right:0; border-radius:10px 0 0 10px; background:linear-gradient(to left, rgba(0,0,0,0.1), transparent); }
-    .nav-next:hover { background:linear-gradient(to left, rgba(0,0,0,0.5), transparent); }
+        .progress-bar {
+            position:fixed; bottom:0; left:0; height:4px;
+            background:var(--accent); width:0%;
+            transition:width 0.5s ease; z-index:1000;
+            box-shadow:0 0 10px var(--accent);
+        }
 
-    .progress-bar {
-        position:fixed; bottom:0; left:0; height:4px;
-        background:var(--accent); width:0%;
-        transition:width 0.5s ease; z-index:1000;
-        box-shadow:0 0 10px var(--accent);
-    }
-
-    /* ================================================
-       DECK & SLIDES
-    ================================================ */
-    #deck {
-        height:100vh; width:100vw;
-        overflow-y:scroll; scroll-snap-type:y mandatory; scroll-behavior:smooth;
-    }
-    .slide {
-        height:100vh; width:100vw; scroll-snap-align:start;
-        display:flex; flex-direction:column;
-        justify-content:center; align-items:center;
-        padding:0 5%; position:relative; overflow:hidden;
-    }
-    .slide-content {
-        width:100%; max-width:1200px;
-        opacity:0; transform:translateY(40px) scale(0.98);
-        transition:opacity 1s cubic-bezier(0.2,0.8,0.2,1), transform 1s cubic-bezier(0.2,0.8,0.2,1);
-        will-change:opacity,transform;
-    }
-    .slide.active .slide-content { opacity:1; transform:translateY(0) scale(1); }
-
-    /* ================================================
-       TIPOGRAFIA
-    ================================================ */
-    h1 {
-        font-size: clamp(2.5rem, 6vw, 6rem);
-        font-weight:800; line-height:0.95; margin-bottom:1rem;
-        letter-spacing:-2px;
-        background:-webkit-linear-gradient(#fff, #94a3b8);
-        -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-    }
-    h2 { font-size:clamp(2rem,4vw,4rem); font-weight:700; color:var(--primary); margin-bottom:1.5rem; letter-spacing:-1px; }
-    h3 { font-size:clamp(1.2rem,2vw,2rem); font-weight:500; margin-bottom:1rem; color:var(--text); }
-    p { font-size:clamp(1rem,1.5vw,1.6rem); font-weight:300; color:var(--muted); line-height:1.5; }
-    .badge {
-        background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2);
-        color:var(--accent); padding:0.5rem 1.5rem; border-radius:50px;
-        font-weight:600; text-transform:uppercase; letter-spacing:2px;
-        font-size:0.8rem; margin-bottom:1.5rem; display:inline-block;
-        backdrop-filter:blur(5px);
-    }
-    .big-number {
-        font-size:clamp(4rem,9vw,9rem); font-weight:900; color:white;
-        line-height:1; margin:0.5rem 0; text-shadow:0 10px 40px rgba(0,0,0,0.5);
-    }
-    .destaque { color:var(--accent); font-weight:600; }
-
-    /* ================================================
-       GRIDS & CARDS
-    ================================================ */
-    .grid-split { display:grid; grid-template-columns:1.1fr 0.9fr; gap:4rem; align-items:center; }
-    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
-    .grid-4 { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; max-width:800px; margin:0 auto; }
-    .card {
-        background:var(--glass); border:var(--glass-border);
-        padding:2rem; border-radius:16px; backdrop-filter:blur(10px);
-        box-shadow:0 10px 30px rgba(0,0,0,0.2);
-        transition:transform 0.4s ease, border-color 0.4s ease;
-    }
-    .card:hover { transform:translateY(-5px); border-color:var(--accent); }
-
-    /* ================================================
-       SLIDE DE ESTRATÉGIAS — EXPANDIDO
-    ================================================ */
-    .estrategia-card {
-        background: var(--glass);
-        border: var(--glass-border);
-        border-radius: 20px;
-        padding: 2rem;
-        backdrop-filter: blur(10px);
-        transition: all 0.4s cubic-bezier(0.2,0.8,0.2,1);
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-    }
-    .estrategia-card::before {
-        content: '';
-        position: absolute; top:0; left:0; right:0; height:3px;
-        background: var(--gradient);
-        transform: scaleX(0); transform-origin: left;
-        transition: transform 0.4s ease;
-    }
-    .estrategia-card:hover::before, .estrategia-card.open::before { transform: scaleX(1); }
-    .estrategia-card:hover, .estrategia-card.open {
-        border-color: rgba(0,86,210,0.4);
-        transform: translateY(-4px);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-    }
-    .estrategia-head {
-        display: flex; align-items: center; gap: 1.2rem; margin-bottom: 0;
-    }
-    .estrategia-icon {
-        font-size: 2.5rem;
-        width: 60px; height: 60px;
-        background: rgba(255,255,255,0.05);
-        border-radius: 14px;
-        display: flex; align-items: center; justify-content: center;
-        flex-shrink: 0;
-        transition: background 0.3s;
-    }
-    .estrategia-card:hover .estrategia-icon, .estrategia-card.open .estrategia-icon {
-        background: rgba(0,86,210,0.2);
-    }
-    .estrategia-title { font-size: clamp(1.1rem,1.8vw,1.5rem); font-weight: 700; color: white; line-height: 1.1; }
-    .estrategia-subtitle { font-size: 0.75rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; margin-top: 3px; }
-    .estrategia-toggle {
-        margin-left: auto; font-size: 1.2rem; color: var(--muted);
-        transition: transform 0.3s, color 0.3s;
-        flex-shrink: 0;
-    }
-    .estrategia-card.open .estrategia-toggle { transform: rotate(45deg); color: var(--accent); }
-
-    .estrategia-body {
-        max-height: 0; overflow: hidden;
-        transition: max-height 0.5s cubic-bezier(0.2,0.8,0.2,1), opacity 0.4s ease;
-        opacity: 0;
-    }
-    .estrategia-card.open .estrategia-body { max-height: 400px; opacity: 1; }
-
-    .estrategia-body-inner {
-        padding-top: 1.5rem;
-        border-top: 1px solid rgba(255,255,255,0.06);
-        margin-top: 1.5rem;
-    }
-    .estrategia-body p { font-size: clamp(0.85rem, 1.3vw, 1.1rem); color: var(--muted); margin-bottom: 1rem; }
-    .estrategia-steps {
-        display: flex; flex-direction: column; gap: 0.6rem;
-    }
-    .estrategia-step {
-        display: flex; align-items: flex-start; gap: 0.8rem;
-        font-size: clamp(0.8rem, 1.2vw, 1rem);
-    }
-    .step-dot {
-        width: 6px; height: 6px; border-radius: 50%;
-        background: var(--accent); flex-shrink: 0; margin-top: 6px;
-    }
-    .step-text { color: rgba(255,255,255,0.75); line-height: 1.4; }
-    .estrategia-meta {
-        display: flex; gap: 1rem; margin-top: 1.2rem; flex-wrap: wrap;
-    }
-    .meta-tag {
-        padding: 4px 12px; border-radius: 20px;
-        font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
-        text-transform: uppercase;
-        background: rgba(0,86,210,0.15);
-        border: 1px solid rgba(0,86,210,0.3);
-        color: #60a5fa;
-    }
-
-    /* ================================================
-       MAPA
-    ================================================ */
-    #map {
-        height:70vh; width:100%; border-radius:16px;
-        border:1px solid rgba(255,255,255,0.1);
-        box-shadow:0 0 100px rgba(0,0,0,0.8);
-        background:#1a1a1a; z-index:10;
-    }
-    .custom-pin {
-        width:32px !important; height:32px !important;
-        border-radius:50%; background-color:rgba(10,10,10,0.85);
-        border:2px solid var(--accent);
-        box-shadow:0 0 10px rgba(245,158,11,0.4);
-        display:flex !important; align-items:center; justify-content:center;
-        color:white; font-family:"MuseoModerno",sans-serif;
-        font-weight:800; font-size:14px;
-        transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
-    }
-    .custom-pin:hover { transform:scale(1.5); background-color:var(--accent); color:black; z-index:9999 !important; border-color:white; box-shadow:0 0 25px rgba(245,158,11,0.8); }
-    .map-label {
-        background:rgba(2,6,23,0.95) !important; color:var(--accent) !important;
-        border:1px solid rgba(255,255,255,0.1) !important;
-        font-family:"MuseoModerno",sans-serif !important; font-weight:500 !important;
-        border-radius:6px !important; font-size:13px !important;
-        padding:6px 12px !important; box-shadow:0 10px 20px rgba(0,0,0,0.5) !important;
-    }
-    .leaflet-tooltip-top:before { border-top-color:rgba(2,6,23,0.95) !important; }
-    .map-legend {
-        position:absolute; bottom:25px; left:25px;
-        background:rgba(0,0,0,0.6); padding:12px; border-radius:12px;
-        backdrop-filter:blur(5px); border:1px solid rgba(255,255,255,0.1);
-        z-index:500; display:flex; flex-direction:column; gap:8px;
-    }
-    .legend-item { display:flex; align-items:center; gap:8px; color:white; font-size:12px; font-weight:600; }
-    .color-box { width:12px; height:12px; border-radius:3px; }
-
-    /* ================================================
-       INDICADORES
-    ================================================ */
-    .indicator-card {
-        background: var(--glass); border: var(--glass-border);
-        padding: 1.5rem; border-radius: 16px;
-        display: flex; flex-direction: column; gap: 0.5rem;
-        transition: border-color 0.3s;
-    }
-    .indicator-card:hover { border-color: rgba(245,158,11,0.4); }
-    .indicator-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-    .indicator-value { font-size: 1.8rem; font-weight: 900; color: white; }
-    .indicator-sub { font-size: 0.75rem; color: var(--muted); }
-
-    /* RESPONSIVE */
-    @media (max-width:1024px) {
-        .grid-split { grid-template-columns:1fr; gap:2rem; text-align:center; }
-        .slide { padding-top:60px; height:100svh; }
-        #map { height:55vh; }
-        .card:hover, .estrategia-card:hover { transform:none; }
-        .nav-prev, .nav-next { width:50px; background:rgba(0,0,0,0.2); }
-        .estrategia-steps { gap: 0.5rem; }
-    }
-
-    /* ── MOBILE ── */
-    @media (max-width:600px) {
-        /* Slide genérico: vira scrollável em vez de altura fixa */
+        /* ================================================
+           DECK & SLIDES
+        ================================================ */
+        #deck {
+            height:100vh; width:100vw;
+            overflow-y:scroll; scroll-snap-type:y mandatory; scroll-behavior:smooth;
+        }
         .slide {
-            height: auto !important;
-            min-height: 100svh;
-            padding-top: 70px !important;
-            padding-bottom: 80px !important;
+            height:100vh; width:100vw; scroll-snap-align:start;
+            display:flex; flex-direction:column;
+            justify-content:center; align-items:center;
+            padding:0 5%; position:relative; overflow:hidden;
         }
         .slide-content {
-            padding: 0 1rem !important;
-            overflow-y: auto;
+            width:100%; max-width:1200px;
+            opacity:0; transform:translateY(40px) scale(0.98);
+            transition:opacity 1s cubic-bezier(0.2,0.8,0.2,1), transform 1s cubic-bezier(0.2,0.8,0.2,1);
+            will-change:opacity,transform;
         }
+        .slide.active .slide-content { opacity:1; transform:translateY(0) scale(1); }
 
-        /* Grade de 3 colunas vira 1 coluna */
-        .grid-3 {
-            grid-template-columns: 1fr !important;
-            gap: 1rem !important;
+        /* ================================================
+           TIPOGRAFIA
+        ================================================ */
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 6rem);
+            font-weight:800; line-height:0.95; margin-bottom:1rem;
+            letter-spacing:-2px;
+            background:-webkit-linear-gradient(#fff, #94a3b8);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
         }
+        h2 { font-size:clamp(2rem,4vw,4rem); font-weight:700; color:var(--primary); margin-bottom:1.5rem; letter-spacing:-1px; }
+        h3 { font-size:clamp(1.2rem,2vw,2rem); font-weight:500; margin-bottom:1rem; color:var(--text); }
+        p { font-size:clamp(1rem,1.5vw,1.6rem); font-weight:300; color:var(--muted); line-height:1.5; }
+        .badge {
+            background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2);
+            color:var(--accent); padding:0.5rem 1.5rem; border-radius:50px;
+            font-weight:600; text-transform:uppercase; letter-spacing:2px;
+            font-size:0.8rem; margin-bottom:1.5rem; display:inline-block;
+            backdrop-filter:blur(5px);
+        }
+        .big-number {
+            font-size:clamp(4rem,9vw,9rem); font-weight:900; color:white;
+            line-height:1; margin:0.5rem 0; text-shadow:0 10px 40px rgba(0,0,0,0.5);
+        }
+        .destaque { color:var(--accent); font-weight:600; }
 
-        /* Cards de estratégia */
+        /* ================================================
+           GRIDS & CARDS
+        ================================================ */
+        .grid-split { display:grid; grid-template-columns:1.1fr 0.9fr; gap:4rem; align-items:center; }
+        .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+        .grid-4 { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem; max-width:800px; margin:0 auto; }
+        .card {
+            background:var(--glass); border:var(--glass-border);
+            padding:2rem; border-radius:16px; backdrop-filter:blur(10px);
+            box-shadow:0 10px 30px rgba(0,0,0,0.2);
+            transition:transform 0.4s ease, border-color 0.4s ease;
+        }
+        .card:hover { transform:translateY(-5px); border-color:var(--accent); }
+
+        /* ================================================
+           SLIDE DE ESTRATÉGIAS — EXPANDIDO
+        ================================================ */
         .estrategia-card {
-            padding: 1.2rem !important;
-            border-radius: 14px !important;
+            background: var(--glass);
+            border: var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.2,0.8,0.2,1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .estrategia-card::before {
+            content: '';
+            position: absolute; top:0; left:0; right:0; height:3px;
+            background: var(--gradient);
+            transform: scaleX(0); transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+        .estrategia-card:hover::before, .estrategia-card.open::before { transform: scaleX(1); }
+        .estrategia-card:hover, .estrategia-card.open {
+            border-color: rgba(0,86,210,0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+        .estrategia-head {
+            display: flex; align-items: center; gap: 1.2rem; margin-bottom: 0;
         }
         .estrategia-icon {
-            font-size: 1.8rem !important;
-            width: 46px !important; height: 46px !important;
+            font-size: 2.5rem;
+            width: 60px; height: 60px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.3s;
         }
-        .estrategia-title { font-size: 1rem !important; }
-        .estrategia-body p { font-size: 0.85rem !important; }
-        .estrategia-step { font-size: 0.82rem !important; }
-        /* Quando aberto, deixa crescer mais no mobile */
-        .estrategia-card.open .estrategia-body { max-height: 600px !important; }
-
-        /* Navegação: botões maiores e mais acessíveis */
-        .nav-prev, .nav-next {
-            width: 44px !important; height: 44px !important;
-            font-size: 1rem !important;
-            top: auto !important; bottom: 20px !important;
-            transform: none !important;
+        .estrategia-card:hover .estrategia-icon, .estrategia-card.open .estrategia-icon {
+            background: rgba(0,86,210,0.2);
         }
-        .nav-prev { left: 1rem !important; }
-        .nav-next { right: 1rem !important; }
+        .estrategia-title { font-size: clamp(1.1rem,1.8vw,1.5rem); font-weight: 700; color: white; line-height: 1.1; }
+        .estrategia-subtitle { font-size: 0.75rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; margin-top: 3px; }
+        .estrategia-toggle {
+            margin-left: auto; font-size: 1.2rem; color: var(--muted);
+            transition: transform 0.3s, color 0.3s;
+            flex-shrink: 0;
+        }
+        .estrategia-card.open .estrategia-toggle { transform: rotate(45deg); color: var(--accent); }
 
-        /* Cabeçalho menor */
-        header { padding: 0.6rem 1rem !important; }
-        .logo { height: 28px !important; }
-        .back-btn { font-size: 0.7rem !important; padding: 6px 12px !important; left: 1rem !important; top: 0.6rem !important; }
-        .fullscreen-btn { display: none !important; }
+        .estrategia-body {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.2,0.8,0.2,1), opacity 0.4s ease;
+            opacity: 0;
+        }
+        .estrategia-card.open .estrategia-body { max-height: 400px; opacity: 1; }
 
-        /* Cards de métricas menores */
-        .card { padding: 1.2rem !important; }
+        .estrategia-body-inner {
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin-top: 1.5rem;
+        }
+        .estrategia-body p { font-size: clamp(0.85rem, 1.3vw, 1.1rem); color: var(--muted); margin-bottom: 1rem; }
+        .estrategia-steps {
+            display: flex; flex-direction: column; gap: 0.6rem;
+        }
+        .estrategia-step {
+            display: flex; align-items: flex-start; gap: 0.8rem;
+            font-size: clamp(0.8rem, 1.2vw, 1rem);
+        }
+        .step-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--accent); flex-shrink: 0; margin-top: 6px;
+        }
+        .step-text { color: rgba(255,255,255,0.75); line-height: 1.4; }
+        .estrategia-meta {
+            display: flex; gap: 1rem; margin-top: 1.2rem; flex-wrap: wrap;
+        }
+        .meta-tag {
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase;
+            background: rgba(0,86,210,0.15);
+            border: 1px solid rgba(0,86,210,0.3);
+            color: #60a5fa;
+        }
 
-        /* Títulos dos slides */
-        h1 { font-size: clamp(1.8rem, 8vw, 3rem) !important; }
-    }
-</style>
-```
+        /* ================================================
+           MAPA
+        ================================================ */
+        #map {
+            height:70vh; width:100%; border-radius:16px;
+            border:1px solid rgba(255,255,255,0.1);
+            box-shadow:0 0 100px rgba(0,0,0,0.8);
+            background:#1a1a1a; z-index:10;
+        }
+        .custom-pin {
+            width:32px !important; height:32px !important;
+            border-radius:50%; background-color:rgba(10,10,10,0.85);
+            border:2px solid var(--accent);
+            box-shadow:0 0 10px rgba(245,158,11,0.4);
+            display:flex !important; align-items:center; justify-content:center;
+            color:white; font-family:"MuseoModerno",sans-serif;
+            font-weight:800; font-size:14px;
+            transition:all 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+        }
+        .custom-pin:hover { transform:scale(1.5); background-color:var(--accent); color:black; z-index:9999 !important; border-color:white; box-shadow:0 0 25px rgba(245,158,11,0.8); }
+        .map-label {
+            background:rgba(2,6,23,0.95) !important; color:var(--accent) !important;
+            border:1px solid rgba(255,255,255,0.1) !important;
+            font-family:"MuseoModerno",sans-serif !important; font-weight:500 !important;
+            border-radius:6px !important; font-size:13px !important;
+            padding:6px 12px !important; box-shadow:0 10px 20px rgba(0,0,0,0.5) !important;
+        }
+        .leaflet-tooltip-top:before { border-top-color:rgba(2,6,23,0.95) !important; }
+        .map-legend {
+            position:absolute; bottom:25px; left:25px;
+            background:rgba(0,0,0,0.6); padding:12px; border-radius:12px;
+            backdrop-filter:blur(5px); border:1px solid rgba(255,255,255,0.1);
+            z-index:500; display:flex; flex-direction:column; gap:8px;
+        }
+        .legend-item { display:flex; align-items:center; gap:8px; color:white; font-size:12px; font-weight:600; }
+        .color-box { width:12px; height:12px; border-radius:3px; }
 
+        /* ================================================
+           INDICADORES
+        ================================================ */
+        .indicator-card {
+            background: var(--glass); border: var(--glass-border);
+            padding: 1.5rem; border-radius: 16px;
+            display: flex; flex-direction: column; gap: 0.5rem;
+            transition: border-color 0.3s;
+        }
+        .indicator-card:hover { border-color: rgba(245,158,11,0.4); }
+        .indicator-label { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+        .indicator-value { font-size: 1.8rem; font-weight: 900; color: white; }
+        .indicator-sub { font-size: 0.75rem; color: var(--muted); }
+
+        /* RESPONSIVE */
+        @media (max-width:1024px) {
+            .grid-split { grid-template-columns:1fr; gap:2rem; text-align:center; }
+            .slide { padding-top:60px; height:100svh; }
+            #map { height:55vh; }
+            .card:hover, .estrategia-card:hover { transform:none; }
+            .nav-prev, .nav-next { width:50px; background:rgba(0,0,0,0.2); }
+            .estrategia-steps { gap: 0.5rem; }
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width:600px) {
+            /* Slide genérico: vira scrollável em vez de altura fixa */
+            .slide {
+                height: auto !important;
+                min-height: 100svh;
+                padding-top: 70px !important;
+                padding-bottom: 80px !important;
+            }
+            .slide-content {
+                padding: 0 1rem !important;
+                overflow-y: auto;
+            }
+
+            /* Grade de 3 colunas vira 1 coluna */
+            .grid-3 {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+
+            /* Cards de estratégia */
+            .estrategia-card {
+                padding: 1.2rem !important;
+                border-radius: 14px !important;
+            }
+            .estrategia-icon {
+                font-size: 1.8rem !important;
+                width: 46px !important; height: 46px !important;
+            }
+            .estrategia-title { font-size: 1rem !important; }
+            .estrategia-body p { font-size: 0.85rem !important; }
+            .estrategia-step { font-size: 0.82rem !important; }
+            /* Quando aberto, deixa crescer mais no mobile */
+            .estrategia-card.open .estrategia-body { max-height: 600px !important; }
+
+            /* Navegação: botões maiores e mais acessíveis */
+            .nav-prev, .nav-next {
+                width: 44px !important; height: 44px !important;
+                font-size: 1rem !important;
+                top: auto !important; bottom: 20px !important;
+                transform: none !important;
+            }
+            .nav-prev { left: 1rem !important; }
+            .nav-next { right: 1rem !important; }
+
+            /* Cabeçalho menor */
+            header { padding: 0.6rem 1rem !important; }
+            .logo { height: 28px !important; }
+            .back-btn { font-size: 0.7rem !important; padding: 6px 12px !important; left: 1rem !important; top: 0.6rem !important; }
+            .fullscreen-btn { display: none !important; }
+
+            /* Cards de métricas menores */
+            .card { padding: 1.2rem !important; }
+
+            /* Títulos dos slides */
+            h1 { font-size: clamp(1.8rem, 8vw, 3rem) !important; }
+        }
+    </style>
 </head>
 <body>
 
-```
-<div class="bg-overlay"></div>
-<div class="noise"></div>
-<canvas id="particles"></canvas>
-<div class="progress-bar" id="progress"></div>
+    <div class="bg-overlay"></div>
+    <div class="noise"></div>
+    <canvas id="particles"></canvas>
+    <div class="progress-bar" id="progress"></div>
 
-<a href="index.html" class="back-btn">← Voltar</a>
-<button onclick="toggleFullScreen()" class="fullscreen-btn">⛶ Tela Cheia</button>
-<button onclick="prevSlide()" class="nav-prev">❮</button>
-<button onclick="nextSlide()" class="nav-next">❯</button>
+    <a href="index.html" class="back-btn">← Voltar</a>
+    <button onclick="toggleFullScreen()" class="fullscreen-btn">⛶ Tela Cheia</button>
+    <button onclick="prevSlide()" class="nav-prev">❮</button>
+    <button onclick="nextSlide()" class="nav-next">❯</button>
 
-<header>
-    <img src="logo-ieadc.png" alt="IEADC" class="logo">
-    <img src="logo-umadc.png" alt="UMADC" class="logo">
-</header>
+    <header>
+        <img src="logo-ieadc.png" alt="IEADC" class="logo">
+        <img src="logo-umadc.png" alt="UMADC" class="logo">
+    </header>
 
-<div id="deck">
+    <div id="deck">
 
-    <!-- SLIDE 1: CAPA -->
-    <section class="slide" id="slide-1">
-        <div class="slide-content" style="text-align:center;">
-            <div class="badge" id="badge-regional">Planejamento 2026</div>
-            <h1 id="titulo-regional">REGIONAL</h1>
-            <p style="font-size:clamp(1.2rem,2.5vw,2rem); color:white; margin-top:1rem; letter-spacing:2px;">
-                Território <span class="destaque">•</span> Juventude <span class="destaque">•</span> Expansão
-            </p>
-        </div>
-    </section>
-
-    <!-- SLIDE 2: DADOS DA REGIONAL -->
-    <section class="slide" id="slide-2">
-        <div class="slide-content">
-            <div class="grid-split">
-                <div>
-                    <div class="badge">Nossa Regional</div>
-                    <h2 id="s2-nome">Regional</h2>
-                    <p id="s2-desc" style="font-size:clamp(1rem,1.8vw,1.4rem); color:rgba(255,255,255,0.8); margin-bottom:2rem;"></p>
-                    <div class="grid-3" style="margin-top:1rem;">
-                        <div class="card" style="text-align:center; padding:1.2rem;">
-                            <div class="big-number count-up" id="s2-igrejas" data-target="22" style="font-size:3rem;">0</div>
-                            <p style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; margin:0;">Igrejas</p>
-                        </div>
-                        <div class="card" style="text-align:center; padding:1.2rem;">
-                            <div class="big-number count-up" id="s2-pop" data-target="224" style="font-size:3rem;">0</div>
-                            <p style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; margin:0;">Mil Hab.</p>
-                        </div>
-                        <div class="card" style="text-align:center; padding:1.2rem;">
-                            <div class="big-number count-up" id="s2-bairros" data-target="8" style="font-size:3rem;">0</div>
-                            <p style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; margin:0;">Bairros</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border:1px solid var(--accent); background:rgba(245,158,11,0.05);">
-                    <p class="destaque" style="font-size:0.7rem; letter-spacing:3px; text-transform:uppercase;">Censo IBGE 2022</p>
-                    <div class="big-number count-up" id="s2-jovens" data-target="61500" style="color:var(--accent); font-size:clamp(3rem,6vw,5rem);">0</div>
-                    <h3 style="color:white; font-size:1rem;">Jovens e adultos (18–39)</h3>
-                    <p style="font-size:0.9rem; margin-top:0.5rem;">Estimativa para a área de abrangência da regional.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SLIDE 3: MAPA -->
-    <section class="slide" id="slide-3">
-        <div class="slide-content" style="position:relative; height:75vh;">
-            <div id="map"></div>
-            <div class="map-legend">
-                <div class="legend-item">
-                    <div class="color-box" style="background:rgba(245,158,11,0.7);"></div>
-                    <span id="legend-regional">Regional</span>
-                </div>
-                <div class="legend-item">
-                    <div class="color-box" style="background:rgba(100,116,139,0.5);"></div>
-                    <span>Curitiba</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SLIDE 4: DENSIDADE -->
-    <section class="slide" id="slide-4">
-        <div class="slide-content" style="text-align:center;">
-            <h2>Densidade Populacional</h2>
-            <div class="big-number count-up" id="s4-densidade" data-target="4100">0</div>
-            <h3 style="margin-top:-10px; color:var(--accent);">hab / km²</h3>
-            <div class="grid-3" style="margin-top:3rem;">
-                <div class="card"><p id="s4-char1">Alta concentração</p></div>
-                <div class="card"><p id="s4-char2">Alta circulação</p></div>
-                <div class="card"><p id="s4-char3">Campo acessível</p></div>
-            </div>
-            <div style="margin-top:3rem; background:var(--primary); display:inline-block; padding:12px 35px; border-radius:50px;">
-                <p id="s4-slogan" style="color:white; margin:0; font-weight:600;">O CAMPO ESTÁ PERTO</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SLIDE 5: ESTIMATIVA JOVENS -->
-    <section class="slide" id="slide-5">
-        <div class="slide-content" style="text-align:center;">
-            <div class="badge">Dados IBGE 2022 (18 a 39 anos)</div>
-            <h3 style="margin-top:10px;">Estimativa Populacional</h3>
-            <div class="big-number count-up" id="s5-jovens" data-target="61500" style="color:var(--accent);">0</div>
-            <p style="color:white; letter-spacing:2px;">JOVENS E ADULTOS NA REGIÃO</p>
-            <div style="margin-top:4rem; border:1px dashed rgba(255,255,255,0.3); padding:2rem; border-radius:20px;">
-                <p>≈ <strong style="color:white; font-size:1.8rem;" id="s5-por-igreja">2.800</strong> vidas ao redor de cada congregação.</p>
-            </div>
-            <h2 style="margin-top:3rem; color:var(--accent);">Quantos estamos alcançando?</h2>
-        </div>
-    </section>
-
-    <!-- SLIDE 6: CENÁRIO RELIGIOSO -->
-    <section class="slide" id="slide-6">
-        <div class="slide-content">
-            <div class="grid-split">
-                <div>
-                    <h2>Cenário Religioso</h2>
-                    <div style="display:flex; gap:5px; margin-bottom:0.5rem; height:20px; width:100%;">
-                        <div style="width:35%; background:var(--primary); border-radius:4px;"></div>
-                        <div style="width:65%; background:rgba(255,255,255,0.2); border-radius:4px;"></div>
-                    </div>
-                    <p style="font-size:1rem; margin-bottom:2rem;">Evangélicos (35%) vs Não Evangélicos (65%)</p>
-                    <ul style="font-size:1.2rem; list-style:none;">
-                        <li style="margin-bottom:10px;">🔵 Católicos: 38–40%</li>
-                        <li style="margin-bottom:10px;">🟡 Sem religião: 16–18%</li>
-                        <li style="margin-bottom:10px;">🟣 Outras: 5–7%</li>
-                    </ul>
-                </div>
-                <div class="card" style="border:1px solid var(--accent); background:rgba(245,158,11,0.05);">
-                    <p class="destaque">OPORTUNIDADE REAL</p>
-                    <div class="big-number count-up" id="s6-nao-evang" data-target="40000" style="font-size:5rem;">0</div>
-                    <h3 style="color:white;">Não Evangélicos (18–39)</h3>
-                    <p>Esperando por uma resposta.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- SLIDE 7: A MATEMÁTICA -->
-    <section class="slide" id="slide-7">
-        <div class="slide-content" style="text-align:center;">
-            <h2>A Matemática</h2>
-            <p style="margin-bottom:3rem;">Se alcançarmos apenas:</p>
-            <div class="grid-split" style="gap:2rem;">
-                <div class="card">
-                    <h3 style="color:var(--muted);">1% da região</h3>
-                    <div class="big-number count-up" id="s7-um-pct" data-target="400">0</div>
-                    <p>Vidas</p>
-                </div>
-                <div class="card" style="border-bottom:4px solid var(--accent);">
-                    <h3 style="color:var(--muted);">2% da região</h3>
-                    <div class="big-number count-up" id="s7-dois-pct" data-target="800">0</div>
-                    <p>Vidas</p>
-                </div>
-            </div>
-            <div style="margin-top:3rem;">
-                <p style="font-size:clamp(1.5rem,2.5vw,2.5rem); color:white;" id="s7-formula">
-                    Dividido por 22 igrejas = <span class="destaque">18 a 36 novos membros</span>
+        <!-- SLIDE 1: CAPA -->
+        <section class="slide" id="slide-1">
+            <div class="slide-content" style="text-align:center;">
+                <div class="badge" id="badge-regional">Planejamento 2026</div>
+                <h1 id="titulo-regional">REGIONAL</h1>
+                <p style="font-size:clamp(1.2rem,2.5vw,2rem); color:white; margin-top:1rem; letter-spacing:2px;">
+                    Território <span class="destaque">•</span> Juventude <span class="destaque">•</span> Expansão
                 </p>
-                <p style="font-size:1rem;">(Por congregação)</p>
+                <button onclick="abrirLideres()" style="margin-top:2.5rem;padding:0.75rem 2rem;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.5);color:#F59E0B;font-family:inherit;font-size:0.85rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:30px;cursor:pointer;transition:all 0.3s;backdrop-filter:blur(10px);">👥 Líderes da Regional</button>
+            </div>
+        </section>
+
+        <!-- MODAL LÍDERES -->
+        <div id="modal-lideres" onclick="if(event.target===this)fecharLideres()" style="display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1rem;">
+            <div style="background:#0d1829;border:1px solid rgba(245,158,11,0.3);border-radius:20px;width:100%;max-width:700px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.6);">
+                <div style="padding:1.4rem 1.6rem 1rem;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+                    <div>
+                        <div style="font-size:0.6rem;letter-spacing:3px;color:#F59E0B;font-weight:700;text-transform:uppercase;margin-bottom:4px;">Líderes · 2026/2027</div>
+                        <div id="modal-titulo" style="font-size:1.3rem;font-weight:900;color:white;"></div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.8rem;">
+                        <span id="modal-count" style="font-size:0.75rem;color:#94A3B8;background:rgba(255,255,255,0.06);padding:4px 12px;border-radius:20px;"></span>
+                        <button onclick="fecharLideres()" style="background:rgba(255,255,255,0.08);border:none;color:white;width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer;">✕</button>
+                    </div>
+                </div>
+                <div style="padding:0.8rem 1.4rem;border-bottom:1px solid rgba(255,255,255,0.05);flex-shrink:0;">
+                    <input id="busca-lider" type="text" placeholder="🔍  Buscar congregação ou líder..." oninput="filtrarLideres()" style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:white;font-family:inherit;font-size:0.85rem;padding:0.6rem 1rem;border-radius:10px;outline:none;">
+                </div>
+                <div id="lista-lideres" style="overflow-y:auto;padding:1rem 1.2rem;flex:1;display:flex;flex-direction:column;gap:0.55rem;"></div>
             </div>
         </div>
-    </section>
 
-    <!-- SLIDE 8: ESTRATÉGIAS — EXPANDIDO -->
-    <section class="slide" id="slide-8">
-        <div class="slide-content" style="text-align:center;">
-            <div class="badge">A Proposta</div>
-            <h1 style="color:var(--accent); margin-bottom:0.5rem;">PROJETO "OCUPAR"</h1>
-            <p style="margin-bottom:2rem; font-size:clamp(0.9rem,1.5vw,1.2rem);">Cada igreja assume 3 frentes estratégicas. Clique para expandir.</p>
-            
-            <div class="grid-3" style="gap:1.2rem; text-align:left;">
+        <!-- SLIDE 2: DADOS DA REGIONAL -->
+        <section class="slide" id="slide-2">
+            <div class="slide-content">
+                <div class="grid-split">
+                    <div>
+                        <div class="badge">Nossa Regional</div>
+                        <h2 id="s2-nome">Regional</h2>
+                        <p id="s2-desc" style="font-size:clamp(1rem,1.8vw,1.4rem); color:rgba(255,255,255,0.8); margin-bottom:2rem;"></p>
+                        <div class="grid-3" style="margin-top:1rem;">
+                            <div class="card" style="text-align:center; padding:1.2rem;">
+                                <div class="big-number count-up" id="s2-igrejas" data-target="22" style="font-size:3rem;">0</div>
+                                <p style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; margin:0;">Igrejas</p>
+                            </div>
+                            <div class="card" style="text-align:center; padding:1.2rem;">
+                                <div class="big-number count-up" id="s2-pop" data-target="224" style="font-size:3rem;">0</div>
+                                <p style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; margin:0;">Mil Hab.</p>
+                            </div>
+                            <div class="card" style="text-align:center; padding:1.2rem;">
+                                <div class="big-number count-up" id="s2-bairros" data-target="8" style="font-size:3rem;">0</div>
+                                <p style="font-size:0.75rem; letter-spacing:2px; text-transform:uppercase; margin:0;">Bairros</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="border:1px solid var(--accent); background:rgba(245,158,11,0.05);">
+                        <p class="destaque" style="font-size:0.7rem; letter-spacing:3px; text-transform:uppercase;">Censo IBGE 2022</p>
+                        <div class="big-number count-up" id="s2-jovens" data-target="61500" style="color:var(--accent); font-size:clamp(3rem,6vw,5rem);">0</div>
+                        <h3 style="color:white; font-size:1rem;">Jovens e adultos (18–39)</h3>
+                        <p style="font-size:0.9rem; margin-top:0.5rem;">Estimativa para a área de abrangência da regional.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: MAPA -->
+        <section class="slide" id="slide-3">
+            <div class="slide-content" style="position:relative; height:75vh;">
+                <div id="map"></div>
+                <div class="map-legend">
+                    <div class="legend-item">
+                        <div class="color-box" style="background:rgba(245,158,11,0.7);"></div>
+                        <span id="legend-regional">Regional</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-box" style="background:rgba(100,116,139,0.5);"></div>
+                        <span>Curitiba</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: DENSIDADE -->
+        <section class="slide" id="slide-4">
+            <div class="slide-content" style="text-align:center;">
+                <h2>Densidade Populacional</h2>
+                <div class="big-number count-up" id="s4-densidade" data-target="4100">0</div>
+                <h3 style="margin-top:-10px; color:var(--accent);">hab / km²</h3>
+                <div class="grid-3" style="margin-top:3rem;">
+                    <div class="card"><p id="s4-char1">Alta concentração</p></div>
+                    <div class="card"><p id="s4-char2">Alta circulação</p></div>
+                    <div class="card"><p id="s4-char3">Campo acessível</p></div>
+                </div>
+                <div style="margin-top:3rem; background:var(--primary); display:inline-block; padding:12px 35px; border-radius:50px;">
+                    <p id="s4-slogan" style="color:white; margin:0; font-weight:600;">O CAMPO ESTÁ PERTO</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: ESTIMATIVA JOVENS -->
+        <section class="slide" id="slide-5">
+            <div class="slide-content" style="text-align:center;">
+                <div class="badge">Dados IBGE 2022 (18 a 39 anos)</div>
+                <h3 style="margin-top:10px;">Estimativa Populacional</h3>
+                <div class="big-number count-up" id="s5-jovens" data-target="61500" style="color:var(--accent);">0</div>
+                <p style="color:white; letter-spacing:2px;">JOVENS E ADULTOS NA REGIÃO</p>
+                <div style="margin-top:4rem; border:1px dashed rgba(255,255,255,0.3); padding:2rem; border-radius:20px;">
+                    <p>≈ <strong style="color:white; font-size:1.8rem;" id="s5-por-igreja">2.800</strong> vidas ao redor de cada congregação.</p>
+                </div>
+                <h2 style="margin-top:3rem; color:var(--accent);">Quantos estamos alcançando?</h2>
+            </div>
+        </section>
+
+        <!-- SLIDE 6: CENÁRIO RELIGIOSO -->
+        <section class="slide" id="slide-6">
+            <div class="slide-content">
+                <div class="grid-split">
+                    <div>
+                        <h2>Cenário Religioso</h2>
+                        <div style="display:flex; gap:5px; margin-bottom:0.5rem; height:20px; width:100%;">
+                            <div style="width:35%; background:var(--primary); border-radius:4px;"></div>
+                            <div style="width:65%; background:rgba(255,255,255,0.2); border-radius:4px;"></div>
+                        </div>
+                        <p style="font-size:1rem; margin-bottom:2rem;">Evangélicos (35%) vs Não Evangélicos (65%)</p>
+                        <ul style="font-size:1.2rem; list-style:none;">
+                            <li style="margin-bottom:10px;">🔵 Católicos: 38–40%</li>
+                            <li style="margin-bottom:10px;">🟡 Sem religião: 16–18%</li>
+                            <li style="margin-bottom:10px;">🟣 Outras: 5–7%</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="border:1px solid var(--accent); background:rgba(245,158,11,0.05);">
+                        <p class="destaque">OPORTUNIDADE REAL</p>
+                        <div class="big-number count-up" id="s6-nao-evang" data-target="40000" style="font-size:5rem;">0</div>
+                        <h3 style="color:white;">Não Evangélicos (18–39)</h3>
+                        <p>Esperando por uma resposta.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 7: A MATEMÁTICA -->
+        <section class="slide" id="slide-7">
+            <div class="slide-content" style="text-align:center;">
+                <h2>A Matemática</h2>
+                <p style="margin-bottom:3rem;">Se alcançarmos apenas:</p>
+                <div class="grid-split" style="gap:2rem;">
+                    <div class="card">
+                        <h3 style="color:var(--muted);">1% da região</h3>
+                        <div class="big-number count-up" id="s7-um-pct" data-target="400">0</div>
+                        <p>Vidas</p>
+                    </div>
+                    <div class="card" style="border-bottom:4px solid var(--accent);">
+                        <h3 style="color:var(--muted);">2% da região</h3>
+                        <div class="big-number count-up" id="s7-dois-pct" data-target="800">0</div>
+                        <p>Vidas</p>
+                    </div>
+                </div>
+                <div style="margin-top:3rem;">
+                    <p style="font-size:clamp(1.5rem,2.5vw,2.5rem); color:white;" id="s7-formula">
+                        Dividido por 22 igrejas = <span class="destaque">18 a 36 novos membros</span>
+                    </p>
+                    <p style="font-size:1rem;">(Por congregação)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: ESTRATÉGIAS — EXPANDIDO -->
+        <section class="slide" id="slide-8">
+            <div class="slide-content" style="text-align:center;">
+                <div class="badge">A Proposta</div>
+                <h1 style="color:var(--accent); margin-bottom:0.5rem;">PROJETO "OCUPAR"</h1>
+                <p style="margin-bottom:2rem; font-size:clamp(0.9rem,1.5vw,1.2rem);">Cada igreja assume 3 frentes estratégicas. Clique para expandir.</p>
                 
-                <!-- ESTRATÉGIA 1 -->
-                <div class="estrategia-card open" onclick="toggleEstrategia(this)">
-                    <div class="estrategia-head">
-                        <div class="estrategia-icon">📚</div>
-                        <div>
-                            <div class="estrategia-title">1 Escola</div>
-                            <div class="estrategia-subtitle">Presença Educacional</div>
-                        </div>
-                        <div class="estrategia-toggle">+</div>
-                    </div>
-                    <div class="estrategia-body">
-                        <div class="estrategia-body-inner">
-                            <p>Cada congregação adota uma escola pública ou privada de sua área e estabelece presença ativa e contínua naquele espaço.</p>
-                            <div class="estrategia-steps">
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Identificar a escola mais próxima e iniciar relacionamento com a direção</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Oferecer voluntariado, reforço escolar ou ação cultural mensal</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Criar pontes entre jovens da escola e os jovens da congregação</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Celebrar datas especiais (formatura, dia do estudante) com presença da igreja</span></div>
+                <div class="grid-3" style="gap:1.2rem; text-align:left;">
+                    
+                    <!-- ESTRATÉGIA 1 -->
+                    <div class="estrategia-card open" onclick="toggleEstrategia(this)">
+                        <div class="estrategia-head">
+                            <div class="estrategia-icon">📚</div>
+                            <div>
+                                <div class="estrategia-title">1 Escola</div>
+                                <div class="estrategia-subtitle">Presença Educacional</div>
                             </div>
-                            <div class="estrategia-meta">
-                                <span class="meta-tag">Mensal</span>
-                                <span class="meta-tag">Relacionamento</span>
-                                <span class="meta-tag">Jovens</span>
+                            <div class="estrategia-toggle">+</div>
+                        </div>
+                        <div class="estrategia-body">
+                            <div class="estrategia-body-inner">
+                                <p>Cada congregação adota uma escola pública ou privada de sua área e estabelece presença ativa e contínua naquele espaço.</p>
+                                <div class="estrategia-steps">
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Identificar a escola mais próxima e iniciar relacionamento com a direção</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Oferecer voluntariado, reforço escolar ou ação cultural mensal</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Criar pontes entre jovens da escola e os jovens da congregação</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Celebrar datas especiais (formatura, dia do estudante) com presença da igreja</span></div>
+                                </div>
+                                <div class="estrategia-meta">
+                                    <span class="meta-tag">Mensal</span>
+                                    <span class="meta-tag">Relacionamento</span>
+                                    <span class="meta-tag">Jovens</span>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- ESTRATÉGIA 2 -->
+                    <div class="estrategia-card" onclick="toggleEstrategia(this)">
+                        <div class="estrategia-head">
+                            <div class="estrategia-icon">🌳</div>
+                            <div>
+                                <div class="estrategia-title">1 Praça</div>
+                                <div class="estrategia-subtitle">Presença Territorial</div>
+                            </div>
+                            <div class="estrategia-toggle">+</div>
+                        </div>
+                        <div class="estrategia-body">
+                            <div class="estrategia-body-inner">
+                                <p>Transformar uma praça, parque ou espaço público da vizinhança em ponto de referência da congregação — onde a comunidade nos veja e nos conheça.</p>
+                                <div class="estrategia-steps">
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Identificar o espaço público mais movimentado a até 1 km da igreja</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Realizar um culto ao ar livre ou ação social trimestral naquele espaço</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Promover atividades esportivas ou recreativas abertas à comunidade</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Distribuir material da UMADC e fazer convites pessoais e oração</span></div>
+                                </div>
+                                <div class="estrategia-meta">
+                                    <span class="meta-tag">Trimestral</span>
+                                    <span class="meta-tag">Visibilidade</span>
+                                    <span class="meta-tag">Comunidade</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ESTRATÉGIA 3 -->
+                    <div class="estrategia-card" onclick="toggleEstrategia(this)">
+                        <div class="estrategia-head">
+                            <div class="estrategia-icon">🤝</div>
+                            <div>
+                                <div class="estrategia-title">1 Ação Social</div>
+                                <div class="estrategia-subtitle">Presença Compassiva</div>
+                            </div>
+                            <div class="estrategia-toggle">+</div>
+                        </div>
+                        <div class="estrategia-body">
+                            <div class="estrategia-body-inner">
+                                <p>A ação social não é programa — é postura. A congregação identifica uma necessidade real do bairro e responde a ela com consistência e amor concreto.</p>
+                                <div class="estrategia-steps">
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Mapear a necessidade mais urgente do entorno: fome, saúde, emprego, solidão</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Estruturar um projeto simples e replicável: bazar, rifa solidária, cesta básica, orientação jurídica</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Integrar a ação com o culto — mostrar que fé e prática andam juntas</span></div>
+                                    <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Registrar e divulgar: cada ação gera testemunho e convite</span></div>
+                                </div>
+                                <div class="estrategia-meta">
+                                    <span class="meta-tag">Bimestral</span>
+                                    <span class="meta-tag">Testemunho</span>
+                                    <span class="meta-tag">Impacto Real</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- ESTRATÉGIA 2 -->
-                <div class="estrategia-card" onclick="toggleEstrategia(this)">
-                    <div class="estrategia-head">
-                        <div class="estrategia-icon">🌳</div>
-                        <div>
-                            <div class="estrategia-title">1 Praça</div>
-                            <div class="estrategia-subtitle">Presença Territorial</div>
-                        </div>
-                        <div class="estrategia-toggle">+</div>
-                    </div>
-                    <div class="estrategia-body">
-                        <div class="estrategia-body-inner">
-                            <p>Transformar uma praça, parque ou espaço público da vizinhança em ponto de referência da congregação — onde a comunidade nos veja e nos conheça.</p>
-                            <div class="estrategia-steps">
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Identificar o espaço público mais movimentado a até 1 km da igreja</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Realizar um culto ao ar livre ou ação social trimestral naquele espaço</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Promover atividades esportivas ou recreativas abertas à comunidade</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Distribuir material da UMADC e fazer convites pessoais e oração</span></div>
-                            </div>
-                            <div class="estrategia-meta">
-                                <span class="meta-tag">Trimestral</span>
-                                <span class="meta-tag">Visibilidade</span>
-                                <span class="meta-tag">Comunidade</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ESTRATÉGIA 3 -->
-                <div class="estrategia-card" onclick="toggleEstrategia(this)">
-                    <div class="estrategia-head">
-                        <div class="estrategia-icon">🤝</div>
-                        <div>
-                            <div class="estrategia-title">1 Ação Social</div>
-                            <div class="estrategia-subtitle">Presença Compassiva</div>
-                        </div>
-                        <div class="estrategia-toggle">+</div>
-                    </div>
-                    <div class="estrategia-body">
-                        <div class="estrategia-body-inner">
-                            <p>A ação social não é programa — é postura. A congregação identifica uma necessidade real do bairro e responde a ela com consistência e amor concreto.</p>
-                            <div class="estrategia-steps">
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Mapear a necessidade mais urgente do entorno: fome, saúde, emprego, solidão</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Estruturar um projeto simples e replicável: bazar, rifa solidária, cesta básica, orientação jurídica</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Integrar a ação com o culto — mostrar que fé e prática andam juntas</span></div>
-                                <div class="estrategia-step"><div class="step-dot"></div><span class="step-text">Registrar e divulgar: cada ação gera testemunho e convite</span></div>
-                            </div>
-                            <div class="estrategia-meta">
-                                <span class="meta-tag">Bimestral</span>
-                                <span class="meta-tag">Testemunho</span>
-                                <span class="meta-tag">Impacto Real</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                <p style="margin-top:2rem; font-weight:500; font-size:clamp(1rem,1.8vw,1.5rem); color:white;" id="s8-igrejas-focos">
+                    22 Igrejas = 22 Focos Ativos de Luz
+                </p>
             </div>
+        </section>
 
-            <p style="margin-top:2rem; font-weight:500; font-size:clamp(1rem,1.8vw,1.5rem); color:white;" id="s8-igrejas-focos">
-                22 Igrejas = 22 Focos Ativos de Luz
-            </p>
-        </div>
-    </section>
-
-    <!-- SLIDE 9: INDICADORES -->
-    <section class="slide" id="slide-9">
-        <div class="slide-content" style="text-align:center;">
-            <h2>Indicadores 2026</h2>
-            <p style="margin-bottom:2rem;">Métricas que cada congregação deve acompanhar mensalmente:</p>
-            <div class="grid-4" style="margin-top:1.5rem; gap:1rem;">
-                <div class="indicator-card">
-                    <div class="indicator-label">Visitantes / Mês</div>
-                    <div class="indicator-value">Meta</div>
-                    <div class="indicator-sub">Acompanhar crescimento</div>
-                </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">Conversões</div>
-                    <div class="indicator-value">Meta</div>
-                    <div class="indicator-sub">Registro de decisões</div>
-                </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">Retenção (3 meses)</div>
-                    <div class="indicator-value">Meta</div>
-                    <div class="indicator-sub">Quem ficou depois de 90 dias</div>
-                </div>
-                <div class="indicator-card">
-                    <div class="indicator-label">Ações Externas</div>
-                    <div class="indicator-value">Meta</div>
-                    <div class="indicator-sub">Escola + Praça + Social</div>
+        <!-- SLIDE 9: INDICADORES -->
+        <section class="slide" id="slide-9">
+            <div class="slide-content" style="text-align:center;">
+                <h2>Indicadores 2026</h2>
+                <p style="margin-bottom:2rem;">Métricas que cada congregação deve acompanhar mensalmente:</p>
+                <div class="grid-4" style="margin-top:1.5rem; gap:1rem;">
+                    <div class="indicator-card">
+                        <div class="indicator-label">Visitantes / Mês</div>
+                        <div class="indicator-value">Meta</div>
+                        <div class="indicator-sub">Acompanhar crescimento</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">Conversões</div>
+                        <div class="indicator-value">Meta</div>
+                        <div class="indicator-sub">Registro de decisões</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">Retenção (3 meses)</div>
+                        <div class="indicator-value">Meta</div>
+                        <div class="indicator-sub">Quem ficou depois de 90 dias</div>
+                    </div>
+                    <div class="indicator-card">
+                        <div class="indicator-label">Ações Externas</div>
+                        <div class="indicator-value">Meta</div>
+                        <div class="indicator-sub">Escola + Praça + Social</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- SLIDE 10: VISÃO DE FUTURO -->
-    <section class="slide" id="slide-10">
-        <div class="slide-content" style="text-align:center;">
-            <h2>Visão de Futuro</h2>
-            <p>Crescendo em unidade:</p>
-            <div class="big-number count-up" id="s10-meta" data-target="1000" style="font-size:clamp(6rem,12vw,12rem); color:var(--accent); background:none; -webkit-text-fill-color:var(--accent);">0</div>
-            <h3 id="s10-label" style="font-size:clamp(1.5rem,3vw,2.5rem); color:white;">JOVENS EM 5 ANOS</h3>
-            <div style="width:50px; height:5px; background:white; margin:20px auto;"></div>
-        </div>
-    </section>
-
-    <!-- SLIDE 11: CHAMADO FINAL -->
-    <section class="slide" id="slide-11">
-        <div class="slide-content" style="text-align:center;">
-            <p style="font-size:clamp(1.2rem,2vw,2rem); color:white; margin-bottom:2rem;">A pergunta não é se o campo é grande.</p>
-            <h1 style="font-size:clamp(2.5rem,5vw,6rem); line-height:1.1;">
-                A PERGUNTA É<br>
-                SE VAMOS <span style="color:var(--accent);">OCUPAR.</span>
-            </h1>
-            <div style="margin-top:4rem; opacity:0.6;">
-                <img src="logo-umadc.png" style="height:60px; filter:grayscale(100%);">
+        <!-- SLIDE 10: VISÃO DE FUTURO -->
+        <section class="slide" id="slide-10">
+            <div class="slide-content" style="text-align:center;">
+                <h2>Visão de Futuro</h2>
+                <p>Crescendo em unidade:</p>
+                <div class="big-number count-up" id="s10-meta" data-target="1000" style="font-size:clamp(6rem,12vw,12rem); color:var(--accent); background:none; -webkit-text-fill-color:var(--accent);">0</div>
+                <h3 id="s10-label" style="font-size:clamp(1.5rem,3vw,2.5rem); color:white;">JOVENS EM 5 ANOS</h3>
+                <div style="width:50px; height:5px; background:white; margin:20px auto;"></div>
             </div>
-        </div>
-    </section>
+        </section>
 
-</div>
+        <!-- SLIDE 11: CHAMADO FINAL -->
+        <section class="slide" id="slide-11">
+            <div class="slide-content" style="text-align:center;">
+                <p style="font-size:clamp(1.2rem,2vw,2rem); color:white; margin-bottom:2rem;">A pergunta não é se o campo é grande.</p>
+                <h1 style="font-size:clamp(2.5rem,5vw,6rem); line-height:1.1;">
+                    A PERGUNTA É<br>
+                    SE VAMOS <span style="color:var(--accent);">OCUPAR.</span>
+                </h1>
+                <div style="margin-top:4rem; opacity:0.6;">
+                    <img src="logo-umadc.png" style="height:60px; filter:grayscale(100%);">
+                </div>
+            </div>
+        </section>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    </div>
 
-<script>
-// ============================================================
-// BANCO DE DADOS DAS REGIONAIS
-// Fonte: Censo IBGE 2022 / IPPUC
-// ============================================================
-const REGIONAIS = {
-    'CIC': {
-        nome: 'CIC',
-        nomeCompleto: 'Cidade Industrial de Curitiba',
-        congregacoes: 22,
-        populacao: 224, // CIC(171k) + Campo Comprido + Fazendinha ~224k
-        bairros: 8,
-        jovens: 61500,       // 18-39 anos (~27.5% da pop)
-        densidade: 4100,
-        naoEvang: 40000,     // 65% dos jovens
-        meta1pct: 400, meta2pct: 800,
-        metaJovens: 1000,
-        caracteristicas: ['Maior bairro da cidade', 'Alta circulação', 'Campo acessível'],
-        slogan: 'O CAMPO ESTÁ PERTO',
-        descricao: 'Oeste da cidade. CIC é o bairro mais populoso de Curitiba, com forte presença operária e crescimento constante.',
-        mapCenter: [-25.4900, -49.3300], zoom: 12,
-        polygon: [[-25.4600,-49.3600],[-25.4500,-49.3300],[-25.4700,-49.3100],[-25.5100,-49.2900],[-25.5300,-49.3100],[-25.5400,-49.3500],[-25.5100,-49.3800]],
-        congregacoesList: [
-            {nome:'1. Alto Barigui – CIC', lat:-25.4988, lng:-49.3150},
-            {nome:'2. Alto Bela Vista II', lat:-25.4835, lng:-49.3512},
-            {nome:'3. Alto Bela Vista – Sabará', lat:-25.4795, lng:-49.3440},
-            {nome:'4. CIC (R. Humberto Calixto Fruet)', lat:-25.4947, lng:-49.3292},
-            {nome:'5. Diadema – CIC', lat:-25.4850, lng:-49.3550},
-            {nome:'6. Itatiaia – CIC', lat:-25.4820, lng:-49.3250},
-            {nome:'7. Jd. Independência – Fazendinha', lat:-25.4760, lng:-49.3290},
-            {nome:'8. Porto Belo – CIC', lat:-25.4890, lng:-49.3105},
-            {nome:'9. Santa Helena – CIC', lat:-25.5060, lng:-49.3360},
-            {nome:'10. São Rafael – CIC', lat:-25.5110, lng:-49.3510},
-            {nome:'11. São José do Passaúna – Augusta', lat:-25.5150, lng:-49.3660},
-            {nome:'12. Vera Cruz – Caiuá', lat:-25.5010, lng:-49.3610},
-            {nome:'13. Vila Augusta – Campo Comprido', lat:-25.4985, lng:-49.3160},
-            {nome:'14. Vila Nova – CIC', lat:-25.5125, lng:-49.3310},
-            {nome:'15. Zimbros – Campo Comprido', lat:-25.4955, lng:-49.3510},
-            {nome:'16. Vila Rigoni – Fazendinha', lat:-25.4890, lng:-49.3395},
-            {nome:'17. Vila Rose – CIC', lat:-25.4690, lng:-49.3510},
-            {nome:'18. Vila Sabará – CIC', lat:-25.4790, lng:-49.3360},
-            {nome:'19. Vila Santana – CIC', lat:-25.4610, lng:-49.3410},
-            {nome:'20. Vila Verde – CIC', lat:-25.5090, lng:-49.3260},
-            {nome:'21. Vila Vitória Riviera – CIC', lat:-25.4660, lng:-49.3490},
-            {nome:'22. Vitória Régia – CIC', lat:-25.5040, lng:-49.3460}
-        ]
-    },
-    'Boa Vista': {
-        nome: 'Boa Vista',
-        nomeCompleto: 'Regional Boa Vista',
-        congregacoes: 27,
-        populacao: 268,
-        bairros: 13,
-        jovens: 67000,
-        densidade: 4300,
-        naoEvang: 43000,
-        meta1pct: 430, meta2pct: 860,
-        metaJovens: 1200,
-        caracteristicas: ['Maior regional', 'Norte da cidade', 'Parques e natureza'],
-        slogan: 'A MAIOR REGIONAL DA CIDADE',
-        descricao: 'Norte de Curitiba. Maior regional em número de habitantes, com bairros como Bairro Alto, Cachoeira, Bacacheri e Santa Cândida.',
-        mapCenter: [-25.4000, -49.2600], zoom: 12,
-        polygon: [[-25.3500,-49.2800],[-25.3600,-49.2200],[-25.4000,-49.2000],[-25.4500,-49.2200],[-25.4600,-49.2800],[-25.4200,-49.3100],[-25.3700,-49.3000]],
-        congregacoesList: [
-            {nome:'1. Alto Tarumã', lat:-25.3850, lng:-49.3200},
-            {nome:'2. Bacacheri', lat:-25.3900, lng:-49.2500},
-            {nome:'3. Bairro Alto', lat:-25.4100, lng:-49.2700},
-            {nome:'4. Barreirinha', lat:-25.3700, lng:-49.2600},
-            {nome:'5. Boa Vista', lat:-25.3600, lng:-49.2800},
-            {nome:'6. Cachoeira I', lat:-25.3500, lng:-49.2400},
-            {nome:'7. Cachoeira II', lat:-25.3550, lng:-49.2300},
-            {nome:'8. Pilarzinho', lat:-25.3800, lng:-49.3100},
-            {nome:'9. Santa Cândida I', lat:-25.3300, lng:-49.2700},
-            {nome:'10. Santa Cândida II', lat:-25.3250, lng:-49.2600},
-            {nome:'11. São Lourenço', lat:-25.4000, lng:-49.2300},
-            {nome:'12. Tarumã', lat:-25.3950, lng:-49.3100},
-            {nome:'13. Tingui', lat:-25.3700, lng:-49.2900},
-            {nome:'14. Abranches', lat:-25.3600, lng:-49.3000},
-            {nome:'15. Atuba', lat:-25.3800, lng:-49.2100},
-            {nome:'16. Bairro Alto II', lat:-25.4050, lng:-49.2650},
-            {nome:'17. Cachoeira III', lat:-25.3480, lng:-49.2450},
-            {nome:'18. Cachoeira IV', lat:-25.3520, lng:-49.2350},
-            {nome:'19. Nova Conquista', lat:-25.4200, lng:-49.2500},
-            {nome:'20. Pilarzinho II', lat:-25.3900, lng:-49.3000},
-            {nome:'21. Santa Cândida III', lat:-25.3350, lng:-49.2500},
-            {nome:'22. São Lourenço II', lat:-25.4050, lng:-49.2200},
-            {nome:'23. Taboão', lat:-25.3700, lng:-49.2700},
-            {nome:'24. Tingui II', lat:-25.3650, lng:-49.2950},
-            {nome:'25. Vista Alegre', lat:-25.3550, lng:-49.3150},
-            {nome:'26. Bairro Alto III', lat:-25.4150, lng:-49.2750},
-            {nome:'27. Água Verde Norte', lat:-25.4250, lng:-49.2800}
-        ]
-    },
-    'Cajuru': {
-        nome: 'Cajuru',
-        nomeCompleto: 'Regional Cajuru',
-        congregacoes: 24,
-        populacao: 241,
-        bairros: 9,
-        jovens: 60000,
-        densidade: 6800,
-        naoEvang: 39000,
-        meta1pct: 390, meta2pct: 780,
-        metaJovens: 1100,
-        caracteristicas: ['Alta densidade', 'Leste da cidade', 'Perfil jovem'],
-        slogan: 'ALTA DENSIDADE, GRANDE OPORTUNIDADE',
-        descricao: 'Leste de Curitiba. Uma das regiões mais densas, com Cajuru (90k hab), Uberaba (73k) e Capão da Imbuía entre os bairros mais movimentados.',
-        mapCenter: [-25.4800, -49.2100], zoom: 12,
-        polygon: [[-25.4400,-49.2400],[-25.4300,-49.1800],[-25.4700,-49.1500],[-25.5200,-49.1700],[-25.5300,-49.2200],[-25.5000,-49.2500],[-25.4600,-49.2500]],
-        congregacoesList: [
-            {nome:'1. Autódromo', lat:-25.4500, lng:-49.2200},
-            {nome:'2. Cajuru', lat:-25.4700, lng:-49.2100},
-            {nome:'3. Capão da Imbuía I', lat:-25.4800, lng:-49.2300},
-            {nome:'4. Capão da Imbuía II', lat:-25.4850, lng:-49.2200},
-            {nome:'5. Guabirotuba', lat:-25.4900, lng:-49.2400},
-            {nome:'6. Jardim Botânico', lat:-25.4400, lng:-49.2300},
-            {nome:'7. Uberaba I', lat:-25.4950, lng:-49.2000},
-            {nome:'8. Uberaba II', lat:-25.5000, lng:-49.1900},
-            {nome:'9. Uberaba III', lat:-25.5050, lng:-49.1800},
-            {nome:'10. Alto Cajuru', lat:-25.4600, lng:-49.1900},
-            {nome:'11. Cajuru II', lat:-25.4750, lng:-49.2050},
-            {nome:'12. Capão da Imbuía III', lat:-25.4820, lng:-49.2150},
-            {nome:'13. Centro Poliesportivo', lat:-25.4550, lng:-49.2100},
-            {nome:'14. Uberaba IV', lat:-25.5020, lng:-49.1950},
-            {nome:'15. Cajuru III', lat:-25.4680, lng:-49.2000},
-            {nome:'16. Intertubos', lat:-25.4730, lng:-49.1950},
-            {nome:'17. Cajuru IV', lat:-25.4800, lng:-49.2100},
-            {nome:'18. Capão da Imbuia IV', lat:-25.4870, lng:-49.2250},
-            {nome:'19. Guabirotuba II', lat:-25.4920, lng:-49.2350},
-            {nome:'20. Uberaba V', lat:-25.5080, lng:-49.2000},
-            {nome:'21. Cajuru V', lat:-25.4650, lng:-49.2050},
-            {nome:'22. Água Verde', lat:-25.4480, lng:-49.2350},
-            {nome:'23. Alto Uberaba', lat:-25.4980, lng:-49.1850},
-            {nome:'24. Jardim das Américas', lat:-25.4430, lng:-49.2400}
-        ]
-    },
-    'Bairro Novo': {
-        nome: 'Bairro Novo',
-        nomeCompleto: 'Regional Bairro Novo',
-        congregacoes: 19,
-        populacao: 212,
-        bairros: 7,
-        jovens: 65000,
-        densidade: 8200,
-        naoEvang: 42000,
-        meta1pct: 420, meta2pct: 840,
-        metaJovens: 1200,
-        caracteristicas: ['Maior densidade', 'Sul da cidade', 'Forte crescimento'],
-        slogan: 'A DENSIDADE É NOSSA MISSÃO',
-        descricao: 'Sul de Curitiba. Inclui o Sítio Cercado (102k hab), 2º bairro mais populoso da cidade. Alta concentração de famílias jovens.',
-        mapCenter: [-25.5700, -49.2700], zoom: 12,
-        polygon: [[-25.5300,-49.2800],[-25.5200,-49.2300],[-25.5500,-49.2000],[-25.6000,-49.2200],[-25.6200,-49.2700],[-25.5900,-49.3000],[-25.5500,-49.3000]],
-        congregacoesList: [
-            {nome:'1. Bairro Novo I', lat:-25.5350, lng:-49.2600},
-            {nome:'2. Bairro Novo II', lat:-25.5400, lng:-49.2700},
-            {nome:'3. Bairro Novo III', lat:-25.5450, lng:-49.2550},
-            {nome:'4. Bairro Novo VI', lat:-25.5500, lng:-49.2800},
-            {nome:'5. Cachoeira II', lat:-25.5250, lng:-49.2450},
-            {nome:'6. Ganchinho I', lat:-25.5800, lng:-49.2350},
-            {nome:'7. Ganchinho II', lat:-25.5850, lng:-49.2250},
-            {nome:'8. Sítio Cercado I', lat:-25.5600, lng:-49.2500},
-            {nome:'9. Sítio Cercado II', lat:-25.5650, lng:-49.2600},
-            {nome:'10. Sítio Cercado III', lat:-25.5700, lng:-49.2700},
-            {nome:'11. Sítio Cercado IV', lat:-25.5550, lng:-49.2400},
-            {nome:'12. Sítio Cercado V', lat:-25.5620, lng:-49.2550},
-            {nome:'13. Umbará I', lat:-25.6000, lng:-49.2600},
-            {nome:'14. Umbará II', lat:-25.6050, lng:-49.2500},
-            {nome:'15. Vila Guaíra', lat:-25.5480, lng:-49.2650},
-            {nome:'16. Novo Mundo', lat:-25.5300, lng:-49.2800},
-            {nome:'17. Sítio Cercado VI', lat:-25.5750, lng:-49.2650},
-            {nome:'18. Bairro Novo VII', lat:-25.5350, lng:-49.2500},
-            {nome:'19. Ganchinho III', lat:-25.5900, lng:-49.2300}
-        ]
-    },
-    'Boqueirão': {
-        nome: 'Boqueirão',
-        nomeCompleto: 'Regional Boqueirão',
-        congregacoes: 17,
-        populacao: 180,
-        bairros: 6,
-        jovens: 45000,
-        densidade: 6100,
-        naoEvang: 29000,
-        meta1pct: 290, meta2pct: 580,
-        metaJovens: 850,
-        caracteristicas: ['Corredor sul', 'Alta circulação', 'Mix residencial'],
-        slogan: 'O CORREDOR DO ALCANCE',
-        descricao: 'Sul-centro de Curitiba. Inclui Boqueirão (65k), Xaxim e Hauer. Forte circulação pelo eixo da Av. Marechal Floriano.',
-        mapCenter: [-25.5000, -49.2300], zoom: 12,
-        polygon: [[-25.4700,-49.2500],[-25.4700,-49.2000],[-25.5100,-49.1900],[-25.5400,-49.2100],[-25.5400,-49.2600],[-25.5100,-49.2700],[-25.4800,-49.2600]],
-        congregacoesList: [
-            {nome:'1. Areal', lat:-25.5200, lng:-49.2100},
-            {nome:'2. Boqueirão', lat:-25.4900, lng:-49.2400},
-            {nome:'3. Diagonal', lat:-25.5100, lng:-49.2200},
-            {nome:'4. Hauer I', lat:-25.4800, lng:-49.2100},
-            {nome:'5. Hauer II', lat:-25.4850, lng:-49.2000},
-            {nome:'6. Xaxim I', lat:-25.5200, lng:-49.2300},
-            {nome:'7. Xaxim II', lat:-25.5250, lng:-49.2200},
-            {nome:'8. Xaxim III', lat:-25.5180, lng:-49.2400},
-            {nome:'9. Boqueirão II', lat:-25.4950, lng:-49.2350},
-            {nome:'10. Boqueirão III', lat:-25.5000, lng:-49.2250},
-            {nome:'11. Boqueirão IV', lat:-25.5050, lng:-49.2150},
-            {nome:'12. São Braz', lat:-25.4750, lng:-49.2250},
-            {nome:'13. Xaxim IV', lat:-25.5300, lng:-49.2300},
-            {nome:'14. Alto Boqueirão I', lat:-25.5100, lng:-49.2050},
-            {nome:'15. Alto Boqueirão II', lat:-25.5150, lng:-49.1950},
-            {nome:'16. Hauer III', lat:-25.4900, lng:-49.1950},
-            {nome:'17. Boqueirão V', lat:-25.5080, lng:-49.2500}
-        ]
-    },
-    'Tatuquara': {
-        nome: 'Tatuquara',
-        nomeCompleto: 'Regional Tatuquara',
-        congregacoes: 13,
-        populacao: 153,
-        bairros: 4,
-        jovens: 55000,
-        densidade: 3900,
-        naoEvang: 36000,
-        meta1pct: 360, meta2pct: 720,
-        metaJovens: 800,
-        caracteristicas: ['Mais jovem de Curitiba', 'Forte crescimento', 'Perfil de jovens'],
-        slogan: 'A REGIONAL QUE MAIS CRESCE',
-        descricao: 'Extremo sul de Curitiba. Tatuquara (+89% em 10 anos), Campo de Santana (+52%) e Caximba (+189%). A regional mais jovem e de maior crescimento da cidade.',
-        mapCenter: [-25.6200, -49.3200], zoom: 12,
-        polygon: [[-25.5800,-49.3500],[-25.5700,-49.2900],[-25.6100,-49.2600],[-25.6500,-49.2900],[-25.6700,-49.3400],[-25.6400,-49.3700],[-25.6000,-49.3700]],
-        congregacoesList: [
-            {nome:'1. Caximba', lat:-25.6500, lng:-49.3500},
-            {nome:'2. Jardim da Ordem', lat:-25.5900, lng:-49.3300},
-            {nome:'3. Jardim Dom Bosco', lat:-25.6000, lng:-49.3100},
-            {nome:'4. Pinheirinho I', lat:-25.5800, lng:-49.3200},
-            {nome:'5. Tatuquara I', lat:-25.6100, lng:-49.3400},
-            {nome:'6. Tatuquara II', lat:-25.6200, lng:-49.3200},
-            {nome:'7. Tatuquara III', lat:-25.6300, lng:-49.3300},
-            {nome:'8. Campo de Santana I', lat:-25.6400, lng:-49.2900},
-            {nome:'9. Campo de Santana II', lat:-25.6500, lng:-49.2800},
-            {nome:'10. Campo de Santana III', lat:-25.6350, lng:-49.3000},
-            {nome:'11. Tatuquara IV', lat:-25.6250, lng:-49.3500},
-            {nome:'12. Vila Esperança', lat:-25.6150, lng:-49.3600},
-            {nome:'13. Caximba II', lat:-25.6600, lng:-49.3400}
-        ]
-    },
-    'Pinheirinho': {
-        nome: 'Pinheirinho',
-        nomeCompleto: 'Regional Pinheirinho',
-        congregacoes: 15,
-        populacao: 145,
-        bairros: 7,
-        jovens: 40000,
-        densidade: 5500,
-        naoEvang: 26000,
-        meta1pct: 260, meta2pct: 520,
-        metaJovens: 750,
-        caracteristicas: ['Sul da cidade', 'Perfil popular', 'Comunidades consolidadas'],
-        slogan: 'PRESENÇA CONSOLIDADA NO SUL',
-        descricao: 'Sul de Curitiba. Pinheirinho, Capão Raso e Novo Mundo formam uma das regiões mais tradicionais e populosas do eixo sul.',
-        mapCenter: [-25.5500, -49.3000], zoom: 12,
-        polygon: [[-25.5100,-49.3200],[-25.5000,-49.2700],[-25.5400,-49.2500],[-25.5800,-49.2700],[-25.5900,-49.3100],[-25.5600,-49.3400],[-25.5200,-49.3300]],
-        congregacoesList: [
-            {nome:'1. Capão Raso', lat:-25.5200, lng:-49.2950},
-            {nome:'2. Jardim Paraná', lat:-25.5300, lng:-49.3100},
-            {nome:'3. Jardim São Carlos', lat:-25.5400, lng:-49.3000},
-            {nome:'4. Novo Mundo I', lat:-25.5350, lng:-49.2900},
-            {nome:'5. Novo Mundo II', lat:-25.5400, lng:-49.2800},
-            {nome:'6. Pinheirinho I', lat:-25.5500, lng:-49.2900},
-            {nome:'7. Pinheirinho II', lat:-25.5550, lng:-49.2800},
-            {nome:'8. Pinheirinho III', lat:-25.5600, lng:-49.3100},
-            {nome:'9. Vila Hauer', lat:-25.5150, lng:-49.2800},
-            {nome:'10. Vila Lindóia', lat:-25.5250, lng:-49.3000},
-            {nome:'11. Capão Raso II', lat:-25.5250, lng:-49.2850},
-            {nome:'12. Novo Mundo III', lat:-25.5450, lng:-49.2750},
-            {nome:'13. Pinheirinho IV', lat:-25.5650, lng:-49.3000},
-            {nome:'14. São Braz II', lat:-25.5100, lng:-49.2900},
-            {nome:'15. Vila São João', lat:-25.5500, lng:-49.3200}
-        ]
-    },
-    'Portão': {
-        nome: 'Portão',
-        nomeCompleto: 'Regional Portão',
-        congregacoes: 12,
-        populacao: 155,
-        bairros: 9,
-        jovens: 38000,
-        densidade: 7200,
-        naoEvang: 25000,
-        meta1pct: 250, meta2pct: 500,
-        metaJovens: 700,
-        caracteristicas: ['Centro-sul', 'Alta densidade', 'Mix comercial e residencial'],
-        slogan: 'ESTRATÉGIA NO CENTRO-SUL',
-        descricao: 'Centro-sul de Curitiba. Portão, Fazendinha, Parolin e Montese formam uma das regiões de maior densidade e movimentação da cidade.',
-        mapCenter: [-25.4800, -49.3000], zoom: 12,
-        polygon: [[-25.4400,-49.3000],[-25.4400,-49.2600],[-25.4700,-49.2400],[-25.5000,-49.2600],[-25.5100,-49.3000],[-25.4800,-49.3200],[-25.4500,-49.3100]],
-        congregacoesList: [
-            {nome:'1. Fazendinha I', lat:-25.4750, lng:-49.3050},
-            {nome:'2. Montese', lat:-25.4600, lng:-49.2950},
-            {nome:'3. Parolin', lat:-25.4700, lng:-49.2700},
-            {nome:'4. Portão I', lat:-25.4650, lng:-49.3000},
-            {nome:'5. Portão II', lat:-25.4700, lng:-49.3100},
-            {nome:'6. Portão III', lat:-25.4800, lng:-49.3100},
-            {nome:'7. Santa Quitéria', lat:-25.4550, lng:-49.2900},
-            {nome:'8. Vila Guaíra', lat:-25.4850, lng:-49.3000},
-            {nome:'9. Vila São Paulo', lat:-25.4900, lng:-49.2850},
-            {nome:'10. Fazendinha II', lat:-25.4820, lng:-49.3150},
-            {nome:'11. Portão IV', lat:-25.4720, lng:-49.2950},
-            {nome:'12. Fanny', lat:-25.4550, lng:-49.2800}
-        ]
-    },
-    'Santa Felicidade': {
-        nome: 'Santa Felicidade',
-        nomeCompleto: 'Regional Santa Felicidade',
-        congregacoes: 11,
-        populacao: 110,
-        bairros: 11,
-        jovens: 27000,
-        densidade: 2800,
-        naoEvang: 17500,
-        meta1pct: 175, meta2pct: 350,
-        metaJovens: 500,
-        caracteristicas: ['Menor densidade', 'Oeste arborizado', 'Bairros extensos'],
-        slogan: 'ALCANÇANDO O OESTE VERDE',
-        descricao: 'Oeste de Curitiba. Menor densidade da cidade, mas bairros extensos com grande potencial de crescimento. Santa Felicidade, Butiatuvinha e Lamenha Pequena.',
-        mapCenter: [-25.4000, -49.3500], zoom: 12,
-        polygon: [[-25.3600,-49.3700],[-25.3700,-49.3000],[-25.4200,-49.2900],[-25.4500,-49.3300],[-25.4400,-49.3800],[-25.4000,-49.4000],[-25.3700,-49.3900]],
-        congregacoesList: [
-            {nome:'1. Campina do Siqueira', lat:-25.4050, lng:-49.3400},
-            {nome:'2. Jardim Califórnia', lat:-25.4100, lng:-49.3600},
-            {nome:'3. Jardim Gabineto', lat:-25.4000, lng:-49.3500},
-            {nome:'4. Mossunguê', lat:-25.4200, lng:-49.3200},
-            {nome:'5. Santa Felicidade I', lat:-25.3800, lng:-49.3400},
-            {nome:'6. Santa Felicidade II', lat:-25.3850, lng:-49.3600},
-            {nome:'7. Santo Inácio', lat:-25.3950, lng:-49.3300},
-            {nome:'8. São Braz III', lat:-25.4150, lng:-49.3500},
-            {nome:'9. Butiatuvinha', lat:-25.3700, lng:-49.3700},
-            {nome:'10. Santa Felicidade III', lat:-25.3900, lng:-49.3700},
-            {nome:'11. Villa Romana', lat:-25.4000, lng:-49.3600}
-        ]
-    },
-    'Matriz': {
-        nome: 'Matriz',
-        nomeCompleto: 'Regional Matriz — Centro',
-        congregacoes: 5,
-        populacao: 103,
-        bairros: 18,
-        jovens: 22000,
-        densidade: 9500,
-        naoEvang: 14300,
-        meta1pct: 143, meta2pct: 286,
-        metaJovens: 300,
-        caracteristicas: ['Maior densidade da cidade', 'Centro histórico', 'Alta rotatividade'],
-        slogan: 'O CORAÇÃO DA CIDADE',
-        descricao: 'Centro de Curitiba. A maior densidade demográfica (~9.500 hab/km²). Alta circulação diária com trabalhadores, estudantes e moradores.',
-        mapCenter: [-25.4300, -49.2700], zoom: 13,
-        polygon: [[-25.4000,-49.2900],[-25.4000,-49.2400],[-25.4400,-49.2200],[-25.4700,-49.2400],[-25.4700,-49.2800],[-25.4400,-49.3000],[-25.4100,-49.3000]],
-        congregacoesList: [
-            {nome:'1. Água Verde', lat:-25.4500, lng:-49.2850},
-            {nome:'2. Ahú', lat:-25.4050, lng:-49.2650},
-            {nome:'3. Mercês', lat:-25.4300, lng:-49.2900},
-            {nome:'4. Rebouças', lat:-25.4400, lng:-49.2600},
-            {nome:'5. Vila Isabel', lat:-25.4200, lng:-49.2800}
-        ]
-    }
-};
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-// ============================================================
-// IDENTIFICAÇÃO DA REGIONAL VIA URL
-// ============================================================
-const params = new URLSearchParams(window.location.search);
-const nomeRegional = params.get('regional') || 'CIC';
-const R = REGIONAIS[nomeRegional] || REGIONAIS['CIC'];
-
-// Atualiza título da página
-document.title = `Planejamento 2026 — Regional ${R.nome}`;
-
-// ============================================================
-// POPULA SLIDES COM DADOS DA REGIONAL
-// ============================================================
-document.getElementById('badge-regional').textContent = `Regional ${R.nome} — Planejamento 2026`;
-document.getElementById('titulo-regional').textContent = `REGIONAL ${R.nome.toUpperCase()}`;
-document.getElementById('s2-nome').textContent = R.nomeCompleto;
-document.getElementById('s2-desc').textContent = R.descricao;
-document.getElementById('legend-regional').textContent = `Regional ${R.nome}`;
-
-// Targets para count-up
-document.getElementById('s2-igrejas').setAttribute('data-target', R.congregacoes);
-document.getElementById('s2-pop').setAttribute('data-target', R.populacao);
-document.getElementById('s2-bairros').setAttribute('data-target', R.bairros);
-document.getElementById('s2-jovens').setAttribute('data-target', R.jovens);
-document.getElementById('s4-densidade').setAttribute('data-target', R.densidade);
-document.getElementById('s5-jovens').setAttribute('data-target', R.jovens);
-document.getElementById('s5-por-igreja').textContent = Math.round(R.jovens / R.congregacoes).toLocaleString('pt-BR');
-document.getElementById('s6-nao-evang').setAttribute('data-target', R.naoEvang);
-document.getElementById('s7-um-pct').setAttribute('data-target', R.meta1pct);
-document.getElementById('s7-dois-pct').setAttribute('data-target', R.meta2pct);
-document.getElementById('s10-meta').setAttribute('data-target', R.metaJovens);
-
-// Características
-document.getElementById('s4-char1').textContent = R.caracteristicas[0];
-document.getElementById('s4-char2').textContent = R.caracteristicas[1];
-document.getElementById('s4-char3').textContent = R.caracteristicas[2];
-document.getElementById('s4-slogan').textContent = R.slogan;
-
-// Fórmula
-const formula = `Dividido por ${R.congregacoes} igrejas = ${R.meta1pct/R.congregacoes | 0} a ${R.meta2pct/R.congregacoes | 0} novos membros`;
-document.getElementById('s7-formula').innerHTML = `${formula.split('=')[0]}= <span class="destaque">${formula.split('= ')[1]}</span>`;
-
-// Focos
-document.getElementById('s8-igrejas-focos').textContent = `${R.congregacoes} Igrejas = ${R.congregacoes} Focos Ativos de Luz`;
-
-// Meta de jovens label
-document.getElementById('s10-label').textContent = `JOVENS EM 5 ANOS — META REGIONAL`;
-
-// ============================================================
-// INTERAÇÃO DAS ESTRATÉGIAS
-// ============================================================
-function toggleEstrategia(card) {
-    const isOpen = card.classList.contains('open');
-    // Fecha todas
-    document.querySelectorAll('.estrategia-card').forEach(c => c.classList.remove('open'));
-    // Abre a clicada (se não estava aberta)
-    if (!isOpen) card.classList.add('open');
-}
-
-// ============================================================
-// INTERSECTION OBSERVER (ANIMAÇÕES + COUNT-UP)
-// ============================================================
-const deck = document.getElementById('deck');
-const slides = document.querySelectorAll('.slide');
-const progressBar = document.getElementById('progress');
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            slides.forEach(s => s.classList.remove('active'));
-            entry.target.classList.add('active');
-
-            const idx = Array.from(slides).indexOf(entry.target);
-            progressBar.style.width = ((idx + 1) / slides.length * 100) + '%';
-
-            // Count-up
-            entry.target.querySelectorAll('.count-up').forEach(el => {
-                const target = +el.getAttribute('data-target');
-                animateValue(el, 0, target, 2000);
-                el.classList.remove('count-up');
-            });
-
-            // Mapa
-            if (entry.target.id === 'slide-3') setTimeout(() => map.invalidateSize(), 300);
-        }
-    });
-}, { root: deck, threshold: 0.5 });
-
-slides.forEach(s => observer.observe(s));
-
-// ============================================================
-// COUNT-UP
-// ============================================================
-function animateValue(obj, start, end, duration) {
-    let startTs = null;
-    const step = (ts) => {
-        if (!startTs) startTs = ts;
-        const prog = Math.min((ts - startTs) / duration, 1);
-        const ease = prog * (2 - prog);
-        obj.innerHTML = Math.floor(ease * (end - start) + start).toLocaleString('pt-BR');
-        if (prog < 1) requestAnimationFrame(step);
-        else {
-            let final = end.toLocaleString('pt-BR');
-            if (end >= 1000 && end % 1000 === 0) final = '+' + final;
-            obj.innerHTML = final;
+    <script>
+    // ============================================================
+    // BANCO DE DADOS DAS REGIONAIS
+    // Fonte: Censo IBGE 2022 / IPPUC
+    // ============================================================
+    const REGIONAIS = {
+        'CIC': {
+            nome: 'CIC',
+            nomeCompleto: 'Cidade Industrial de Curitiba',
+            congregacoes: 22,
+            populacao: 224, // CIC(171k) + Campo Comprido + Fazendinha ~224k
+            bairros: 8,
+            jovens: 61500,       // 18-39 anos (~27.5% da pop)
+            densidade: 4100,
+            naoEvang: 40000,     // 65% dos jovens
+            meta1pct: 400, meta2pct: 800,
+            metaJovens: 1000,
+            caracteristicas: ['Maior bairro da cidade', 'Alta circulação', 'Campo acessível'],
+            slogan: 'O CAMPO ESTÁ PERTO',
+            descricao: 'Oeste da cidade. CIC é o bairro mais populoso de Curitiba, com forte presença operária e crescimento constante.',
+            mapCenter: [-25.4900, -49.3300], zoom: 12,
+            polygon: [[-25.4600,-49.3600],[-25.4500,-49.3300],[-25.4700,-49.3100],[-25.5100,-49.2900],[-25.5300,-49.3100],[-25.5400,-49.3500],[-25.5100,-49.3800]],
+            congregacoesList: [
+                {nome:'1. Alto Barigui – CIC', lat:-25.4988, lng:-49.3150},
+                {nome:'2. Alto Bela Vista II', lat:-25.4835, lng:-49.3512},
+                {nome:'3. Alto Bela Vista – Sabará', lat:-25.4795, lng:-49.3440},
+                {nome:'4. CIC (R. Humberto Calixto Fruet)', lat:-25.4947, lng:-49.3292},
+                {nome:'5. Diadema – CIC', lat:-25.4850, lng:-49.3550},
+                {nome:'6. Itatiaia – CIC', lat:-25.4820, lng:-49.3250},
+                {nome:'7. Jd. Independência – Fazendinha', lat:-25.4760, lng:-49.3290},
+                {nome:'8. Porto Belo – CIC', lat:-25.4890, lng:-49.3105},
+                {nome:'9. Santa Helena – CIC', lat:-25.5060, lng:-49.3360},
+                {nome:'10. São Rafael – CIC', lat:-25.5110, lng:-49.3510},
+                {nome:'11. São José do Passaúna – Augusta', lat:-25.5150, lng:-49.3660},
+                {nome:'12. Vera Cruz – Caiuá', lat:-25.5010, lng:-49.3610},
+                {nome:'13. Vila Augusta – Campo Comprido', lat:-25.4985, lng:-49.3160},
+                {nome:'14. Vila Nova – CIC', lat:-25.5125, lng:-49.3310},
+                {nome:'15. Zimbros – Campo Comprido', lat:-25.4955, lng:-49.3510},
+                {nome:'16. Vila Rigoni – Fazendinha', lat:-25.4890, lng:-49.3395},
+                {nome:'17. Vila Rose – CIC', lat:-25.4690, lng:-49.3510},
+                {nome:'18. Vila Sabará – CIC', lat:-25.4790, lng:-49.3360},
+                {nome:'19. Vila Santana – CIC', lat:-25.4610, lng:-49.3410},
+                {nome:'20. Vila Verde – CIC', lat:-25.5090, lng:-49.3260},
+                {nome:'21. Vila Vitória Riviera – CIC', lat:-25.4660, lng:-49.3490},
+                {nome:'22. Vitória Régia – CIC', lat:-25.5040, lng:-49.3460}
+            ]
+        },
+        'Boa Vista': {
+            nome: 'Boa Vista',
+            nomeCompleto: 'Regional Boa Vista',
+            congregacoes: 27,
+            populacao: 268,
+            bairros: 13,
+            jovens: 67000,
+            densidade: 4300,
+            naoEvang: 43000,
+            meta1pct: 430, meta2pct: 860,
+            metaJovens: 1200,
+            caracteristicas: ['Maior regional', 'Norte da cidade', 'Parques e natureza'],
+            slogan: 'A MAIOR REGIONAL DA CIDADE',
+            descricao: 'Norte de Curitiba. Maior regional em número de habitantes, com bairros como Bairro Alto, Cachoeira, Bacacheri e Santa Cândida.',
+            mapCenter: [-25.4000, -49.2600], zoom: 12,
+            polygon: [[-25.3500,-49.2800],[-25.3600,-49.2200],[-25.4000,-49.2000],[-25.4500,-49.2200],[-25.4600,-49.2800],[-25.4200,-49.3100],[-25.3700,-49.3000]],
+            congregacoesList: [
+                {nome:'1. Alto Tarumã', lat:-25.3850, lng:-49.3200},
+                {nome:'2. Bacacheri', lat:-25.3900, lng:-49.2500},
+                {nome:'3. Bairro Alto', lat:-25.4100, lng:-49.2700},
+                {nome:'4. Barreirinha', lat:-25.3700, lng:-49.2600},
+                {nome:'5. Boa Vista', lat:-25.3600, lng:-49.2800},
+                {nome:'6. Cachoeira I', lat:-25.3500, lng:-49.2400},
+                {nome:'7. Cachoeira II', lat:-25.3550, lng:-49.2300},
+                {nome:'8. Pilarzinho', lat:-25.3800, lng:-49.3100},
+                {nome:'9. Santa Cândida I', lat:-25.3300, lng:-49.2700},
+                {nome:'10. Santa Cândida II', lat:-25.3250, lng:-49.2600},
+                {nome:'11. São Lourenço', lat:-25.4000, lng:-49.2300},
+                {nome:'12. Tarumã', lat:-25.3950, lng:-49.3100},
+                {nome:'13. Tingui', lat:-25.3700, lng:-49.2900},
+                {nome:'14. Abranches', lat:-25.3600, lng:-49.3000},
+                {nome:'15. Atuba', lat:-25.3800, lng:-49.2100},
+                {nome:'16. Bairro Alto II', lat:-25.4050, lng:-49.2650},
+                {nome:'17. Cachoeira III', lat:-25.3480, lng:-49.2450},
+                {nome:'18. Cachoeira IV', lat:-25.3520, lng:-49.2350},
+                {nome:'19. Nova Conquista', lat:-25.4200, lng:-49.2500},
+                {nome:'20. Pilarzinho II', lat:-25.3900, lng:-49.3000},
+                {nome:'21. Santa Cândida III', lat:-25.3350, lng:-49.2500},
+                {nome:'22. São Lourenço II', lat:-25.4050, lng:-49.2200},
+                {nome:'23. Taboão', lat:-25.3700, lng:-49.2700},
+                {nome:'24. Tingui II', lat:-25.3650, lng:-49.2950},
+                {nome:'25. Vista Alegre', lat:-25.3550, lng:-49.3150},
+                {nome:'26. Bairro Alto III', lat:-25.4150, lng:-49.2750},
+                {nome:'27. Água Verde Norte', lat:-25.4250, lng:-49.2800}
+            ]
+        },
+        'Cajuru': {
+            nome: 'Cajuru',
+            nomeCompleto: 'Regional Cajuru',
+            congregacoes: 24,
+            populacao: 241,
+            bairros: 9,
+            jovens: 60000,
+            densidade: 6800,
+            naoEvang: 39000,
+            meta1pct: 390, meta2pct: 780,
+            metaJovens: 1100,
+            caracteristicas: ['Alta densidade', 'Leste da cidade', 'Perfil jovem'],
+            slogan: 'ALTA DENSIDADE, GRANDE OPORTUNIDADE',
+            descricao: 'Leste de Curitiba. Uma das regiões mais densas, com Cajuru (90k hab), Uberaba (73k) e Capão da Imbuía entre os bairros mais movimentados.',
+            mapCenter: [-25.4800, -49.2100], zoom: 12,
+            polygon: [[-25.4400,-49.2400],[-25.4300,-49.1800],[-25.4700,-49.1500],[-25.5200,-49.1700],[-25.5300,-49.2200],[-25.5000,-49.2500],[-25.4600,-49.2500]],
+            congregacoesList: [
+                {nome:'1. Autódromo', lat:-25.4500, lng:-49.2200},
+                {nome:'2. Cajuru', lat:-25.4700, lng:-49.2100},
+                {nome:'3. Capão da Imbuía I', lat:-25.4800, lng:-49.2300},
+                {nome:'4. Capão da Imbuía II', lat:-25.4850, lng:-49.2200},
+                {nome:'5. Guabirotuba', lat:-25.4900, lng:-49.2400},
+                {nome:'6. Jardim Botânico', lat:-25.4400, lng:-49.2300},
+                {nome:'7. Uberaba I', lat:-25.4950, lng:-49.2000},
+                {nome:'8. Uberaba II', lat:-25.5000, lng:-49.1900},
+                {nome:'9. Uberaba III', lat:-25.5050, lng:-49.1800},
+                {nome:'10. Alto Cajuru', lat:-25.4600, lng:-49.1900},
+                {nome:'11. Cajuru II', lat:-25.4750, lng:-49.2050},
+                {nome:'12. Capão da Imbuía III', lat:-25.4820, lng:-49.2150},
+                {nome:'13. Centro Poliesportivo', lat:-25.4550, lng:-49.2100},
+                {nome:'14. Uberaba IV', lat:-25.5020, lng:-49.1950},
+                {nome:'15. Cajuru III', lat:-25.4680, lng:-49.2000},
+                {nome:'16. Intertubos', lat:-25.4730, lng:-49.1950},
+                {nome:'17. Cajuru IV', lat:-25.4800, lng:-49.2100},
+                {nome:'18. Capão da Imbuia IV', lat:-25.4870, lng:-49.2250},
+                {nome:'19. Guabirotuba II', lat:-25.4920, lng:-49.2350},
+                {nome:'20. Uberaba V', lat:-25.5080, lng:-49.2000},
+                {nome:'21. Cajuru V', lat:-25.4650, lng:-49.2050},
+                {nome:'22. Água Verde', lat:-25.4480, lng:-49.2350},
+                {nome:'23. Alto Uberaba', lat:-25.4980, lng:-49.1850},
+                {nome:'24. Jardim das Américas', lat:-25.4430, lng:-49.2400}
+            ]
+        },
+        'Bairro Novo': {
+            nome: 'Bairro Novo',
+            nomeCompleto: 'Regional Bairro Novo',
+            congregacoes: 19,
+            populacao: 212,
+            bairros: 7,
+            jovens: 65000,
+            densidade: 8200,
+            naoEvang: 42000,
+            meta1pct: 420, meta2pct: 840,
+            metaJovens: 1200,
+            caracteristicas: ['Maior densidade', 'Sul da cidade', 'Forte crescimento'],
+            slogan: 'A DENSIDADE É NOSSA MISSÃO',
+            descricao: 'Sul de Curitiba. Inclui o Sítio Cercado (102k hab), 2º bairro mais populoso da cidade. Alta concentração de famílias jovens.',
+            mapCenter: [-25.5700, -49.2700], zoom: 12,
+            polygon: [[-25.5300,-49.2800],[-25.5200,-49.2300],[-25.5500,-49.2000],[-25.6000,-49.2200],[-25.6200,-49.2700],[-25.5900,-49.3000],[-25.5500,-49.3000]],
+            congregacoesList: [
+                {nome:'1. Bairro Novo I', lat:-25.5350, lng:-49.2600},
+                {nome:'2. Bairro Novo II', lat:-25.5400, lng:-49.2700},
+                {nome:'3. Bairro Novo III', lat:-25.5450, lng:-49.2550},
+                {nome:'4. Bairro Novo VI', lat:-25.5500, lng:-49.2800},
+                {nome:'5. Cachoeira II', lat:-25.5250, lng:-49.2450},
+                {nome:'6. Ganchinho I', lat:-25.5800, lng:-49.2350},
+                {nome:'7. Ganchinho II', lat:-25.5850, lng:-49.2250},
+                {nome:'8. Sítio Cercado I', lat:-25.5600, lng:-49.2500},
+                {nome:'9. Sítio Cercado II', lat:-25.5650, lng:-49.2600},
+                {nome:'10. Sítio Cercado III', lat:-25.5700, lng:-49.2700},
+                {nome:'11. Sítio Cercado IV', lat:-25.5550, lng:-49.2400},
+                {nome:'12. Sítio Cercado V', lat:-25.5620, lng:-49.2550},
+                {nome:'13. Umbará I', lat:-25.6000, lng:-49.2600},
+                {nome:'14. Umbará II', lat:-25.6050, lng:-49.2500},
+                {nome:'15. Vila Guaíra', lat:-25.5480, lng:-49.2650},
+                {nome:'16. Novo Mundo', lat:-25.5300, lng:-49.2800},
+                {nome:'17. Sítio Cercado VI', lat:-25.5750, lng:-49.2650},
+                {nome:'18. Bairro Novo VII', lat:-25.5350, lng:-49.2500},
+                {nome:'19. Ganchinho III', lat:-25.5900, lng:-49.2300}
+            ]
+        },
+        'Boqueirão': {
+            nome: 'Boqueirão',
+            nomeCompleto: 'Regional Boqueirão',
+            congregacoes: 17,
+            populacao: 180,
+            bairros: 6,
+            jovens: 45000,
+            densidade: 6100,
+            naoEvang: 29000,
+            meta1pct: 290, meta2pct: 580,
+            metaJovens: 850,
+            caracteristicas: ['Corredor sul', 'Alta circulação', 'Mix residencial'],
+            slogan: 'O CORREDOR DO ALCANCE',
+            descricao: 'Sul-centro de Curitiba. Inclui Boqueirão (65k), Xaxim e Hauer. Forte circulação pelo eixo da Av. Marechal Floriano.',
+            mapCenter: [-25.5000, -49.2300], zoom: 12,
+            polygon: [[-25.4700,-49.2500],[-25.4700,-49.2000],[-25.5100,-49.1900],[-25.5400,-49.2100],[-25.5400,-49.2600],[-25.5100,-49.2700],[-25.4800,-49.2600]],
+            congregacoesList: [
+                {nome:'1. Areal', lat:-25.5200, lng:-49.2100},
+                {nome:'2. Boqueirão', lat:-25.4900, lng:-49.2400},
+                {nome:'3. Diagonal', lat:-25.5100, lng:-49.2200},
+                {nome:'4. Hauer I', lat:-25.4800, lng:-49.2100},
+                {nome:'5. Hauer II', lat:-25.4850, lng:-49.2000},
+                {nome:'6. Xaxim I', lat:-25.5200, lng:-49.2300},
+                {nome:'7. Xaxim II', lat:-25.5250, lng:-49.2200},
+                {nome:'8. Xaxim III', lat:-25.5180, lng:-49.2400},
+                {nome:'9. Boqueirão II', lat:-25.4950, lng:-49.2350},
+                {nome:'10. Boqueirão III', lat:-25.5000, lng:-49.2250},
+                {nome:'11. Boqueirão IV', lat:-25.5050, lng:-49.2150},
+                {nome:'12. São Braz', lat:-25.4750, lng:-49.2250},
+                {nome:'13. Xaxim IV', lat:-25.5300, lng:-49.2300},
+                {nome:'14. Alto Boqueirão I', lat:-25.5100, lng:-49.2050},
+                {nome:'15. Alto Boqueirão II', lat:-25.5150, lng:-49.1950},
+                {nome:'16. Hauer III', lat:-25.4900, lng:-49.1950},
+                {nome:'17. Boqueirão V', lat:-25.5080, lng:-49.2500}
+            ]
+        },
+        'Tatuquara': {
+            nome: 'Tatuquara',
+            nomeCompleto: 'Regional Tatuquara',
+            congregacoes: 13,
+            populacao: 153,
+            bairros: 4,
+            jovens: 55000,
+            densidade: 3900,
+            naoEvang: 36000,
+            meta1pct: 360, meta2pct: 720,
+            metaJovens: 800,
+            caracteristicas: ['Mais jovem de Curitiba', 'Forte crescimento', 'Perfil de jovens'],
+            slogan: 'A REGIONAL QUE MAIS CRESCE',
+            descricao: 'Extremo sul de Curitiba. Tatuquara (+89% em 10 anos), Campo de Santana (+52%) e Caximba (+189%). A regional mais jovem e de maior crescimento da cidade.',
+            mapCenter: [-25.6200, -49.3200], zoom: 12,
+            polygon: [[-25.5800,-49.3500],[-25.5700,-49.2900],[-25.6100,-49.2600],[-25.6500,-49.2900],[-25.6700,-49.3400],[-25.6400,-49.3700],[-25.6000,-49.3700]],
+            congregacoesList: [
+                {nome:'1. Caximba', lat:-25.6500, lng:-49.3500},
+                {nome:'2. Jardim da Ordem', lat:-25.5900, lng:-49.3300},
+                {nome:'3. Jardim Dom Bosco', lat:-25.6000, lng:-49.3100},
+                {nome:'4. Pinheirinho I', lat:-25.5800, lng:-49.3200},
+                {nome:'5. Tatuquara I', lat:-25.6100, lng:-49.3400},
+                {nome:'6. Tatuquara II', lat:-25.6200, lng:-49.3200},
+                {nome:'7. Tatuquara III', lat:-25.6300, lng:-49.3300},
+                {nome:'8. Campo de Santana I', lat:-25.6400, lng:-49.2900},
+                {nome:'9. Campo de Santana II', lat:-25.6500, lng:-49.2800},
+                {nome:'10. Campo de Santana III', lat:-25.6350, lng:-49.3000},
+                {nome:'11. Tatuquara IV', lat:-25.6250, lng:-49.3500},
+                {nome:'12. Vila Esperança', lat:-25.6150, lng:-49.3600},
+                {nome:'13. Caximba II', lat:-25.6600, lng:-49.3400}
+            ]
+        },
+        'Pinheirinho': {
+            nome: 'Pinheirinho',
+            nomeCompleto: 'Regional Pinheirinho',
+            congregacoes: 15,
+            populacao: 145,
+            bairros: 7,
+            jovens: 40000,
+            densidade: 5500,
+            naoEvang: 26000,
+            meta1pct: 260, meta2pct: 520,
+            metaJovens: 750,
+            caracteristicas: ['Sul da cidade', 'Perfil popular', 'Comunidades consolidadas'],
+            slogan: 'PRESENÇA CONSOLIDADA NO SUL',
+            descricao: 'Sul de Curitiba. Pinheirinho, Capão Raso e Novo Mundo formam uma das regiões mais tradicionais e populosas do eixo sul.',
+            mapCenter: [-25.5500, -49.3000], zoom: 12,
+            polygon: [[-25.5100,-49.3200],[-25.5000,-49.2700],[-25.5400,-49.2500],[-25.5800,-49.2700],[-25.5900,-49.3100],[-25.5600,-49.3400],[-25.5200,-49.3300]],
+            congregacoesList: [
+                {nome:'1. Capão Raso', lat:-25.5200, lng:-49.2950},
+                {nome:'2. Jardim Paraná', lat:-25.5300, lng:-49.3100},
+                {nome:'3. Jardim São Carlos', lat:-25.5400, lng:-49.3000},
+                {nome:'4. Novo Mundo I', lat:-25.5350, lng:-49.2900},
+                {nome:'5. Novo Mundo II', lat:-25.5400, lng:-49.2800},
+                {nome:'6. Pinheirinho I', lat:-25.5500, lng:-49.2900},
+                {nome:'7. Pinheirinho II', lat:-25.5550, lng:-49.2800},
+                {nome:'8. Pinheirinho III', lat:-25.5600, lng:-49.3100},
+                {nome:'9. Vila Hauer', lat:-25.5150, lng:-49.2800},
+                {nome:'10. Vila Lindóia', lat:-25.5250, lng:-49.3000},
+                {nome:'11. Capão Raso II', lat:-25.5250, lng:-49.2850},
+                {nome:'12. Novo Mundo III', lat:-25.5450, lng:-49.2750},
+                {nome:'13. Pinheirinho IV', lat:-25.5650, lng:-49.3000},
+                {nome:'14. São Braz II', lat:-25.5100, lng:-49.2900},
+                {nome:'15. Vila São João', lat:-25.5500, lng:-49.3200}
+            ]
+        },
+        'Portão': {
+            nome: 'Portão',
+            nomeCompleto: 'Regional Portão',
+            congregacoes: 12,
+            populacao: 155,
+            bairros: 9,
+            jovens: 38000,
+            densidade: 7200,
+            naoEvang: 25000,
+            meta1pct: 250, meta2pct: 500,
+            metaJovens: 700,
+            caracteristicas: ['Centro-sul', 'Alta densidade', 'Mix comercial e residencial'],
+            slogan: 'ESTRATÉGIA NO CENTRO-SUL',
+            descricao: 'Centro-sul de Curitiba. Portão, Fazendinha, Parolin e Montese formam uma das regiões de maior densidade e movimentação da cidade.',
+            mapCenter: [-25.4800, -49.3000], zoom: 12,
+            polygon: [[-25.4400,-49.3000],[-25.4400,-49.2600],[-25.4700,-49.2400],[-25.5000,-49.2600],[-25.5100,-49.3000],[-25.4800,-49.3200],[-25.4500,-49.3100]],
+            congregacoesList: [
+                {nome:'1. Fazendinha I', lat:-25.4750, lng:-49.3050},
+                {nome:'2. Montese', lat:-25.4600, lng:-49.2950},
+                {nome:'3. Parolin', lat:-25.4700, lng:-49.2700},
+                {nome:'4. Portão I', lat:-25.4650, lng:-49.3000},
+                {nome:'5. Portão II', lat:-25.4700, lng:-49.3100},
+                {nome:'6. Portão III', lat:-25.4800, lng:-49.3100},
+                {nome:'7. Santa Quitéria', lat:-25.4550, lng:-49.2900},
+                {nome:'8. Vila Guaíra', lat:-25.4850, lng:-49.3000},
+                {nome:'9. Vila São Paulo', lat:-25.4900, lng:-49.2850},
+                {nome:'10. Fazendinha II', lat:-25.4820, lng:-49.3150},
+                {nome:'11. Portão IV', lat:-25.4720, lng:-49.2950},
+                {nome:'12. Fanny', lat:-25.4550, lng:-49.2800}
+            ]
+        },
+        'Santa Felicidade': {
+            nome: 'Santa Felicidade',
+            nomeCompleto: 'Regional Santa Felicidade',
+            congregacoes: 11,
+            populacao: 110,
+            bairros: 11,
+            jovens: 27000,
+            densidade: 2800,
+            naoEvang: 17500,
+            meta1pct: 175, meta2pct: 350,
+            metaJovens: 500,
+            caracteristicas: ['Menor densidade', 'Oeste arborizado', 'Bairros extensos'],
+            slogan: 'ALCANÇANDO O OESTE VERDE',
+            descricao: 'Oeste de Curitiba. Menor densidade da cidade, mas bairros extensos com grande potencial de crescimento. Santa Felicidade, Butiatuvinha e Lamenha Pequena.',
+            mapCenter: [-25.4000, -49.3500], zoom: 12,
+            polygon: [[-25.3600,-49.3700],[-25.3700,-49.3000],[-25.4200,-49.2900],[-25.4500,-49.3300],[-25.4400,-49.3800],[-25.4000,-49.4000],[-25.3700,-49.3900]],
+            congregacoesList: [
+                {nome:'1. Campina do Siqueira', lat:-25.4050, lng:-49.3400},
+                {nome:'2. Jardim Califórnia', lat:-25.4100, lng:-49.3600},
+                {nome:'3. Jardim Gabineto', lat:-25.4000, lng:-49.3500},
+                {nome:'4. Mossunguê', lat:-25.4200, lng:-49.3200},
+                {nome:'5. Santa Felicidade I', lat:-25.3800, lng:-49.3400},
+                {nome:'6. Santa Felicidade II', lat:-25.3850, lng:-49.3600},
+                {nome:'7. Santo Inácio', lat:-25.3950, lng:-49.3300},
+                {nome:'8. São Braz III', lat:-25.4150, lng:-49.3500},
+                {nome:'9. Butiatuvinha', lat:-25.3700, lng:-49.3700},
+                {nome:'10. Santa Felicidade III', lat:-25.3900, lng:-49.3700},
+                {nome:'11. Villa Romana', lat:-25.4000, lng:-49.3600}
+            ]
+        },
+        'Matriz': {
+            nome: 'Matriz',
+            nomeCompleto: 'Regional Matriz — Centro',
+            congregacoes: 5,
+            populacao: 103,
+            bairros: 18,
+            jovens: 22000,
+            densidade: 9500,
+            naoEvang: 14300,
+            meta1pct: 143, meta2pct: 286,
+            metaJovens: 300,
+            caracteristicas: ['Maior densidade da cidade', 'Centro histórico', 'Alta rotatividade'],
+            slogan: 'O CORAÇÃO DA CIDADE',
+            descricao: 'Centro de Curitiba. A maior densidade demográfica (~9.500 hab/km²). Alta circulação diária com trabalhadores, estudantes e moradores.',
+            mapCenter: [-25.4300, -49.2700], zoom: 13,
+            polygon: [[-25.4000,-49.2900],[-25.4000,-49.2400],[-25.4400,-49.2200],[-25.4700,-49.2400],[-25.4700,-49.2800],[-25.4400,-49.3000],[-25.4100,-49.3000]],
+            congregacoesList: [
+                {nome:'1. Água Verde', lat:-25.4500, lng:-49.2850},
+                {nome:'2. Ahú', lat:-25.4050, lng:-49.2650},
+                {nome:'3. Mercês', lat:-25.4300, lng:-49.2900},
+                {nome:'4. Rebouças', lat:-25.4400, lng:-49.2600},
+                {nome:'5. Vila Isabel', lat:-25.4200, lng:-49.2800}
+            ]
         }
     };
-    requestAnimationFrame(step);
-}
 
-// ============================================================
-// NAVEGAÇÃO
-// ============================================================
-function nextSlide() {
-    const a = document.querySelector('.slide.active');
-    if (a && a.nextElementSibling) a.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
-}
-function prevSlide() {
-    const a = document.querySelector('.slide.active');
-    if (a && a.previousElementSibling) a.previousElementSibling.scrollIntoView({ behavior: 'smooth' });
-}
-function toggleFullScreen() {
-    const doc = document; const el = doc.documentElement;
-    if (!doc.fullscreenElement) {
-        (el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen).call(el);
-    } else {
-        (doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen).call(doc);
+    // ============================================================
+    // IDENTIFICAÇÃO DA REGIONAL VIA URL
+    // ============================================================
+    const params = new URLSearchParams(window.location.search);
+    const nomeRegional = params.get('regional') || 'CIC';
+    const R = REGIONAIS[nomeRegional] || REGIONAIS['CIC'];
+
+    // Atualiza título da página
+    document.title = `Planejamento 2026 — Regional ${R.nome}`;
+
+    // ============================================================
+    // POPULA SLIDES COM DADOS DA REGIONAL
+    // ============================================================
+    document.getElementById('badge-regional').textContent = `Regional ${R.nome} — Planejamento 2026`;
+    document.getElementById('titulo-regional').textContent = `REGIONAL ${R.nome.toUpperCase()}`;
+    document.getElementById('s2-nome').textContent = R.nomeCompleto;
+    document.getElementById('s2-desc').textContent = R.descricao;
+    document.getElementById('legend-regional').textContent = `Regional ${R.nome}`;
+
+    // Targets para count-up
+    document.getElementById('s2-igrejas').setAttribute('data-target', R.congregacoes);
+    document.getElementById('s2-pop').setAttribute('data-target', R.populacao);
+    document.getElementById('s2-bairros').setAttribute('data-target', R.bairros);
+    document.getElementById('s2-jovens').setAttribute('data-target', R.jovens);
+    document.getElementById('s4-densidade').setAttribute('data-target', R.densidade);
+    document.getElementById('s5-jovens').setAttribute('data-target', R.jovens);
+    document.getElementById('s5-por-igreja').textContent = Math.round(R.jovens / R.congregacoes).toLocaleString('pt-BR');
+    document.getElementById('s6-nao-evang').setAttribute('data-target', R.naoEvang);
+    document.getElementById('s7-um-pct').setAttribute('data-target', R.meta1pct);
+    document.getElementById('s7-dois-pct').setAttribute('data-target', R.meta2pct);
+    document.getElementById('s10-meta').setAttribute('data-target', R.metaJovens);
+
+    // Características
+    document.getElementById('s4-char1').textContent = R.caracteristicas[0];
+    document.getElementById('s4-char2').textContent = R.caracteristicas[1];
+    document.getElementById('s4-char3').textContent = R.caracteristicas[2];
+    document.getElementById('s4-slogan').textContent = R.slogan;
+
+    // Fórmula
+    const formula = `Dividido por ${R.congregacoes} igrejas = ${R.meta1pct/R.congregacoes | 0} a ${R.meta2pct/R.congregacoes | 0} novos membros`;
+    document.getElementById('s7-formula').innerHTML = `${formula.split('=')[0]}= <span class="destaque">${formula.split('= ')[1]}</span>`;
+
+    // Focos
+    document.getElementById('s8-igrejas-focos').textContent = `${R.congregacoes} Igrejas = ${R.congregacoes} Focos Ativos de Luz`;
+
+    // Meta de jovens label
+    document.getElementById('s10-label').textContent = `JOVENS EM 5 ANOS — META REGIONAL`;
+
+    // ============================================================
+    // INTERAÇÃO DAS ESTRATÉGIAS
+    // ============================================================
+    function toggleEstrategia(card) {
+        const isOpen = card.classList.contains('open');
+        // Fecha todas
+        document.querySelectorAll('.estrategia-card').forEach(c => c.classList.remove('open'));
+        // Abre a clicada (se não estava aberta)
+        if (!isOpen) card.classList.add('open');
     }
-}
-document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') nextSlide();
-    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') prevSlide();
-});
 
-// ============================================================
-// PARTÍCULAS
-// ============================================================
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let W, H, parts = [];
-function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
-window.addEventListener('resize', resize); resize();
-class Particle {
-    constructor() { this.reset(); }
-    reset() { this.x=Math.random()*W; this.y=Math.random()*H; this.vx=(Math.random()-.5)*.5; this.vy=(Math.random()-.5)*.5; this.r=Math.random()*2; this.a=Math.random()*.5; }
-    update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0)this.x=W; if(this.x>W)this.x=0; if(this.y<0)this.y=H; if(this.y>H)this.y=0; }
-    draw() { ctx.fillStyle=`rgba(255,255,255,${this.a})`; ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill(); }
-}
-for(let i=0;i<50;i++) parts.push(new Particle());
-(function anim(){ ctx.clearRect(0,0,W,H); parts.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(anim); })();
+    // ============================================================
+    // INTERSECTION OBSERVER (ANIMAÇÕES + COUNT-UP)
+    // ============================================================
+    const deck = document.getElementById('deck');
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progress');
 
-// ============================================================
-// MAPA LEAFLET — DINÂMICO POR REGIONAL
-// ============================================================
-const map = L.map('map', {
-    center: R.mapCenter, zoom: R.zoom,
-    zoomControl: false, attributionControl: false
-});
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                slides.forEach(s => s.classList.remove('active'));
+                entry.target.classList.add('active');
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 20 }).addTo(map);
+                const idx = Array.from(slides).indexOf(entry.target);
+                progressBar.style.width = ((idx + 1) / slides.length * 100) + '%';
 
-// Polígono de Curitiba (simplificado)
-L.polygon([
-    [-25.346,-49.250],[-25.360,-49.200],[-25.420,-49.180],[-25.550,-49.220],
-    [-25.640,-49.290],[-25.600,-49.350],[-25.450,-49.380],[-25.380,-49.320]
-], { color:'#94A3B8', fillColor:'#64748B', fillOpacity:0.08, weight:1, dashArray:'5,5' }).addTo(map);
+                // Count-up
+                entry.target.querySelectorAll('.count-up').forEach(el => {
+                    const target = +el.getAttribute('data-target');
+                    animateValue(el, 0, target, 2000);
+                    el.classList.remove('count-up');
+                });
 
-// Polígono da regional
-if (R.polygon) {
-    L.polygon(R.polygon, { color:'#F59E0B', fillColor:'#F59E0B', fillOpacity:0.2, weight:2 }).addTo(map);
-}
+                // Mapa
+                if (entry.target.id === 'slide-3') setTimeout(() => map.invalidateSize(), 300);
+            }
+        });
+    }, { root: deck, threshold: 0.5 });
 
-// Marcadores das congregações
-R.congregacoesList.forEach((ig, i) => {
-    const icon = L.divIcon({
-        className: 'custom-pin',
-        html: `<div>${i+1}</div>`,
-        iconSize: [32,32], iconAnchor: [16,16]
+    slides.forEach(s => observer.observe(s));
+
+    // ============================================================
+    // COUNT-UP
+    // ============================================================
+    function animateValue(obj, start, end, duration) {
+        let startTs = null;
+        const step = (ts) => {
+            if (!startTs) startTs = ts;
+            const prog = Math.min((ts - startTs) / duration, 1);
+            const ease = prog * (2 - prog);
+            obj.innerHTML = Math.floor(ease * (end - start) + start).toLocaleString('pt-BR');
+            if (prog < 1) requestAnimationFrame(step);
+            else {
+                let final = end.toLocaleString('pt-BR');
+                if (end >= 1000 && end % 1000 === 0) final = '+' + final;
+                obj.innerHTML = final;
+            }
+        };
+        requestAnimationFrame(step);
+    }
+
+    // ============================================================
+    // NAVEGAÇÃO
+    // ============================================================
+    function nextSlide() {
+        const a = document.querySelector('.slide.active');
+        if (a && a.nextElementSibling) a.nextElementSibling.scrollIntoView({ behavior: 'smooth' });
+    }
+    function prevSlide() {
+        const a = document.querySelector('.slide.active');
+        if (a && a.previousElementSibling) a.previousElementSibling.scrollIntoView({ behavior: 'smooth' });
+    }
+    function toggleFullScreen() {
+        const doc = document; const el = doc.documentElement;
+        if (!doc.fullscreenElement) {
+            (el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen).call(el);
+        } else {
+            (doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen).call(doc);
+        }
+    }
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') prevSlide();
     });
-    L.marker([ig.lat, ig.lng], { icon })
-        .addTo(map)
-        .bindTooltip(ig.nome, { permanent:false, direction:'top', className:'map-label', offset:[0,-15], opacity:1 });
-});
 
-</script>
-```
+    // ============================================================
+    // PARTÍCULAS
+    // ============================================================
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let W, H, parts = [];
+    function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+    window.addEventListener('resize', resize); resize();
+    class Particle {
+        constructor() { this.reset(); }
+        reset() { this.x=Math.random()*W; this.y=Math.random()*H; this.vx=(Math.random()-.5)*.5; this.vy=(Math.random()-.5)*.5; this.r=Math.random()*2; this.a=Math.random()*.5; }
+        update() { this.x+=this.vx; this.y+=this.vy; if(this.x<0)this.x=W; if(this.x>W)this.x=0; if(this.y<0)this.y=H; if(this.y>H)this.y=0; }
+        draw() { ctx.fillStyle=`rgba(255,255,255,${this.a})`; ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill(); }
+    }
+    for(let i=0;i<50;i++) parts.push(new Particle());
+    (function anim(){ ctx.clearRect(0,0,W,H); parts.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(anim); })();
 
-</body>
-</html>
+    // ============================================================
+    // MAPA LEAFLET — DINÂMICO POR REGIONAL
+    // ============================================================
+    const map = L.map('map', {
+        center: R.mapCenter, zoom: R.zoom,
+        zoomControl: false, attributionControl: false
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 20 }).addTo(map);
+
+    // Polígono de Curitiba (simplificado)
+    L.polygon([
+        [-25.346,-49.250],[-25.360,-49.200],[-25.420,-49.180],[-25.550,-49.220],
+        [-25.640,-49.290],[-25.600,-49.350],[-25.450,-49.380],[-25.380,-49.320]
+    ], { color:'#94A3B8', fillColor:'#64748B', fillOpacity:0.08, weight:1, dashArray:'5,5' }).addTo(map);
+
+    // Polígono da regional
+    if (R.polygon) {
+        L.polygon(R.polygon, { color:'#F59E0B', fillColor:'#F59E0B', fillOpacity:0.2, weight:2 }).addTo(map);
+    }
+
+    // Marcadores das congregações
+    R.congregacoesList.forEach((ig, i) => {
+        const icon = L.divIcon({
+            className: 'custom-pin',
+            html: `<div>${i+1}</div>`,
+            iconSize: [32,32], iconAnchor: [16,16]
+        });
+        L.marker([ig.lat, ig.lng], { icon })
+            .addTo(map)
+            .bindTooltip(ig.nome, { permanent:false, direction:'top', className:'map-label', offset:[0,-15], opacity:1 });
+    });
+
+    // ============================================================
+    // DADOS DE LÍDERES POR REGIONAL
+    // ============================================================
+    const LIDERES = {
+      "Bairro Novo": [
+        {cong:"Bairro Novo I",dirigente:"Pr. Orandir Aparecido de Souza",tel:"(41) 99243-3624",wpp:"https://wa.me/5541992433624",lider1:"Adenilson Rodrigues",tel1:"41 99618-9148"},
+        {cong:"Bairro Novo II",dirigente:"Pr Rubens da Cruz Junior",tel:"(41) 99959-5112",wpp:"https://wa.me/5541999595112",lider1:"Lucas Leski",tel1:"41 99560-6116"},
+        {cong:"Bairro Novo III",dirigente:"Pr. Eron da Silva de Cerqueira",tel:"(41) 99965-7147",wpp:"https://wa.me/5541999657147",lider1:"Lucas Azevedo",tel1:"41 98797-6605"},
+        {cong:"Bairro Novo VI",dirigente:"Pr. Ezequiel Corrêa de Oliveira",tel:"(41) 99906-5758",wpp:"https://wa.me/5541999065758",lider1:"Fred Souza",tel1:"41 99855-8284"},
+        {cong:"Cachoeira II",dirigente:"Ev. Gilmar Pedro de Barros",tel:"(41) 99993-7874",wpp:"https://wa.me/5541999937874",lider1:"João Paulo",tel1:"41 99960-8783"},
+        {cong:"Ganchinho",dirigente:"Ev. Eden Barbalho",tel:"(41) 99979-9515",wpp:"https://wa.me/5541999799515",lider1:"",tel1:""},
+        {cong:"Moradias Coqueiros II",dirigente:"Ev. Alceni Ribeiro dos Santos",tel:"(41) 99768-4703",wpp:"https://wa.me/5541997684703",lider1:"Rubens",tel1:"41 99940-8503"},
+        {cong:"Moradias Hebron",dirigente:"Ev. Elizeu Ruivo da Silva",tel:"(41) 98518-4861",wpp:"https://wa.me/55419985184861",lider1:"",tel1:""},
+        {cong:"Novo Horizonte",dirigente:"Ev. Otoniel Barroso",tel:"(41) 99945-4351",wpp:"https://wa.me/5541999454351",lider1:"Gustavo Trecino",tel1:"41 99144-4472"},
+        {cong:"Osternack",dirigente:"Pr. Edson Candido da Silva",tel:"(41) 999707290",wpp:"https://wa.me/5541999707290",lider1:"Melquisedeque Nobre",tel1:"41 99943-5674"},
+        {cong:"Osternack II",dirigente:"Ev. Avelino Nogueira Gomes",tel:"(41) 99199-6867",wpp:"https://wa.me/5541991996867",lider1:"",tel1:""},
+        {cong:"Santa Celeste",dirigente:"Pr. Geciel Paulo de Oliveira",tel:"(41) 99644-3151",wpp:"https://wa.me/5541996443151",lider1:"Allan Brito",tel1:"41 99892-5822"},
+        {cong:"Umbará",dirigente:"Pr. Leandro Sauerbier",tel:"(41) 99709-9114",wpp:"https://wa.me/5541997099114",lider1:"Diego Angelo",tel1:"41 99823-4710"},
+        {cong:"Vila Americana",dirigente:"Pr. Izaias Honorato Felício",tel:"(41) 98401-2503",wpp:"https://wa.me/5541984012503",lider1:"Willian Colman",tel1:"41 99706-0480"},
+        {cong:"Vila Calixto",dirigente:"Pr. Januário Henrique Ferreira Mello",tel:"(41) 99982-1760",wpp:"https://wa.me/5541999821760",lider1:"Jhonni Picoli",tel1:"41 99586-9128"},
+        {cong:"Vila Guilherme",dirigente:"Pb. Paulo Sérgio Lopes Ferreira",tel:"(41) 99271-1251",wpp:"https://wa.me/5541992711251",lider1:"Jonatham",tel1:"41 99525-8209"},
+        {cong:"Vila Rio Negro",dirigente:"Ev. Jean Carlos Felipe",tel:"(41) 99508-0502",wpp:"https://wa.me/5541995080502",lider1:"Lucas Sidinei",tel1:"41 99525-3037"},
+        {cong:"Xapinhal",dirigente:"Pr. Alex Sandro Rosa dos Santos",tel:"(41) 98472-8012",wpp:"https://wa.me/5541984728012",lider1:"Marcos Tarachu",tel1:"41 98516-1394"},
+        {cong:"Xapinhal II",dirigente:"Pr. Pedro Alves Silva de Souza",tel:"(41) 98880-5219",wpp:"https://wa.me/5541984728012",lider1:"Givanildo",tel1:"41 99693-5373"}
+      ],
+      "Boa Vista": [
+        {cong:"Alto Tarumã",dirigente:"Pb. Natanael Souza Affonso",tel:"(41) 99623-9960",wpp:"https://wa.me/5541996239960",lider1:"Rober",tel1:"41 99683-5052"},
+        {cong:"Bacacheri",dirigente:"Pr. Laercio Rodrigues dos Santos",tel:"(41) 98404-2741",wpp:"https://wa.me/554198042741",lider1:"Wuellinton",tel1:"41 99903-6730"},
+        {cong:"Bairro Alto",dirigente:"Pr. Alessandro Lacerda de Assis",tel:"(41) 99619-6777",wpp:"https://wa.me/5541996196777",lider1:"Mirian",tel1:"41 98507-4320"},
+        {cong:"Barreirinha",dirigente:"Ev. Felipe José da Silva Gonçalves",tel:"(41) 99172-7623",wpp:"https://wa.me/5541991727623",lider1:"Mateus",tel1:"41 99503-7990"},
+        {cong:"Boa Vista",dirigente:"Pr. Edilson de Oliveira",tel:"(41) 99997-1441",wpp:"https://wa.me/5541999971441",lider1:"Flávio",tel1:"41 98850-6913"},
+        {cong:"Copel",dirigente:"Pr. Elieber José da Silva",tel:"(41) 99778-9732",wpp:"https://wa.me/5541997789732",lider1:"Lucas",tel1:"41 99168-7417"},
+        {cong:"Fernando de Noronha",dirigente:"Pr. Arlindo Vieira de Santana",tel:"(41) 99699-8965",wpp:"https://wa.me/5541996998965",lider1:"Mariana",tel1:"41 99863-5839"},
+        {cong:"Higienópolis",dirigente:"Pr. Irineu Ricardo Ferreira Marios",tel:"(41) 98834-1616",wpp:"https://wa.me/5541988341616",lider1:"Anderson",tel1:"41 99603-6381"},
+        {cong:"Jardim Arroio",dirigente:"Pb. Paulo Paulista",tel:"(41) 99919-0049",wpp:"https://wa.me/5541999190049",lider1:"Marcielly",tel1:"41 98525-1422"},
+        {cong:"Jardim Cruzeiro do Sul",dirigente:"Pr. Fabio Augusto B. C. Bittencourt",tel:"(41) 99956-8601",wpp:"https://wa.me/5541999568601",lider1:"Thiago",tel1:"41 99655-1693"},
+        {cong:"Jardim Granada",dirigente:"Ev. Isaias Conceição Daniel",tel:"(41) 98527-0205",wpp:"https://wa.me/5541985270205",lider1:"Priscila",tel1:"41 99691-6348"},
+        {cong:"Jardim Paraiso",dirigente:"Pr. Jovito Inácio",tel:"(41) 99936-1641",wpp:"https://wa.me/5541999361641",lider1:"Thiago",tel1:"41 99665-4020"},
+        {cong:"Jardim Primavera II",dirigente:"Ev. Lucas da Cunha Rodrigues",tel:"(41) 99590-2648",wpp:"https://wa.me/5541995902648",lider1:"Josiel",tel1:"41 99729-3889"},
+        {cong:"Moradias Faxinal",dirigente:"Pb. Alexsandro Ferreira Lustosa",tel:"(41) 99967-9370",wpp:"https://wa.me/5541999679370",lider1:"",tel1:""},
+        {cong:"Parque Tanguá",dirigente:"Ev. Jonival Siqueira",tel:"(41) 99956-8616",wpp:"https://wa.me/554199568616",lider1:"Alex",tel1:"41 99642-9622"},
+        {cong:"Pilarzinho",dirigente:"Pr. João Alves da Rocha",tel:"(41) 99634-5594",wpp:"https://wa.me/554199565594",lider1:"Bem Hur",tel1:"42 99966-3994"},
+        {cong:"Planta Califórnia",dirigente:"Ev. Everaldo Aparecido Vieira de Matos",tel:"(41) 99969-8273",wpp:"https://wa.me/554199568273",lider1:"Juliano",tel1:"41 99931-0358"},
+        {cong:"Planta Paraiso",dirigente:"Pb. Samuel de Souza",tel:"(41) 99937-7754",wpp:"https://wa.me/554199567754",lider1:"Hellen",tel1:"41 99696-5728"},
+        {cong:"Solar (Bacacheri)",dirigente:"Pb. Izaias Rodrigues Cavalheiro",tel:"(41) 99698-6129",wpp:"https://wa.me/5541996986129",lider1:"",tel1:""},
+        {cong:"Tingui",dirigente:"Ev. Alexandre de Matos Leal",tel:"(41) 99139-2332",wpp:"https://wa.me/554199562332",lider1:"Gabriele",tel1:"41 98514-2038"},
+        {cong:"Vila Esperança",dirigente:"Pr. Airton Zambeli Junker",tel:"(41) 99734-5700",wpp:"https://wa.me/554199565700",lider1:"Claudinei",tel1:"41 99965-7183"},
+        {cong:"Vila Fátima",dirigente:"Pr. Pedro Marques dos Santos",tel:"(41) 98739-9786",wpp:"https://wa.me/554199569786",lider1:"Marco",tel1:"41 99506-9030"},
+        {cong:"Vila Galia",dirigente:"Pr. Jeriel Vieira",tel:"(41) 99931-4697",wpp:"https://wa.me/554199564697",lider1:"",tel1:""},
+        {cong:"Vila Krasinski",dirigente:"Ev. Alexandre Pereira Shlisinski",tel:"(41) 99985-8995",wpp:"https://wa.me/554199568995",lider1:"Juliano",tel1:"41 99803-1786"},
+        {cong:"Vila Leonice",dirigente:"Pr. Paulo Cezer Kremer dos Santos",tel:"(41) 92000-3957",wpp:"https://wa.me/554199563957",lider1:"Daniel",tel1:"41 99589-9160"},
+        {cong:"Vila São João",dirigente:"Pr. Hercilio Leodoro",tel:"(41) 98412-8083",wpp:"https://wa.me/5541984128083",lider1:"Tiago",tel1:"41 98740-4273"},
+        {cong:"Vila Tupi",dirigente:"Pb. Haroldo Procopio de Oliveira",tel:"(41) 99750-5304",wpp:"https://wa.me/554199565304",lider1:"Flávio",tel1:"41 99794-5039"}
+      ],
+      "Boqueirão": [
+        {cong:"Areal",dirigente:"Pr. Andre Luis Souza",tel:"(41) 99990-8843",wpp:"https://wa.me/5541999908843",lider1:"Conceição",tel1:"41 996644991"},
+        {cong:"Boqueirão",dirigente:"Ev. Eli Cesar Ribeiro",tel:"(41) 99173-8042",wpp:"https://wa.me/5541991738042",lider1:"Italo",tel1:"41 995227787"},
+        {cong:"Diagonal",dirigente:"Ev. Jonathan Carvalho De Souza",tel:"(41) 99883-3946",wpp:"https://wa.me/5541998833946",lider1:"Fabio",tel1:"41 998512863"},
+        {cong:"Hauer",dirigente:"Pr. Linderson Marcos Romano",tel:"(41) 99958-5362",wpp:"https://wa.me/5541999585362",lider1:"Andre Luiz Bongiovani",tel1:"41 988859768"},
+        {cong:"Hauer Belém",dirigente:"Pr. Nelson José Rosa",tel:"(41) 99104-1718",wpp:"https://wa.me/5541991041718",lider1:"Rodney",tel1:"41 997882387"},
+        {cong:"Jardim Castelo Branco",dirigente:"Pr. Cesar Batista",tel:"(41) 99711-1521",wpp:"https://wa.me/5541997111521",lider1:"Alekes Camargo",tel1:"41 995019490"},
+        {cong:"Jardim Esmeralda",dirigente:"Ev. Marcelo Lima de Melo Montoski",tel:"(41) 99165-0831",wpp:"https://wa.me/5541991650831",lider1:"Josiel Venancio",tel1:"41 998655786"},
+        {cong:"Jardim Itamarati",dirigente:"Pr. Josué Ferro de Souza",tel:"(41) 99562-7683",wpp:"https://wa.me/5541995627683",lider1:"Jeremias",tel1:"41 991718391"},
+        {cong:"Jardim Maringá",dirigente:"Pr. Wanderlei Domingues da Silva Lopes",tel:"(41) 98506-2022",wpp:"https://wa.me/5541985062022",lider1:"Marcio",tel1:"41 995530207"},
+        {cong:"Jardim Paranaense",dirigente:"Pr. Elias de Oliveira",tel:"(41) 99192-5442",wpp:"https://wa.me/5541991925442",lider1:"Adriel Vieira",tel1:"41 984612654"},
+        {cong:"Jardim Urano",dirigente:"Pr. Valdemar Ferreira dos Santos",tel:"(41) 99207-9331",wpp:"https://wa.me/5541992079331",lider1:"Estani",tel1:"41 996219440"},
+        {cong:"Moradias Pantanal",dirigente:"Pb. Jurandir Candido Batista Junior",tel:"(41) 99921-1759",wpp:"https://wa.me/5541999211759",lider1:"Sergio",tel1:"41 988501627"},
+        {cong:"Planta Maria Luiza",dirigente:"Ev. Expedito Cilas Marcos Nunes",tel:"(41) 99758-3054",wpp:"https://wa.me/5541997583054",lider1:"Ricardo",tel1:"41 998197191"},
+        {cong:"Santa Inês",dirigente:"Ev. Silvano Montoski (Interino)",tel:"(41) 99658-8846",wpp:"https://wa.me/5541996588846",lider1:"Peter Fernando",tel1:"41 988027823"},
+        {cong:"Terminal do Boqueirão",dirigente:"Pr. Sergio Luiz Schroeder",tel:"(41) 99911-9899",wpp:"https://wa.me/5541999119899",lider1:"Marcelo Rocha",tel1:"41 996993251"},
+        {cong:"Vila Barretos",dirigente:"Pr. Valdir Bergamaski",tel:"(41) 99901-3590",wpp:"https://wa.me/5541999013590",lider1:"Mizael",tel1:"41 997423614"},
+        {cong:"Xaxim",dirigente:"Pr. Fábio Mariano de Oliveira",tel:"(41) 99678-2943",wpp:"https://wa.me/5541996782943",lider1:"Fernando",tel1:"41 999839655"}
+      ],
+      "Cajuru": [
+        {cong:"Autódromo",dirigente:"Pr. Samuel Wellington Moreira",tel:"(41) 99730-5156",wpp:"https://wa.me/5541997305156",lider1:"Nelcides Pereira",tel1:"41 997644793"},
+        {cong:"Cajuru",dirigente:"Pr. Luiz Carlos da Costa",tel:"(41) 99514-5999",wpp:"https://wa.me/5541995145999",lider1:"Leandro Ferreira",tel1:"41 998264943"},
+        {cong:"Capão da Imbuía",dirigente:"Pr. Rogerio Lacerda Marchiode",tel:"(41) 99122-8787",wpp:"https://wa.me/5541991228787",lider1:"Renan Falavinha",tel1:"41 998126219"},
+        {cong:"Jardim Acrópole",dirigente:"Pr. Ednalvo Rodrigues Evangelista",tel:"(41) 99893-9080",wpp:"https://wa.me/5541998939080",lider1:"",tel1:""},
+        {cong:"Jardim Araguaia",dirigente:"Ev. Ronaldo Dias de Oliveira",tel:"(41) 99931-1386",wpp:"https://wa.me/5541999311386",lider1:"Edino Wolpe",tel1:"41 998791050"},
+        {cong:"Jardim Icaraí",dirigente:"Pr. Ivo Valentim de Souza",tel:"(41) 99987-8202",wpp:"https://wa.me/5541999878202",lider1:"Lorena",tel1:"41 995068926"},
+        {cong:"Jardim Natália",dirigente:"Pr. Valdecir de Paula Rodrigues",tel:"(41) 99649-1002",wpp:"https://wa.me/5541996491002",lider1:"Elton Maciel",tel1:"41 999036383"},
+        {cong:"Jardim Petrópolis",dirigente:"Pr. Rogerio Marçal de Souza",tel:"(41) 99689-5125",wpp:"https://wa.me/5541996895125",lider1:"Luiz Alberto",tel1:"41 988670753"},
+        {cong:"Jardim União",dirigente:"Ev. Vinicius de Paula Pinto",tel:"(41) 99138-9876",wpp:"https://wa.me/5541991389876",lider1:"Thiago Abdala",tel1:"41 987008315"},
+        {cong:"Jardim das Américas",dirigente:"Ev. Denilson Soares de Lima",tel:"(41) 98514-9693",wpp:"https://wa.me/5541985149693",lider1:"Gleisson",tel1:"88 994550142"},
+        {cong:"Lotiguaçu",dirigente:"Ev. Jocsã Ramos da Silva",tel:"(41) 99816-1386",wpp:"https://wa.me/5541998161386",lider1:"Ronaldo Nunes",tel1:"41 999646117"},
+        {cong:"Planta Evaristo",dirigente:"Ev. Ivo Alves Santana",tel:"(41) 99612-8283",wpp:"https://wa.me/5541996128283",lider1:"Rose",tel1:"41 996379361"},
+        {cong:"Santa Bárbara",dirigente:"Ev. Andre Luis Nascimento Santos",tel:"(41) 98743-2290",wpp:"https://wa.me/5541987432290",lider1:"",tel1:""},
+        {cong:"Santa Rosa",dirigente:"Pr. Vanderlei Boy",tel:"(41) 99945-2305",wpp:"https://wa.me/5541999452305",lider1:"Aline",tel1:"41 999059440"},
+        {cong:"Uberaba de Cima",dirigente:"Ev. Jurandir da Silveira Penha Júnior",tel:"(41) 99925-1120",wpp:"https://wa.me/5541999251120",lider1:"Andre",tel1:"41 996276432"},
+        {cong:"Vila Camargo",dirigente:"Pb. Laucenir Francisco de Assis Gomes",tel:"(41) 98725-6289",wpp:"https://wa.me/5541987256289",lider1:"",tel1:""},
+        {cong:"Vila Germano",dirigente:"Pr. Isaac Pires de Oliveira",tel:"(41) 99696-0410",wpp:"https://wa.me/5541996960410",lider1:"Ivan Canozi",tel1:"41 985078275"},
+        {cong:"Vila Macedo",dirigente:"Ev. Deocar Fernando Abdalla",tel:"(41) 99934-6926",wpp:"https://wa.me/5541999346926",lider1:"Jaci",tel1:"41 995872429"},
+        {cong:"Vila Oficinas",dirigente:"Pr. Jeziel Moraes Pereira",tel:"(41) 98821-2651",wpp:"https://wa.me/5541988212651",lider1:"Jean Willemann",tel1:"41 998445989"},
+        {cong:"Vila Reno",dirigente:"Ev. Hamilton Ramalho dos Santos",tel:"(41) 99166-0671",wpp:"https://wa.me/5541991660671",lider1:"Paulo Sergio",tel1:"41 995675449"},
+        {cong:"Vila Sofia",dirigente:"Pr. Elias Ferreira dos Santos",tel:"(41) 99663-7518",wpp:"https://wa.me/5541996637518",lider1:"Solange Santos",tel1:"41 987918354"},
+        {cong:"Vila São Domingos",dirigente:"Pr. Flavio de Souza Gomes",tel:"(41) 99635-6928",wpp:"https://wa.me/5541996356928",lider1:"Neila",tel1:"71 992490201"},
+        {cong:"Vila São Paulo",dirigente:"Pb. Izaias Ferreira de Oliveira",tel:"(41) 99865-3400",wpp:"https://wa.me/5541998653400",lider1:"Sueli Almeida",tel1:"41 996728469"}
+      ],
+      "CIC": [
+        {cong:"Alto Barigui",dirigente:"Pr. Alex Rodrigues de Jesus",tel:"(41) 99266-5586",wpp:"https://wa.me/5541992665586",lider1:"Leandro Augusto dos Santos",tel1:"(41) 99981-4360"},
+        {cong:"Alto Bela Vista",dirigente:"Pr. Eziquiel Trincaus",tel:"(41) 99964-1783",wpp:"https://wa.me/5541999641783",lider1:"Joabe",tel1:"(41) 99500-6005"},
+        {cong:"Alto Bela Vista II (Vera Cruz)",dirigente:"Pr. Sebastião Bispo de Assunção",tel:"(41) 99696-3115",wpp:"https://wa.me/5541996963115",lider1:"Antônio Carlos Leopoldino",tel1:"(41) 99532-9206"},
+        {cong:"CIC",dirigente:"Pr. Cleverson Padilha",tel:"(41) 99911-9893",wpp:"https://wa.me/5541999119893",lider1:"Bruno Gabriel",tel1:"(41) 99769-5992"},
+        {cong:"Diadema II",dirigente:"Ev. Paulo Sérgio Teodoro",tel:"(41) 99539-4388",wpp:"https://wa.me/5541995394388",lider1:"Marcelo Ferreira",tel1:"(41) 99973-3596"},
+        {cong:"Itatiaia",dirigente:"Ev. Francisco Borges Filho",tel:"(41) 98453-7138",wpp:"https://wa.me/5541984537138",lider1:"Eron",tel1:"(41) 99786-5146"},
+        {cong:"Jardim Independência",dirigente:"Pb. Marcelo Martins da Silva",tel:"(41) 98834-1285",wpp:"https://wa.me/5541988341285",lider1:"Priscila",tel1:"(41) 98893-9521"},
+        {cong:"Porto Belo",dirigente:"Pb. Ailton Tavares de Santana",tel:"(41) 99632-1297",wpp:"https://wa.me/5541996321297",lider1:"Edson Luiz",tel1:"(41) 99988-8951"},
+        {cong:"Santa Helena",dirigente:"Pr. Jeter Brocanelli Barbosa",tel:"(41) 99999-7116",wpp:"https://wa.me/5541999997116",lider1:"",tel1:""},
+        {cong:"São José do Passaúna",dirigente:"Pr. Arnaldo Pereira Pardinho",tel:"(41) 99860-3704",wpp:"https://wa.me/5541998603704",lider1:"Daniel",tel1:"(41) 99615-7419"},
+        {cong:"São Rafael",dirigente:"Pr. Gilberto de Melo",tel:"(41) 99643-3354",wpp:"https://wa.me/5541996433354",lider1:"",tel1:""},
+        {cong:"Vera Cruz",dirigente:"Pr. Jizreel Oséias Maciel",tel:"(41) 99576-0203",wpp:"https://wa.me/5541995760203",lider1:"Alisson Gabriel",tel1:"(41) 99730-6963"},
+        {cong:"Vila Augusta",dirigente:"Pb. José Roberto Miranda",tel:"(41) 99630-0658",wpp:"https://wa.me/5541996300658",lider1:"Douglas Alves",tel1:"(41) 99637-4246"},
+        {cong:"Vila Nova",dirigente:"Ev. Alceu Ferreira Lima",tel:"(41) 99917-4533",wpp:"https://wa.me/5541999174533",lider1:"Ivan",tel1:"(41) 99675-7611"},
+        {cong:"Vila Rigoni",dirigente:"Ev. Enoc Nogueira dos Reis",tel:"(41) 99964-3496",wpp:"https://wa.me/5541999643496",lider1:"Samuel",tel1:"(41) 98482-4728"},
+        {cong:"Vila Rose",dirigente:"Pr. João Carlos Alves Leite",tel:"(41) 99700-1103",wpp:"https://wa.me/5541997001103",lider1:"Ricardo",tel1:"(41) 99138-8190"},
+        {cong:"Vila Sabará",dirigente:"Ev Fabio Pinheiro de Almeida",tel:"(41) 99674-1219",wpp:"https://wa.me/5541996741219",lider1:"Gabriel Mello",tel1:"(41) 98773-7154"},
+        {cong:"Vila Santana",dirigente:"Pr. Elias Pereira Pardinho",tel:"(41) 99742-2544",wpp:"https://wa.me/5541997422544",lider1:"Marcelo Santana",tel1:"(41) 99682-1671"},
+        {cong:"Vila Verde",dirigente:"Pr. Agnaldo Almeida Vieira",tel:"(41) 99989-7670",wpp:"https://wa.me/5541999897670",lider1:"Nielson Manoel da Silva",tel1:"(41) 98844-9521"},
+        {cong:"Vila Vitória Riviera",dirigente:"Pb. Anderson Pereira de Oliveira",tel:"(41) 99829-4642",wpp:"https://wa.me/5541998294642",lider1:"Juliana Souza",tel1:"(41) 99736-2721"},
+        {cong:"Vitória Régia",dirigente:"Ev. Pedro Alves da Cruz",tel:"(41) 99965-8065",wpp:"https://wa.me/5541999658065",lider1:"Lucas Knop",tel1:"(41) 99986-9967"},
+        {cong:"Zimbros (Vila Nova)",dirigente:"Pb. Ewerton Gonçalves da Luz",tel:"(41) 99818-2211",wpp:"https://wa.me/5541998182211",lider1:"",tel1:""}
+      ],
+      "Matriz": [
+        {cong:"Água Verde",dirigente:"Ev. Claudinei Germano",tel:"(41) 98401-2028",wpp:"https://wa.me/5541984012028",lider1:"",tel1:""},
+        {cong:"Ahú",dirigente:"Pr. Arlindo Vieira da Silva",tel:"(41) 99971-7315",wpp:"https://wa.me/5541999717315",lider1:"",tel1:""},
+        {cong:"Mercês",dirigente:"Pb. Adelfo Barbosa de Melo",tel:"(41) 99513-1754",wpp:"https://wa.me/5541995131754",lider1:"",tel1:""},
+        {cong:"Prado Velho",dirigente:"Pr. Gilmar Antonio de Andrade",tel:"(41) 99106-7803",wpp:"https://wa.me/5541991067803",lider1:"Renildo",tel1:"41 999463622"},
+        {cong:"SEDE",dirigente:"Pr. Márcio Vinicius Rodrigues",tel:"(41) 99654-9151",wpp:"https://wa.me/5541996549151",lider1:"Giovani",tel1:"11 982214149"}
+      ],
+      "Pinheirinho": [
+        {cong:"Capão Raso",dirigente:"Pr. Celso Rodrigues da Silva",tel:"(41) 98466-7784",wpp:"https://wa.me/5541984667784",lider1:"Elton",tel1:"41 99623-6657"},
+        {cong:"Jardim Paraná",dirigente:"Pr. Albari Carvalho Moreira",tel:"(41) 99156-3998",wpp:"https://wa.me/5541991563998",lider1:"Tiago Lisboa",tel1:"41 99707-5658"},
+        {cong:"Jardim São Carlos",dirigente:"Ev. Ismael Ferreira da Rocha",tel:"(41) 99923-2352",wpp:"https://wa.me/5541999232352",lider1:"",tel1:""},
+        {cong:"Moradias Arroio",dirigente:"Ev. Emerson José da Silva",tel:"(41) 99648-2543",wpp:"https://wa.me/5541996482543",lider1:"Dc. Silas",tel1:"41 99837-2922"},
+        {cong:"Moradias São Lucas",dirigente:"Pb. Jaderson Galhardo Dias",tel:"(41) 99911-6894",wpp:"https://wa.me/5541999116894",lider1:"Lucas Oliveira",tel1:"41 99592-4781"},
+        {cong:"Parque Industrial",dirigente:"Pr. Paulo Cezar Pereira Schlizinnski",tel:"(41) 99138-9136",wpp:"https://wa.me/5541991389136",lider1:"Carlos Alberto",tel1:"41 99676-2224"},
+        {cong:"Pinheirinho",dirigente:"Pr. Auzias Paulo Nazário Rodrigues",tel:"(41) 99576-0200",wpp:"https://wa.me/5541995760200",lider1:"",tel1:""},
+        {cong:"Pirineus",dirigente:"Ev. Lourival Aparecido Silva",tel:"(41) 99649-9604",wpp:"https://wa.me/5541996499604",lider1:"Josnei Dias da Silva",tel1:"41 98882-6848"},
+        {cong:"Vila Acordes",dirigente:"Ev. Moisés Matias Corrêa",tel:"(41) 99915-3358",wpp:"https://wa.me/5541999153358",lider1:"Jonas Fernandes dos Santos",tel1:"41 99816-5970"},
+        {cong:"Vila Ipiranga",dirigente:"Ev. Robson Douglas Stein",tel:"(41) 98838-1994",wpp:"https://wa.me/5541988381994",lider1:"Anderson Teylon",tel1:"41 99181-4553"},
+        {cong:"Vila Machado",dirigente:"Pr. Augusto Pereira da Cruz",tel:"(41) 99595-4543",wpp:"https://wa.me/5541995954543",lider1:"Edivaldo Pinho Fernandes",tel1:"91 99133-3454"},
+        {cong:"Vila Piratini",dirigente:"Ev. Ailton Francisco Da Silva",tel:"(41) 99779-9349",wpp:"https://wa.me/5541997799349",lider1:"",tel1:""},
+        {cong:"Vila Pluma (Sto. Antonio)",dirigente:"Pb. Caio Vinicius Rezende",tel:"(41) 99719-9130",wpp:"https://wa.me/5541997199130",lider1:"Lindomar Vasconcelos",tel1:"41 99594-9717"},
+        {cong:"Vila Santo Antônio",dirigente:"Pr. Milton Gomes de Lima Rocha",tel:"(41) 99795-2660",wpp:"https://wa.me/5541997952660",lider1:"Jonatas",tel1:"41 99678-8017"},
+        {cong:"Vila São Pedro",dirigente:"Pr. Bento Moraes de Cerqueira",tel:"(41) 98820-8457",wpp:"https://wa.me/5541988208457",lider1:"",tel1:""}
+      ],
+      "Portão": [
+        {cong:"Fazendinha",dirigente:"Pr. Neilson Alves da Silva",tel:"(41) 99656-6590",wpp:"https://wa.me/5541996566590",lider1:"Oseias Moraes",tel1:"41 995475352"},
+        {cong:"Montese",dirigente:"Pb. Vinicius Euclides Soares Cassiano",tel:"(41) 99825-4022",wpp:"https://wa.me/5541998254022",lider1:"Mari Arcanjo",tel1:"41 999888320"},
+        {cong:"Parolin",dirigente:"Ev. Antonio Marcos Pires",tel:"(41) 99968-8100",wpp:"https://wa.me/5541999688100",lider1:"Andressa Fraga",tel1:"41 999584453"},
+        {cong:"Portão",dirigente:"Pr. Zulmiro Felix da Silva",tel:"(41) 99185-0992",wpp:"https://wa.me/5541991850992",lider1:"Pedro Ritter",tel1:"41 997228642"},
+        {cong:"Santa Quitéria",dirigente:"Pr. Eliseu dos Santos Marques",tel:"(41) 99685-5074",wpp:"https://wa.me/5541996855074",lider1:"",tel1:""},
+        {cong:"Vila Cubas",dirigente:"Pb. João Vitor da Silva Junior",tel:"(41) 99583-5672",wpp:"https://wa.me/5541995835672",lider1:"",tel1:""},
+        {cong:"Vila Estrela",dirigente:"Pb Leonardo de Oliveira",tel:"(41) 99884-8395",wpp:"https://wa.me/5541998848395",lider1:"",tel1:""},
+        {cong:"Vila Guilhermina",dirigente:"Pr. João Carlos Alves da Silva",tel:"(41) 99509-5179",wpp:"https://wa.me/5541995095179",lider1:"Maykon Messias",tel1:"41 995734536"},
+        {cong:"Vila Izabel",dirigente:"Pr. Paulo Pereira Costa",tel:"(41) 98863-8879",wpp:"https://wa.me/5541988638879",lider1:"Antonio Jacomini",tel1:"41 996660571"},
+        {cong:"Vila Leão",dirigente:"Ev. Daniel Antunes Fermiano",tel:"(41) 98821-3408",wpp:"https://wa.me/5541988213408",lider1:"",tel1:""},
+        {cong:"Vila Lindóia",dirigente:"Ev. Daniel Lopes Maia",tel:"(14) 98141-8252",wpp:"https://wa.me/5541981418252",lider1:"",tel1:""},
+        {cong:"Vila Maria",dirigente:"Ev. Daniel Sidnei Oliveira de Assis",tel:"(41) 99147-4255",wpp:"https://wa.me/5541991474255",lider1:"Andre Sales",tel1:"41 996605346"}
+      ],
+      "Santa Felicidade": [
+        {cong:"Campina do Siqueira",dirigente:"Ev. Jesiel Alves Martins",tel:"(41) 99915-1449",wpp:"https://wa.me/5541999151449",lider1:"Lucas",tel1:"(31) 99260-1525"},
+        {cong:"Jardim Califórnia",dirigente:"Ev. Alexandre Alves da Silva",tel:"(41) 98493-6906",wpp:"https://wa.me/5541984936906",lider1:"Ev. Adamo",tel1:"(34) 98855-9565"},
+        {cong:"Jardim Gabineto",dirigente:"Pr. Valter dos Santos Rodrigues",tel:"(41) 98413-4152",wpp:"https://wa.me/55419984134152",lider1:"Marcos",tel1:"(41) 99550-2854"},
+        {cong:"Jardim Pinheiros",dirigente:"Pr. José de Souza Soares",tel:"(41) 99695-8337",wpp:"https://wa.me/5541998521311",lider1:"Oseias Timoteo",tel1:"(41) 99286-5882"},
+        {cong:"Jardim Santos Andrade",dirigente:"Pr. Miguel Iaszczak",tel:"(41) 99816-2450",wpp:"https://wa.me/5541998162450",lider1:"Leonardo",tel1:"(41) 99679-1328"},
+        {cong:"José Culpi",dirigente:"Ev. Eneas Camargo Timoteo",tel:"(41) 99645-3285",wpp:"https://wa.me/5541996453285",lider1:"Thiago Freitas",tel1:"(41) 99752-8207"},
+        {cong:"Santa Felicidade",dirigente:"Ev. Ageu dos Santos",tel:"(41) 99745-0388",wpp:"https://wa.me/5541997450388",lider1:"Carlos",tel1:"(41) 99536-8292"},
+        {cong:"Sol Nascente",dirigente:"Pb. Adelço Andrade de Souza",tel:"(41) 99633-2395",wpp:"https://wa.me/5541996332395",lider1:"Silvia",tel1:"(41) 99651-4019"},
+        {cong:"São Braz",dirigente:"Pr. Jose Terbutino Filho",tel:"(41) 99930-0886",wpp:"https://wa.me/5541999300886",lider1:"Airton Ferreira",tel1:"(41) 99903-6458"},
+        {cong:"Vila Haquim",dirigente:"Ev. Valmir Barbosa de Melo",tel:"(41) 99686-1481",wpp:"https://wa.me/5541996861481",lider1:"Milton Batista",tel1:"(41) 99807-8492"},
+        {cong:"Vila Sandra",dirigente:"Pr. Selmai Silverio Teixeira",tel:"(41) 99845-9830",wpp:"https://wa.me/5541998459830",lider1:"Ezequiel Firmino",tel1:"(41) 98498-8721"}
+      ],
+      "Tatuquara": [
+        {cong:"Caximba",dirigente:"Pr. Abraão Ferreira",tel:"(41) 98504-9088",wpp:"https://wa.me/5541985049088",lider1:"Ezequiel",tel1:"(41) 9846-0380"},
+        {cong:"Jardim Dom Bosco",dirigente:"Ev. Leandro Perretto Lemes",tel:"(41) 99555-3610",wpp:"https://wa.me/5541995553610",lider1:"Pb. Emerson",tel1:"(41) 99178-7300"},
+        {cong:"Jardim Ludovica",dirigente:"Ev. Rodrigo Nebesniak",tel:"(41) 98828-6358",wpp:"https://wa.me/5541988286358",lider1:"Adenilson Carneiro",tel1:"(41) 99138-6725"},
+        {cong:"Jardim da Ordem",dirigente:"Pr. Alexandro Gato",tel:"(41) 99567-9220",wpp:"https://wa.me/5541995679220",lider1:"Eliel",tel1:"(41) 8840-5827"},
+        {cong:"Monteiro Lobato",dirigente:"Pb. Ademir Ribeiro dos Santos",tel:"(41) 99521-3792",wpp:"https://wa.me/5541995213792",lider1:"Dc. Venâncio",tel1:"(41) 99840-7702"},
+        {cong:"Moradias Janaina",dirigente:"Ev. Carlos de Moraes Cunha",tel:"(41) 99740-9744",wpp:"https://wa.me/5541997409744",lider1:"Cp. Wilson",tel1:"(41) 99172-8511"},
+        {cong:"Moradias Paraná",dirigente:"Pr. Luiz Valdo de Macedo",tel:"(41) 99625-6556",wpp:"https://wa.me/5541996256556",lider1:"Dc. Oziel Jr",tel1:"(41) 99991-5468"},
+        {cong:"Moradias Rio Bonito",dirigente:"Pb. Eder Robson Pereira dos Anjos",tel:"(41) 99116-4626",wpp:"https://wa.me/5541991164626",lider1:"",tel1:""},
+        {cong:"Rio Bonito",dirigente:"Pr. Luiz Ronaldo Rocha de Macedo",tel:"(41) 98447-6125",wpp:"https://wa.me/5541984476125",lider1:"Pb. Rivaldo",tel1:"(41) 99693-8377"},
+        {cong:"Tatuquara",dirigente:"Pr. Edson Jose dos Santos",tel:"(41) 99537-5757",wpp:"https://wa.me/5541995375757",lider1:"Karine",tel1:"(41) 99640-9820"},
+        {cong:"Terra Santa",dirigente:"Ev. Cesar Guareci Da Gama Carlin",tel:"(41) 99605-7891",wpp:"https://wa.me/5541996057891",lider1:"Sidney Rodrigues",tel1:"(41) 99176-5847"},
+        {cong:"Vila Evangélica",dirigente:"Ev. Sergio Roberto Prazeres da Cruz",tel:"(41) 99775-0215",wpp:"https://wa.me/55997750215",lider1:"Jean Faustinoni",tel1:"(41) 99657-6170"},
+        {cong:"Vila dos Cruz",dirigente:"Ev. Damião José dos Santos Neto",tel:"(41) 99626-5937",wpp:"https://wa.me/5541996265937",lider1:"Adriano",tel1:"(41) 99505-0051"}
+      ]
+    };
+
+    // ============================================================
+    // MODAL — LÍDERES
+    // ============================================================
+    let _lideresFiltrados = [];
+
+    function abrirLideres() {
+        const reg = R.nome;
+        const lista = LIDERES[reg] || [];
+        _lideresFiltrados = lista;
+        document.getElementById('modal-titulo').textContent = 'Regional ' + reg;
+        document.getElementById('modal-count').textContent = lista.length + ' congregações';
+        document.getElementById('busca-lider').value = '';
+        renderLideres(lista);
+        const modal = document.getElementById('modal-lideres');
+        modal.style.display = 'flex';
+        setTimeout(() => modal.style.opacity = '1', 10);
+    }
+
+    function fecharLideres() {
+        document.getElementById('modal-lideres').style.display = 'none';
+    }
+
+    function filtrarLideres() {
+        const q = document.getElementById('busca-lider').value.toLowerCase();
+        const reg = R.nome;
+        const lista = (LIDERES[reg] || []).filter(c =>
+            c.cong.toLowerCase().includes(q) ||
+            c.dirigente.toLowerCase().includes(q) ||
+            (c.lider1 && c.lider1.toLowerCase().includes(q))
+        );
+        document.getElementById('modal-count').textContent = lista.length + ' resultado' + (lista.length !== 1 ? 's' : '');
+        renderLideres(lista);
+    }
+
+    function renderLideres(lista) {
+        const container = document.getElementById('lista-lideres');
+        container.innerHTML = '';
+        if (!lista.length) {
+            container.innerHTML = '<div style="text-align:center;color:#94A3B8;padding:2rem;font-size:0.85rem;">Nenhum resultado encontrado</div>';
+            return;
+        }
+        lista.forEach((c, i) => {
+            const temLider = c.lider1 && c.lider1.trim() && !['sem lider','sem grupo de jovens','sem liderança','sem jovens','não tem jovens','sem líder no momento'].some(s => c.lider1.toLowerCase().includes(s));
+            const wppLink = c.wpp ? `<a href="${c.wpp}" target="_blank" style="color:#25D366;font-size:0.72rem;font-weight:700;text-decoration:none;background:rgba(37,211,102,0.1);padding:2px 8px;border-radius:10px;border:1px solid rgba(37,211,102,0.3);">WPP</a>` : '';
+            const liderHtml = temLider
+                ? `<div style="margin-top:6px;padding:6px 10px;background:rgba(245,158,11,0.08);border-left:2px solid #F59E0B;border-radius:0 8px 8px 0;">
+                    <span style="font-size:0.6rem;letter-spacing:2px;color:#F59E0B;font-weight:700;text-transform:uppercase;">1º Líder</span>
+                    <div style="color:white;font-size:0.82rem;font-weight:600;">${c.lider1}${c.tel1 ? ' <span style="color:#94A3B8;font-weight:400;">· ' + c.tel1 + '</span>' : ''}</div>
+                   </div>`
+                : `<div style="margin-top:6px;font-size:0.72rem;color:rgba(148,163,184,0.5);font-style:italic;">Sem líder de jovens</div>`;
+
+            const card = document.createElement('div');
+            card.style.cssText = 'background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:0.9rem 1rem;transition:border-color 0.2s;';
+            card.onmouseover = () => card.style.borderColor = 'rgba(245,158,11,0.3)';
+            card.onmouseout  = () => card.style.borderColor = 'rgba(255,255,255,0.07)';
+            card.innerHTML = `
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;">
+                    <div style="flex:1;">
+                        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:4px;">
+                            <span style="font-size:0.65rem;color:#94A3B8;font-weight:700;background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:10px;">${String(i+1).padStart(2,'0')}</span>
+                            <span style="font-size:0.95rem;font-weight:800;color:white;">${c.cong}</span>
+                        </div>
+                        <div style="font-size:0.8rem;color:#94A3B8;">${c.dirigente}</div>
+                    </div>
+                    <div style="display:flex;gap:0.4rem;flex-shrink:0;align-items:center;">${wppLink}</div>
+                </div>
+                ${liderHtml}
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Fechar com ESC
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharLideres(); });
+
+    </script>
