@@ -37,12 +37,16 @@
         .year-badge { background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); color:var(--accent); padding:5px 14px; border-radius:30px; font-weight:700; font-size:0.75rem; letter-spacing:2px; }
 
         /* ── ABAS ── */
-        .tab-nav { display:flex; justify-content:center; padding:0; border-bottom:1px solid var(--glass-border); background:rgba(5,10,20,0.7); backdrop-filter:blur(10px); position:sticky; top:63px; z-index:199; }
-        .tab-btn { padding:0.85rem 1.8rem; background:none; border:none; color:var(--muted); font-family:inherit; font-size:0.75rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.3s, border-color 0.3s; }
+        .tab-nav { display:flex; justify-content:center; padding:0; border-bottom:1px solid var(--glass-border); background:rgba(5,10,20,0.7); backdrop-filter:blur(10px); position:sticky; top:63px; z-index:199; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+        .tab-nav::-webkit-scrollbar { display:none; }
+        .tab-nav::after { content:''; position:sticky; right:0; min-width:32px; background:linear-gradient(to left, rgba(5,10,20,0.9), transparent); pointer-events:none; flex-shrink:0; }
+        .tab-btn { padding:0.85rem 1.4rem; background:none; border:none; color:var(--muted); font-family:inherit; font-size:0.75rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.3s, border-color 0.3s; white-space:nowrap; flex-shrink:0; position:relative; }
         .tab-btn:hover { color:white; }
+        .tab-btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:4px; }
         .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
-        .tab-panel { display:none; }
-        .tab-panel.active { display:block; }
+        .tab-panel { display:none; opacity:0; }
+        .tab-panel.active { display:block; animation:tabFadeIn 0.35s ease forwards; }
+        @keyframes tabFadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
         /* ── HERO ── */
         .hero { text-align:center; padding:4.5rem 2rem 3rem; }
@@ -92,6 +96,8 @@
         /* Regionais dentro de Diretoria */
         .reg-dir-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
         .reg-dir-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:12px; padding:1rem 1.2rem; transition:border-color 0.3s; }
+        .reg-wpp { display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border-radius:50%;text-decoration:none;transition:transform 0.2s,background 0.2s;flex-shrink:0; }
+        .reg-wpp:hover { transform:scale(1.15); background:rgba(37,211,102,0.1); }
         .reg-dir-card:hover { border-color:rgba(245,158,11,0.3); }
         .reg-nome { font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:5px; }
         .reg-lider { font-size:0.92rem; font-weight:700; color:white; }
@@ -133,7 +139,7 @@
         .card-badge { font-size:0.65rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--primary); background:rgba(0,86,210,0.15); border:1px solid rgba(0,86,210,0.3); padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:1rem; }
         .card h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); font-weight:800; letter-spacing:-0.5px; line-height:1.1; margin-bottom:0.8rem; transition:color 0.3s; }
         .card:hover h2 { color:var(--accent); }
-        .card-coord { display:flex; flex-direction:column; gap:2px; margin-top:0.8rem; padding:0.6rem 0.8rem; background:rgba(255,255,255,0.03); border-radius:8px; border-left:2px solid var(--accent); }
+        .card-coord { display:flex; flex-direction:column; gap:2px; margin-top:0.8rem; padding:0.7rem 0.8rem; background:rgba(255,255,255,0.03); border-radius:8px; border-left:2px solid var(--accent); }
         .coord-label { font-size:0.55rem; letter-spacing:2px; text-transform:uppercase; color:var(--accent); font-weight:700; }
         .coord-nome { font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.85); }
         .card-info { display:flex; gap:1.5rem; margin-top:1.2rem; padding-top:1.2rem; border-top:1px solid var(--glass-border); }
@@ -163,9 +169,14 @@
 
         .proj-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:1rem; margin-bottom:1rem; }
         .proj-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:14px; padding:1.4rem 1.6rem; transition:border-color 0.3s, transform 0.3s; position:relative; overflow:hidden; }
-        .proj-card:hover { border-color:rgba(245,158,11,0.3); transform:translateY(-3px); }
-        .proj-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--primary),#3b82f6); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; }
-        .proj-card:hover::before { transform:scaleX(1); }
+        .proj-grid-ext .proj-card:hover { border-color:rgba(245,158,11,0.35); transform:translateY(-3px); }
+        .proj-grid-ext .proj-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#F59E0B,#d97706); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; }
+        .proj-grid-ext .proj-card:hover::before { transform:scaleX(1); }
+        .proj-grid-int .proj-card { border-color:rgba(59,130,246,0.1); }
+        .proj-grid-int .proj-card:hover { border-color:rgba(59,130,246,0.4); transform:translateY(-3px); }
+        .proj-grid-int .proj-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#3b82f6,#60a5fa); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; }
+        .proj-grid-int .proj-card:hover::before { transform:scaleX(1); }
+        .proj-grid-int .proj-num { color:#60a5fa; }
         .proj-num { font-size:0.58rem; letter-spacing:3px; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:5px; }
         .proj-title { font-size:1rem; font-weight:800; color:white; margin-bottom:0.5rem; }
         .proj-title em { color:var(--accent); font-style:normal; }
@@ -244,6 +255,25 @@
 ══════════════════════════════════════ -->
 <div id="tab-diretoria" class="tab-panel">
 <div class="page-wrap">
+
+    <!-- BUSCA DIRETORIA -->
+    <div style="padding:1.5rem 0 0.5rem;">
+        <input id="busca-diretoria" type="text" placeholder="🔍  Buscar membro da diretoria..." oninput="filtrarDiretoria()" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white;font-family:inherit;font-size:0.85rem;padding:0.7rem 1.1rem;border-radius:12px;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='rgba(245,158,11,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+        <div id="busca-diretoria-empty" style="display:none;text-align:center;color:#94A3B8;padding:2rem;font-size:0.85rem;">Nenhum resultado encontrado</div>
+    </div>
+
+    <!-- LEGENDA DE CORES -->
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;padding:0.8rem 0 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:0.5rem;">
+        <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#94A3B8;">
+            <div style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#d97706);flex-shrink:0;"></div> Liderança principal
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#94A3B8;">
+            <div style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#1d4ed8);flex-shrink:0;"></div> Coordenação de área
+        </div>
+        <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#94A3B8;">
+            <div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.15);flex-shrink:0;"></div> Assessoria
+        </div>
+    </div>
 
     <div class="sec-label">Presidência &amp; Coordenação Geral</div>
     <div class="foto-grid">
@@ -357,16 +387,16 @@
 
     <div class="sec-label">Coordenadores Regionais</div>
     <div class="reg-dir-grid">
-        <div class="reg-dir-card"><div class="reg-nome">Boa Vista</div><div class="reg-lider">Daniel Tararan</div><div class="reg-lider2">2º Flávio · Boa Vista</div><div class="reg-cong">Vila Leonice</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">Cajuru</div><div class="reg-lider">Paulo Bigode</div><div class="reg-cong">Vila Reno</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">CIC</div><div class="reg-lider">Edson Luiz da Silva</div><div class="reg-cong">Porto Belo</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">Bairro Novo</div><div class="reg-lider">Marcos Moreira</div><div class="reg-lider2">2º Mercadante · V. Americana</div><div class="reg-cong">Bairro Novo IV</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">Boqueirão</div><div class="reg-lider">Pb. Jimmy · Santa Inês</div><div class="reg-lider2">2º Alekes · Castelo Branco</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">Tatuquara</div><div class="reg-lider">Dyenisson Santos</div><div class="reg-lider2">2º Matheus · Rio Bonito</div><div class="reg-cong">Moradias Paraná</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">Pinheirinho</div><div class="reg-lider">Pb. Caio Rezende <em style="font-size:0.68rem;color:var(--muted)">(Interino)</em></div><div class="reg-cong">Pluma</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">Portão</div><div class="reg-lider">Pedro Henrique A. Ritter</div><div class="reg-cong">Portão</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">Santa Felicidade</div><div class="reg-lider">Lucas Wagner Andrade</div><div class="reg-cong">Jardim Pinheiros</div></div>
-        <div class="reg-dir-card"><div class="reg-nome">Matriz</div><div class="reg-lider">Coop. Charles de Oliveira</div><div class="reg-cong">Água Verde</div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Boa Vista</div><div class="reg-lider">Daniel Tararan</div><div class="reg-lider2">2º Flávio · Boa Vista</div><div class="reg-cong">Vila Leonice</div></div><a href="https://wa.me/5541995899160" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Cajuru</div><div class="reg-lider">Paulo Sérgio de Oliveira</div><div class="reg-cong">Vila Reno</div></div><a href="https://wa.me/5541995675449" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">CIC</div><div class="reg-lider">Edson Luiz da Silva</div><div class="reg-cong">Porto Belo</div></div><a href="https://wa.me/5541999888951" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Bairro Novo</div><div class="reg-lider">Marcos Moreira dos Santos</div><div class="reg-lider2">2º Mercadante · V. Americana</div><div class="reg-cong">Bairro Novo IV</div></div><a href="https://wa.me/5541991841894" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Boqueirão</div><div class="reg-lider">JimmyAlan de Oliveira</div><div class="reg-lider2">2º Alekes · Castelo Branco</div></div><a href="https://wa.me/5541998138156" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Tatuquara</div><div class="reg-lider">Dyenison Santos</div><div class="reg-lider2">2º Matheus · Rio Bonito</div><div class="reg-cong">Moradias Paraná</div></div><a href="https://wa.me/5541984647631" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Pinheirinho</div><div class="reg-lider">Caio Vinícius Rezende</div><div class="reg-cong">Vila Pluma</div></div><a href="https://wa.me/5541997199130" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Portão</div><div class="reg-lider">Pedro Henrique A. Ritter</div><div class="reg-cong">Portão</div></div><a href="https://wa.me/5541997228642" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Santa Felicidade</div><div class="reg-lider">Lucas Wagner Andrade</div><div class="reg-cong">Santa Felicidade</div></div><a href="https://wa.me/5541998415278" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
+        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Matriz</div><div class="reg-lider">Charles de Oliveira</div><div class="reg-cong">Água Verde</div></div><a href="https://wa.me/5551993822488" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
     </div>
 
 </div><!-- /page-wrap diretoria -->
@@ -391,22 +421,22 @@
     <table class="agenda-table">
         <thead><tr><th>Mês</th><th>Dia</th><th>Hora</th><th>Local</th><th>Evento</th></tr></thead>
         <tbody>
-            <tr><td><span class="a-mes">Fevereiro</span></td><td><span class="a-dia">23</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr><td><span class="a-mes">Março</span></td><td><span class="a-dia">16</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr><td><span class="a-mes">Abril</span></td><td><span class="a-dia">09</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Anfiteatro – FCC</span></td><td><span class="a-evento">Aula Magna – EJP UMADC</span><br><span class="a-tag t-ebj">EJP</span></td></tr>
-            <tr><td><span class="a-mes">Abril</span></td><td><span class="a-dia">11</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
-            <tr><td><span class="a-mes">Abril</span></td><td><span class="a-dia">20</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr><td><span class="a-mes">Maio</span></td><td><span class="a-dia">01</span></td><td><span class="a-hora">14h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">UMADC+</span><br><span class="a-tag t-esp">Especial</span></td></tr>
-            <tr><td><span class="a-mes">Junho</span></td><td><span class="a-dia">15</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr><td><span class="a-mes">Julho</span></td><td><span class="a-dia">11</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
+            <tr class="agenda-row" data-date="2026-02-23"><td><span class="a-mes">Fevereiro</span></td><td><span class="a-dia">23</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
+            <tr class="agenda-row" data-date="2026-03-16"><td><span class="a-mes">Março</span></td><td><span class="a-dia">16</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
+            <tr class="agenda-row" data-date="2026-04-09"><td><span class="a-mes">Abril</span></td><td><span class="a-dia">09</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Anfiteatro – FCC</span></td><td><span class="a-evento">Aula Magna – EJP UMADC</span><br><span class="a-tag t-ebj">EJP</span></td></tr>
+            <tr class="agenda-row" data-date="2026-04-11"><td><span class="a-mes">Abril</span></td><td><span class="a-dia">11</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
+            <tr class="agenda-row" data-date="2026-04-20"><td><span class="a-mes">Abril</span></td><td><span class="a-dia">20</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
+            <tr class="agenda-row" data-date="2026-05-01"><td><span class="a-mes">Maio</span></td><td><span class="a-dia">01</span></td><td><span class="a-hora">14h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">UMADC+</span><br><span class="a-tag t-esp">Especial</span></td></tr>
+            <tr class="agenda-row" data-date="2026-06-15"><td><span class="a-mes">Junho</span></td><td><span class="a-dia">15</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
+            <tr class="agenda-row" data-date="2026-07-11"><td><span class="a-mes">Julho</span></td><td><span class="a-dia">11</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
             <tr><td><span class="a-mes">Julho</span></td><td><span class="a-dia">16–18</span></td><td><span class="a-hora">19h30</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Escola Bíblica de Jovens UMADC</span><br><span class="a-tag t-ebj">EBJ</span></td></tr>
-            <tr><td><span class="a-mes">Agosto</span></td><td><span class="a-dia">17</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr><td><span class="a-mes">Setembro</span></td><td><span class="a-dia">21</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">10</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
-            <tr><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">19</span></td><td><span class="a-hora">20h00</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">23</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Anfiteatro – FCC</span></td><td><span class="a-evento">Workshop – Jovens Empreendedores UMADC</span><br><span class="a-tag t-esp">Especial</span></td></tr>
+            <tr class="agenda-row" data-date="2026-08-17"><td><span class="a-mes">Agosto</span></td><td><span class="a-dia">17</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
+            <tr class="agenda-row" data-date="2026-09-21"><td><span class="a-mes">Setembro</span></td><td><span class="a-dia">21</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
+            <tr class="agenda-row" data-date="2026-10-10"><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">10</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
+            <tr class="agenda-row" data-date="2026-10-19"><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">19</span></td><td><span class="a-hora">20h00</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
+            <tr class="agenda-row" data-date="2026-10-23"><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">23</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Anfiteatro – FCC</span></td><td><span class="a-evento">Workshop – Jovens Empreendedores UMADC</span><br><span class="a-tag t-esp">Especial</span></td></tr>
             <tr><td><span class="a-mes">Novembro</span></td><td><span class="a-dia">26–27</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Encerramento EJP UMADC</span><br><span class="a-tag t-ebj">EJP</span></td></tr>
-            <tr><td><span class="a-mes">Novembro</span></td><td><span class="a-dia">29</span></td><td><span class="a-hora">12h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Almoço – Confraternização UMADC</span><br><span class="a-tag t-esp">Especial</span></td></tr>
+            <tr class="agenda-row" data-date="2026-11-29"><td><span class="a-mes">Novembro</span></td><td><span class="a-dia">29</span></td><td><span class="a-hora">12h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Almoço – Confraternização UMADC</span><br><span class="a-tag t-esp">Especial</span></td></tr>
         </tbody>
     </table>
 
@@ -419,8 +449,12 @@
 <div id="tab-projetos" class="tab-panel">
 <div class="page-wrap">
 
-    <div class="sec-label">Ações Externas — Evangelismo na Cidade</div>
-    <div class="proj-grid">
+    <div style="display:flex;align-items:center;gap:1rem;padding:2.5rem 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#F59E0B;flex-shrink:0;box-shadow:0 0 8px rgba(245,158,11,0.6);"></div>
+        <span style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;">Ações Externas — Evangelismo na Cidade</span>
+        <span style="margin-left:auto;font-size:0.65rem;color:#94A3B8;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);padding:2px 10px;border-radius:20px;font-weight:700;">12 ações</span>
+    </div>
+    <div class="proj-grid proj-grid-ext">
         <div class="proj-card"><div class="proj-num">Ação Externa 01</div><div class="proj-title">🌳 <em>UMADC nos Parques</em></div><div class="proj-desc">Entrega de águas personalizadas com mensagens evangelísticas nos parques de Curitiba. Abordagem respeitosa com convite à comunidade.</div></div>
         <div class="proj-card"><div class="proj-num">Ação Externa 02</div><div class="proj-title">🏛️ <em>Clamor na Prefeitura</em></div><div class="proj-desc">Mobilização de oração intercessória na Prefeitura e Câmara de Vereadores. Oração pelas autoridades e pela cidade.</div></div>
         <div class="proj-card"><div class="proj-num">Ação Externa 03</div><div class="proj-title">🚌 <em>Transportando Vida</em></div><div class="proj-desc">Evangelismo nos ônibus com abordagens breves e respeitosas. Entrega de mensagens e palavras de esperança aos passageiros.</div></div>
@@ -435,8 +469,12 @@
         <div class="proj-card"><div class="proj-num">Ação Externa 12</div><div class="proj-title">📦 <em>Palavra em Movimento</em></div><div class="proj-desc">QR Codes em outdoors levando a devocionais, vídeos ou pedidos de oração — evangelismo urbano + tecnologia.</div></div>
     </div>
 
-    <div class="sec-label" style="margin-top:2rem;">Ações Internas — Dentro das Congregações</div>
-    <div class="proj-grid">
+    <div style="display:flex;align-items:center;gap:1rem;padding:2.5rem 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;margin-top:1rem;">
+        <div style="width:10px;height:10px;border-radius:50%;background:#3b82f6;flex-shrink:0;box-shadow:0 0 8px rgba(59,130,246,0.6);"></div>
+        <span style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:#60a5fa;font-weight:700;">Ações Internas — Dentro das Congregações</span>
+        <span style="margin-left:auto;font-size:0.65rem;color:#94A3B8;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);padding:2px 10px;border-radius:20px;font-weight:700;">11 ações</span>
+    </div>
+    <div class="proj-grid proj-grid-int">
         <div class="proj-card"><div class="proj-num">Ação Interna 00</div><div class="proj-title">✍️ <em>Entrelinhas</em></div><div class="proj-desc">Comunicação escrita e falada para evangelizar lares e alcançar pessoas que não frequentam a igreja. Inclui revista Entrelinhas, Programa de Rádio e Programa UMADC.</div></div>
         <div class="proj-card"><div class="proj-num">Ação Interna 01</div><div class="proj-title">📖 <em>EBJ Evangelística</em></div><div class="proj-desc">Isentar a inscrição do participante e do convidado não crente. Tornar a Escola Bíblica um evento aberto à cidade.</div></div>
         <div class="proj-card"><div class="proj-num">Ação Interna 02</div><div class="proj-title">🌱 <em>GC – Grupo de Crescimento</em></div><div class="proj-desc">Liturgia simples com linguagem acessível para crentes e não convertidos nas sextas-feiras.</div></div>
@@ -477,7 +515,7 @@ regionais.forEach((r, i) => {
     a.href = `regional.html?regional=${encodeURIComponent(r.nome)}`;
     a.className = 'card' + (r.featured ? ' featured' : '');
     a.style.animationDelay = `${0.05*i+0.1}s`;
-    const wppIcon = '';
+
 
     a.innerHTML = `
         <div class="card-num">${String(i+1).padStart(2,'0')}</div>
@@ -499,11 +537,73 @@ regionais.forEach((r, i) => {
 
 // ── SISTEMA DE ABAS ──────────────────────────────────────
 function switchTab(id, btn) {
-    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => {
+        p.classList.remove('active');
+        p.style.display = 'none';
+    });
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('tab-' + id).classList.add('active');
+    const panel = document.getElementById('tab-' + id);
+    panel.style.display = 'block';
+    requestAnimationFrame(() => panel.classList.add('active'));
     btn.classList.add('active');
     window.scrollTo({ top: 0, behavior:'smooth' });
+}
+
+// ── PRÓXIMO EVENTO NA AGENDA ─────────────────────────────
+(function() {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const rows = document.querySelectorAll('.agenda-row');
+    let found = false;
+    rows.forEach(row => {
+        if (found) return;
+        const d = new Date(row.dataset.date + 'T00:00:00');
+        if (d >= today) {
+            row.classList.add('proximo');
+            const evSpan = row.querySelector('.a-evento');
+            if (evSpan) {
+                const badge = document.createElement('span');
+                badge.className = 'proximo-badge';
+                badge.textContent = 'Próximo';
+                evSpan.appendChild(badge);
+            }
+            found = true;
+        }
+    });
+})();
+
+// ── BUSCA NA DIRETORIA ────────────────────────────────────
+function filtrarDiretoria() {
+    const q = document.getElementById('busca-diretoria').value.toLowerCase().trim();
+    const empty = document.getElementById('busca-diretoria-empty');
+    const cards = document.querySelectorAll('#tab-diretoria .dir-card, #tab-diretoria .foto-card, #tab-diretoria .reg-dir-card');
+    let found = 0;
+
+    if (!q) {
+        cards.forEach(c => c.style.display = '');
+        document.querySelectorAll('#tab-diretoria .sec-label, #tab-diretoria .foto-grid, #tab-diretoria .dir-grid, #tab-diretoria .reg-dir-grid').forEach(el => el.style.display = '');
+        empty.style.display = 'none';
+        return;
+    }
+
+    cards.forEach(c => {
+        const text = c.textContent.toLowerCase();
+        const show = text.includes(q);
+        c.style.display = show ? '' : 'none';
+        if (show) found++;
+    });
+
+    // Esconder seções vazias
+    document.querySelectorAll('#tab-diretoria .sec-label').forEach(label => {
+        const next = label.nextElementSibling;
+        if (!next) return;
+        const visible = next.querySelectorAll('[style=""], [style]:not([style*="none"])');
+        const hasVisible = Array.from(next.children).some(c => c.style.display !== 'none');
+        label.style.display = hasVisible ? '' : 'none';
+        next.style.display = hasVisible ? '' : 'none';
+    });
+
+    empty.style.display = found === 0 ? 'block' : 'none';
 }
 
 // ── CONTADORES ───────────────────────────────────────────
