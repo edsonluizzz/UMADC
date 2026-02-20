@@ -1274,14 +1274,17 @@
         `;
         document.body.appendChild(blocoCoord);
 
-        // Esconder nas outras slides (mostrar só no slide 1)
-        document.addEventListener('scroll', () => {
-            const s1 = document.getElementById('slide-1');
-            if (!s1) return;
-            const rect = s1.getBoundingClientRect();
-            blocoCoord.style.opacity = (rect.bottom > 80 && rect.top < window.innerHeight) ? '1' : '0';
-            blocoCoord.style.pointerEvents = (rect.bottom > 80 && rect.top < window.innerHeight) ? 'auto' : 'none';
-        }, { passive: true });
+        // Mostrar só no slide 1 via IntersectionObserver no #deck
+        blocoCoord.style.transition = 'opacity 0.3s';
+        const s1 = document.getElementById('slide-1');
+        const deck = document.getElementById('deck');
+        if (s1 && deck) {
+            const obs = new IntersectionObserver(([entry]) => {
+                blocoCoord.style.opacity = entry.isIntersecting ? '1' : '0';
+                blocoCoord.style.pointerEvents = entry.isIntersecting ? 'auto' : 'none';
+            }, { root: deck, threshold: 0.5 });
+            obs.observe(s1);
+        }
     }
     // ============================================================
     const canvas = document.getElementById('particles');
