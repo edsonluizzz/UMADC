@@ -1,29 +1,32 @@
 /*
   UMADC Push (FCM) – Fase 1 (Instalável + Avisos)
-  - Você vai configurar o Firebase e colar aqui:
-    1) firebaseConfig (Web App)
-    2) vapidPublicKey (Cloud Messaging > Web Push certificates)
-
-  Sem isso, o botão "Ativar avisos" aparece, mas vai avisar que falta configurar.
+  - Já configurado com seu Firebase + VAPID
+  - Este mesmo arquivo é usado:
+    1) no navegador (botão "Ativar avisos")
+    2) no Service Worker (para push em background), via importScripts("./push.js")
 */
 
-// (Para o Service Worker) – quando você preencher firebaseConfig, copie também para self.__FIREBASE_CONFIG__
-self.__FIREBASE_CONFIG__ = null;
+// ===== Firebase (Web App) =====
+const firebaseConfig = {
+  apiKey: "AIzaSyBGKVUj7I_TJJVn4wmg0zwUwqMrNc8uEFg",
+  authDomain: "umadc-e320f.firebaseapp.com",
+  projectId: "umadc-e320f",
+  storageBucket: "umadc-e320f.firebasestorage.app",
+  messagingSenderId: "233749794147",
+  appId: "1:233749794147:web:3b3cdeffa4ff1f32e9756"
+};
 
-// ===== PREENCHA AQUI =====
-// const firebaseConfig = {
-//   apiKey: "",
-//   authDomain: "",
-//   projectId: "",
-//   storageBucket: "",
-//   messagingSenderId: "",
-//   appId: ""
-// };
-// const vapidPublicKey = "";
-// self.__FIREBASE_CONFIG__ = firebaseConfig; // <-- depois de preencher, descomente esta linha
-// =========================
+// ===== VAPID (Web Push certificate - public key) =====
+const vapidPublicKey = "BOR69OPE5q8UPjCYlheEPfAKJ66DojJao2gZjvxDkPIrFLAOFs1H8X3VuxUvouhYmzsQV2UdjKNqea4uKBg3tD0";
 
+// Para o Service Worker conseguir inicializar o Firebase em background:
+self.__FIREBASE_CONFIG__ = firebaseConfig;
+
+// ===== Browser code (button + token) =====
 (function () {
+  // Evita rodar no contexto do Service Worker
+  if (typeof window === "undefined" || typeof document === "undefined") return;
+
   function addPushButton() {
     if (!("Notification" in window)) return;
     if (document.getElementById("btn-push")) return;
@@ -53,8 +56,8 @@ self.__FIREBASE_CONFIG__ = null;
 
     btn.onclick = async () => {
       try {
-        if (typeof firebaseConfig === "undefined" || typeof vapidPublicKey === "undefined" || !vapidPublicKey) {
-          alert("Falta configurar o Firebase (FCM) no arquivo push.js.");
+        if (!vapidPublicKey) {
+          alert("Falta configurar a VAPID key.");
           return;
         }
 
