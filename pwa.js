@@ -4,7 +4,9 @@
   async function registerSW() {
     if (!("serviceWorker" in navigator)) return null;
     try {
-      return await navigator.serviceWorker.register(SW_PATH, { scope: "./" });
+      return await navigator.serviceWorker.register("./service-worker.js", {
+  scope: "/UMADC/"
+});
     } catch (e) {
       console.warn("SW register failed", e);
       return null;
