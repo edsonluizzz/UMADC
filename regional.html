@@ -1269,191 +1269,1017 @@
     // DADOS DE LÍDERES POR REGIONAL
     // ============================================================
     const LIDERES = {
-      "Bairro Novo": [
-        {cong:"Bairro Novo I",dirigente:"Pr. Orandir Aparecido de Souza",tel:"(41) 99243-3624",wpp:"https://wa.me/5541992433624",lider1:"Adenilson Rodrigues",tel1:"41 99618-9148"},
-        {cong:"Bairro Novo II",dirigente:"Pr Rubens da Cruz Junior",tel:"(41) 99959-5112",wpp:"https://wa.me/5541999595112",lider1:"Lucas Leski",tel1:"41 99560-6116"},
-        {cong:"Bairro Novo III",dirigente:"Pr. Eron da Silva de Cerqueira",tel:"(41) 99965-7147",wpp:"https://wa.me/5541999657147",lider1:"Lucas Azevedo",tel1:"41 98797-6605"},
-        {cong:"Bairro Novo VI",dirigente:"Pr. Ezequiel Corrêa de Oliveira",tel:"(41) 99906-5758",wpp:"https://wa.me/5541999065758",lider1:"Fred Souza",tel1:"41 99855-8284"},
-        {cong:"Cachoeira II",dirigente:"Ev. Gilmar Pedro de Barros",tel:"(41) 99993-7874",wpp:"https://wa.me/5541999937874",lider1:"João Paulo",tel1:"41 99960-8783"},
-        {cong:"Ganchinho",dirigente:"Ev. Eden Barbalho",tel:"(41) 99979-9515",wpp:"https://wa.me/5541999799515",lider1:"",tel1:""},
-        {cong:"Moradias Coqueiros II",dirigente:"Ev. Alceni Ribeiro dos Santos",tel:"(41) 99768-4703",wpp:"https://wa.me/5541997684703",lider1:"Rubens",tel1:"41 99940-8503"},
-        {cong:"Moradias Hebron",dirigente:"Ev. Elizeu Ruivo da Silva",tel:"(41) 98518-4861",wpp:"https://wa.me/55419985184861",lider1:"",tel1:""},
-        {cong:"Novo Horizonte",dirigente:"Ev. Otoniel Barroso",tel:"(41) 99945-4351",wpp:"https://wa.me/5541999454351",lider1:"Gustavo Trecino",tel1:"41 99144-4472"},
-        {cong:"Osternack",dirigente:"Pr. Edson Candido da Silva",tel:"(41) 999707290",wpp:"https://wa.me/5541999707290",lider1:"Melquisedeque Nobre",tel1:"41 99943-5674"},
-        {cong:"Osternack II",dirigente:"Ev. Avelino Nogueira Gomes",tel:"(41) 99199-6867",wpp:"https://wa.me/5541991996867",lider1:"",tel1:""},
-        {cong:"Santa Celeste",dirigente:"Pr. Geciel Paulo de Oliveira",tel:"(41) 99644-3151",wpp:"https://wa.me/5541996443151",lider1:"Allan Brito",tel1:"41 99892-5822"},
-        {cong:"Umbará",dirigente:"Pr. Leandro Sauerbier",tel:"(41) 99709-9114",wpp:"https://wa.me/5541997099114",lider1:"Diego Angelo",tel1:"41 99823-4710"},
-        {cong:"Vila Americana",dirigente:"Pr. Izaias Honorato Felício",tel:"(41) 98401-2503",wpp:"https://wa.me/5541984012503",lider1:"Willian Colman",tel1:"41 99706-0480"},
-        {cong:"Vila Calixto",dirigente:"Pr. Januário Henrique Ferreira Mello",tel:"(41) 99982-1760",wpp:"https://wa.me/5541999821760",lider1:"Jhonni Picoli",tel1:"41 99586-9128"},
-        {cong:"Vila Guilherme",dirigente:"Pb. Paulo Sérgio Lopes Ferreira",tel:"(41) 99271-1251",wpp:"https://wa.me/5541992711251",lider1:"Jonatham",tel1:"41 99525-8209"},
-        {cong:"Vila Rio Negro",dirigente:"Ev. Jean Carlos Felipe",tel:"(41) 99508-0502",wpp:"https://wa.me/5541995080502",lider1:"Lucas Sidinei",tel1:"41 99525-3037"},
-        {cong:"Xapinhal",dirigente:"Pr. Alex Sandro Rosa dos Santos",tel:"(41) 98472-8012",wpp:"https://wa.me/5541984728012",lider1:"Marcos Tarachu",tel1:"41 98516-1394"},
-        {cong:"Xapinhal II",dirigente:"Pr. Pedro Alves Silva de Souza",tel:"(41) 98880-5219",wpp:"https://wa.me/5541984728012",lider1:"Givanildo",tel1:"41 99693-5373"}
-      ],
-      "Boa Vista": [
-        {cong:"Alto Tarumã",dirigente:"Pb. Natanael Souza Affonso",tel:"(41) 99623-9960",wpp:"https://wa.me/5541996239960",lider1:"Rober",tel1:"41 99683-5052"},
-        {cong:"Bacacheri",dirigente:"Pr. Laercio Rodrigues dos Santos",tel:"(41) 98404-2741",wpp:"https://wa.me/554198042741",lider1:"Wuellinton",tel1:"41 99903-6730"},
-        {cong:"Bairro Alto",dirigente:"Pr. Alessandro Lacerda de Assis",tel:"(41) 99619-6777",wpp:"https://wa.me/5541996196777",lider1:"Mirian",tel1:"41 98507-4320"},
-        {cong:"Barreirinha",dirigente:"Ev. Felipe José da Silva Gonçalves",tel:"(41) 99172-7623",wpp:"https://wa.me/5541991727623",lider1:"Mateus",tel1:"41 99503-7990"},
-        {cong:"Boa Vista",dirigente:"Pr. Edilson de Oliveira",tel:"(41) 99997-1441",wpp:"https://wa.me/5541999971441",lider1:"Flávio",tel1:"41 98850-6913"},
-        {cong:"Copel",dirigente:"Pr. Elieber José da Silva",tel:"(41) 99778-9732",wpp:"https://wa.me/5541997789732",lider1:"Lucas",tel1:"41 99168-7417"},
-        {cong:"Fernando de Noronha",dirigente:"Pr. Arlindo Vieira de Santana",tel:"(41) 99699-8965",wpp:"https://wa.me/5541996998965",lider1:"Mariana",tel1:"41 99863-5839"},
-        {cong:"Higienópolis",dirigente:"Pr. Irineu Ricardo Ferreira Marios",tel:"(41) 98834-1616",wpp:"https://wa.me/5541988341616",lider1:"Anderson",tel1:"41 99603-6381"},
-        {cong:"Jardim Arroio",dirigente:"Pb. Paulo Paulista",tel:"(41) 99919-0049",wpp:"https://wa.me/5541999190049",lider1:"Marcielly",tel1:"41 98525-1422"},
-        {cong:"Jardim Cruzeiro do Sul",dirigente:"Pr. Fabio Augusto B. C. Bittencourt",tel:"(41) 99956-8601",wpp:"https://wa.me/5541999568601",lider1:"Thiago",tel1:"41 99655-1693"},
-        {cong:"Jardim Granada",dirigente:"Ev. Isaias Conceição Daniel",tel:"(41) 98527-0205",wpp:"https://wa.me/5541985270205",lider1:"Priscila",tel1:"41 99691-6348"},
-        {cong:"Jardim Paraiso",dirigente:"Pr. Jovito Inácio",tel:"(41) 99936-1641",wpp:"https://wa.me/5541999361641",lider1:"Thiago",tel1:"41 99665-4020"},
-        {cong:"Jardim Primavera II",dirigente:"Ev. Lucas da Cunha Rodrigues",tel:"(41) 99590-2648",wpp:"https://wa.me/5541995902648",lider1:"Josiel",tel1:"41 99729-3889"},
-        {cong:"Moradias Faxinal",dirigente:"Pb. Alexsandro Ferreira Lustosa",tel:"(41) 99967-9370",wpp:"https://wa.me/5541999679370",lider1:"",tel1:""},
-        {cong:"Parque Tanguá",dirigente:"Ev. Jonival Siqueira",tel:"(41) 99956-8616",wpp:"https://wa.me/554199568616",lider1:"Alex",tel1:"41 99642-9622"},
-        {cong:"Pilarzinho",dirigente:"Pr. João Alves da Rocha",tel:"(41) 99634-5594",wpp:"https://wa.me/554199565594",lider1:"Bem Hur",tel1:"42 99966-3994"},
-        {cong:"Planta Califórnia",dirigente:"Ev. Everaldo Aparecido Vieira de Matos",tel:"(41) 99969-8273",wpp:"https://wa.me/554199568273",lider1:"Juliano",tel1:"41 99931-0358"},
-        {cong:"Planta Paraiso",dirigente:"Pb. Samuel de Souza",tel:"(41) 99937-7754",wpp:"https://wa.me/554199567754",lider1:"Hellen",tel1:"41 99696-5728"},
-        {cong:"Solar (Bacacheri)",dirigente:"Pb. Izaias Rodrigues Cavalheiro",tel:"(41) 99698-6129",wpp:"https://wa.me/5541996986129",lider1:"",tel1:""},
-        {cong:"Tingui",dirigente:"Ev. Alexandre de Matos Leal",tel:"(41) 99139-2332",wpp:"https://wa.me/554199562332",lider1:"Gabriele",tel1:"41 98514-2038"},
-        {cong:"Vila Esperança",dirigente:"Pr. Airton Zambeli Junker",tel:"(41) 99734-5700",wpp:"https://wa.me/554199565700",lider1:"Claudinei",tel1:"41 99965-7183"},
-        {cong:"Vila Fátima",dirigente:"Pr. Pedro Marques dos Santos",tel:"(41) 98739-9786",wpp:"https://wa.me/554199569786",lider1:"Marco",tel1:"41 99506-9030"},
-        {cong:"Vila Galia",dirigente:"Pr. Jeriel Vieira",tel:"(41) 99931-4697",wpp:"https://wa.me/554199564697",lider1:"",tel1:""},
-        {cong:"Vila Krasinski",dirigente:"Ev. Alexandre Pereira Shlisinski",tel:"(41) 99985-8995",wpp:"https://wa.me/554199568995",lider1:"Juliano",tel1:"41 99803-1786"},
-        {cong:"Vila Leonice",dirigente:"Pr. Paulo Cezer Kremer dos Santos",tel:"(41) 92000-3957",wpp:"https://wa.me/554199563957",lider1:"Daniel",tel1:"41 99589-9160"},
-        {cong:"Vila São João",dirigente:"Pr. Hercilio Leodoro",tel:"(41) 98412-8083",wpp:"https://wa.me/5541984128083",lider1:"Tiago",tel1:"41 98740-4273"},
-        {cong:"Vila Tupi",dirigente:"Pb. Haroldo Procopio de Oliveira",tel:"(41) 99750-5304",wpp:"https://wa.me/554199565304",lider1:"Flávio",tel1:"41 99794-5039"}
-      ],
-      "Boqueirão": [
-        {cong:"Areal",dirigente:"Pr. Andre Luis Souza",tel:"(41) 99990-8843",wpp:"https://wa.me/5541999908843",lider1:"Conceição",tel1:"41 996644991"},
-        {cong:"Boqueirão",dirigente:"Ev. Eli Cesar Ribeiro",tel:"(41) 99173-8042",wpp:"https://wa.me/5541991738042",lider1:"Italo",tel1:"41 995227787"},
-        {cong:"Diagonal",dirigente:"Ev. Jonathan Carvalho De Souza",tel:"(41) 99883-3946",wpp:"https://wa.me/5541998833946",lider1:"Fabio",tel1:"41 998512863"},
-        {cong:"Hauer",dirigente:"Pr. Linderson Marcos Romano",tel:"(41) 99958-5362",wpp:"https://wa.me/5541999585362",lider1:"Andre Luiz Bongiovani",tel1:"41 988859768"},
-        {cong:"Hauer Belém",dirigente:"Pr. Nelson José Rosa",tel:"(41) 99104-1718",wpp:"https://wa.me/5541991041718",lider1:"Rodney",tel1:"41 997882387"},
-        {cong:"Jardim Castelo Branco",dirigente:"Pr. Cesar Batista",tel:"(41) 99711-1521",wpp:"https://wa.me/5541997111521",lider1:"Alekes Camargo",tel1:"41 995019490"},
-        {cong:"Jardim Esmeralda",dirigente:"Ev. Marcelo Lima de Melo Montoski",tel:"(41) 99165-0831",wpp:"https://wa.me/5541991650831",lider1:"Josiel Venancio",tel1:"41 998655786"},
-        {cong:"Jardim Itamarati",dirigente:"Pr. Josué Ferro de Souza",tel:"(41) 99562-7683",wpp:"https://wa.me/5541995627683",lider1:"Jeremias",tel1:"41 991718391"},
-        {cong:"Jardim Maringá",dirigente:"Pr. Wanderlei Domingues da Silva Lopes",tel:"(41) 98506-2022",wpp:"https://wa.me/5541985062022",lider1:"Marcio",tel1:"41 995530207"},
-        {cong:"Jardim Paranaense",dirigente:"Pr. Elias de Oliveira",tel:"(41) 99192-5442",wpp:"https://wa.me/5541991925442",lider1:"Adriel Vieira",tel1:"41 984612654"},
-        {cong:"Jardim Urano",dirigente:"Pr. Valdemar Ferreira dos Santos",tel:"(41) 99207-9331",wpp:"https://wa.me/5541992079331",lider1:"Estani",tel1:"41 996219440"},
-        {cong:"Moradias Pantanal",dirigente:"Pb. Jurandir Candido Batista Junior",tel:"(41) 99921-1759",wpp:"https://wa.me/5541999211759",lider1:"Sergio",tel1:"41 988501627"},
-        {cong:"Planta Maria Luiza",dirigente:"Ev. Expedito Cilas Marcos Nunes",tel:"(41) 99758-3054",wpp:"https://wa.me/5541997583054",lider1:"Ricardo",tel1:"41 998197191"},
-        {cong:"Santa Inês",dirigente:"Ev. Silvano Montoski (Interino)",tel:"(41) 99658-8846",wpp:"https://wa.me/5541996588846",lider1:"Peter Fernando",tel1:"41 988027823"},
-        {cong:"Terminal do Boqueirão",dirigente:"Pr. Sergio Luiz Schroeder",tel:"(41) 99911-9899",wpp:"https://wa.me/5541999119899",lider1:"Marcelo Rocha",tel1:"41 996993251"},
-        {cong:"Vila Barretos",dirigente:"Pr. Valdir Bergamaski",tel:"(41) 99901-3590",wpp:"https://wa.me/5541999013590",lider1:"Mizael",tel1:"41 997423614"},
-        {cong:"Xaxim",dirigente:"Pr. Fábio Mariano de Oliveira",tel:"(41) 99678-2943",wpp:"https://wa.me/5541996782943",lider1:"Fernando",tel1:"41 999839655"}
-      ],
-      "Cajuru": [
-        {cong:"Autódromo",dirigente:"Pr. Samuel Wellington Moreira",tel:"(41) 99730-5156",wpp:"https://wa.me/5541997305156",lider1:"Nelcides Pereira",tel1:"41 997644793"},
-        {cong:"Cajuru",dirigente:"Pr. Luiz Carlos da Costa",tel:"(41) 99514-5999",wpp:"https://wa.me/5541995145999",lider1:"Leandro Ferreira",tel1:"41 998264943"},
-        {cong:"Capão da Imbuía",dirigente:"Pr. Rogerio Lacerda Marchiode",tel:"(41) 99122-8787",wpp:"https://wa.me/5541991228787",lider1:"Renan Falavinha",tel1:"41 998126219"},
-        {cong:"Jardim Acrópole",dirigente:"Pr. Ednalvo Rodrigues Evangelista",tel:"(41) 99893-9080",wpp:"https://wa.me/5541998939080",lider1:"",tel1:""},
-        {cong:"Jardim Araguaia",dirigente:"Ev. Ronaldo Dias de Oliveira",tel:"(41) 99931-1386",wpp:"https://wa.me/5541999311386",lider1:"Edino Wolpe",tel1:"41 998791050"},
-        {cong:"Jardim Icaraí",dirigente:"Pr. Ivo Valentim de Souza",tel:"(41) 99987-8202",wpp:"https://wa.me/5541999878202",lider1:"Lorena",tel1:"41 995068926"},
-        {cong:"Jardim Natália",dirigente:"Pr. Valdecir de Paula Rodrigues",tel:"(41) 99649-1002",wpp:"https://wa.me/5541996491002",lider1:"Elton Maciel",tel1:"41 999036383"},
-        {cong:"Jardim Petrópolis",dirigente:"Pr. Rogerio Marçal de Souza",tel:"(41) 99689-5125",wpp:"https://wa.me/5541996895125",lider1:"Luiz Alberto",tel1:"41 988670753"},
-        {cong:"Jardim União",dirigente:"Ev. Vinicius de Paula Pinto",tel:"(41) 99138-9876",wpp:"https://wa.me/5541991389876",lider1:"Thiago Abdala",tel1:"41 987008315"},
-        {cong:"Jardim das Américas",dirigente:"Ev. Denilson Soares de Lima",tel:"(41) 98514-9693",wpp:"https://wa.me/5541985149693",lider1:"Gleisson",tel1:"88 994550142"},
-        {cong:"Lotiguaçu",dirigente:"Ev. Jocsã Ramos da Silva",tel:"(41) 99816-1386",wpp:"https://wa.me/5541998161386",lider1:"Ronaldo Nunes",tel1:"41 999646117"},
-        {cong:"Planta Evaristo",dirigente:"Ev. Ivo Alves Santana",tel:"(41) 99612-8283",wpp:"https://wa.me/5541996128283",lider1:"Rose",tel1:"41 996379361"},
-        {cong:"Santa Bárbara",dirigente:"Ev. Andre Luis Nascimento Santos",tel:"(41) 98743-2290",wpp:"https://wa.me/5541987432290",lider1:"",tel1:""},
-        {cong:"Santa Rosa",dirigente:"Pr. Vanderlei Boy",tel:"(41) 99945-2305",wpp:"https://wa.me/5541999452305",lider1:"Aline",tel1:"41 999059440"},
-        {cong:"Uberaba de Cima",dirigente:"Ev. Jurandir da Silveira Penha Júnior",tel:"(41) 99925-1120",wpp:"https://wa.me/5541999251120",lider1:"Andre",tel1:"41 996276432"},
-        {cong:"Vila Camargo",dirigente:"Pb. Laucenir Francisco de Assis Gomes",tel:"(41) 98725-6289",wpp:"https://wa.me/5541987256289",lider1:"",tel1:""},
-        {cong:"Vila Germano",dirigente:"Pr. Isaac Pires de Oliveira",tel:"(41) 99696-0410",wpp:"https://wa.me/5541996960410",lider1:"Ivan Canozi",tel1:"41 985078275"},
-        {cong:"Vila Macedo",dirigente:"Ev. Deocar Fernando Abdalla",tel:"(41) 99934-6926",wpp:"https://wa.me/5541999346926",lider1:"Jaci",tel1:"41 995872429"},
-        {cong:"Vila Oficinas",dirigente:"Pr. Jeziel Moraes Pereira",tel:"(41) 98821-2651",wpp:"https://wa.me/5541988212651",lider1:"Jean Willemann",tel1:"41 998445989"},
-        {cong:"Vila Reno",dirigente:"Ev. Hamilton Ramalho dos Santos",tel:"(41) 99166-0671",wpp:"https://wa.me/5541991660671",lider1:"Paulo Sergio",tel1:"41 995675449"},
-        {cong:"Vila Sofia",dirigente:"Pr. Elias Ferreira dos Santos",tel:"(41) 99663-7518",wpp:"https://wa.me/5541996637518",lider1:"Solange Santos",tel1:"41 987918354"},
-        {cong:"Vila São Domingos",dirigente:"Pr. Flavio de Souza Gomes",tel:"(41) 99635-6928",wpp:"https://wa.me/5541996356928",lider1:"Neila",tel1:"71 992490201"},
-        {cong:"Vila São Paulo",dirigente:"Pb. Izaias Ferreira de Oliveira",tel:"(41) 99865-3400",wpp:"https://wa.me/5541998653400",lider1:"Sueli Almeida",tel1:"41 996728469"}
-      ],
-      "CIC": [
-        {cong:"Alto Barigui",dirigente:"Pr. Alex Rodrigues de Jesus",tel:"(41) 99266-5586",wpp:"https://wa.me/5541992665586",lider1:"Leandro Augusto dos Santos",tel1:"(41) 99981-4360"},
-        {cong:"Alto Bela Vista",dirigente:"Pr. Eziquiel Trincaus",tel:"(41) 99964-1783",wpp:"https://wa.me/5541999641783",lider1:"Joabe",tel1:"(41) 99500-6005"},
-        {cong:"Alto Bela Vista II (Vera Cruz)",dirigente:"Pr. Sebastião Bispo de Assunção",tel:"(41) 99696-3115",wpp:"https://wa.me/5541996963115",lider1:"Antônio Carlos Leopoldino",tel1:"(41) 99532-9206"},
-        {cong:"CIC",dirigente:"Pr. Cleverson Padilha",tel:"(41) 99911-9893",wpp:"https://wa.me/5541999119893",lider1:"Bruno Gabriel",tel1:"(41) 99769-5992"},
-        {cong:"Diadema II",dirigente:"Ev. Paulo Sérgio Teodoro",tel:"(41) 99539-4388",wpp:"https://wa.me/5541995394388",lider1:"Marcelo Ferreira",tel1:"(41) 99973-3596"},
-        {cong:"Itatiaia",dirigente:"Ev. Francisco Borges Filho",tel:"(41) 98453-7138",wpp:"https://wa.me/5541984537138",lider1:"Eron",tel1:"(41) 99786-5146"},
-        {cong:"Jardim Independência",dirigente:"Pb. Marcelo Martins da Silva",tel:"(41) 98834-1285",wpp:"https://wa.me/5541988341285",lider1:"Priscila",tel1:"(41) 98893-9521"},
-        {cong:"Porto Belo",dirigente:"Pb. Ailton Tavares de Santana",tel:"(41) 99632-1297",wpp:"https://wa.me/5541996321297",lider1:"Edson Luiz",tel1:"(41) 99988-8951"},
-        {cong:"Santa Helena",dirigente:"Pr. Jeter Brocanelli Barbosa",tel:"(41) 99999-7116",wpp:"https://wa.me/5541999997116",lider1:"",tel1:""},
-        {cong:"São José do Passaúna",dirigente:"Pr. Arnaldo Pereira Pardinho",tel:"(41) 99860-3704",wpp:"https://wa.me/5541998603704",lider1:"Daniel",tel1:"(41) 99615-7419"},
-        {cong:"São Rafael",dirigente:"Pr. Gilberto de Melo",tel:"(41) 99643-3354",wpp:"https://wa.me/5541996433354",lider1:"",tel1:""},
-        {cong:"Vera Cruz",dirigente:"Pr. Jizreel Oséias Maciel",tel:"(41) 99576-0203",wpp:"https://wa.me/5541995760203",lider1:"Alisson Gabriel",tel1:"(41) 99730-6963"},
-        {cong:"Vila Augusta",dirigente:"Pb. José Roberto Miranda",tel:"(41) 99630-0658",wpp:"https://wa.me/5541996300658",lider1:"Douglas Alves",tel1:"(41) 99637-4246"},
-        {cong:"Vila Nova",dirigente:"Ev. Alceu Ferreira Lima",tel:"(41) 99917-4533",wpp:"https://wa.me/5541999174533",lider1:"Ivan",tel1:"(41) 99675-7611"},
-        {cong:"Vila Rigoni",dirigente:"Ev. Enoc Nogueira dos Reis",tel:"(41) 99964-3496",wpp:"https://wa.me/5541999643496",lider1:"Samuel",tel1:"(41) 98482-4728"},
-        {cong:"Vila Rose",dirigente:"Pr. João Carlos Alves Leite",tel:"(41) 99700-1103",wpp:"https://wa.me/5541997001103",lider1:"Ricardo",tel1:"(41) 99138-8190"},
-        {cong:"Vila Sabará",dirigente:"Ev Fabio Pinheiro de Almeida",tel:"(41) 99674-1219",wpp:"https://wa.me/5541996741219",lider1:"Gabriel Mello",tel1:"(41) 98773-7154"},
-        {cong:"Vila Santana",dirigente:"Pr. Elias Pereira Pardinho",tel:"(41) 99742-2544",wpp:"https://wa.me/5541997422544",lider1:"Marcelo Santana",tel1:"(41) 99682-1671"},
-        {cong:"Vila Verde",dirigente:"Pr. Agnaldo Almeida Vieira",tel:"(41) 99989-7670",wpp:"https://wa.me/5541999897670",lider1:"Nielson Manoel da Silva",tel1:"(41) 98844-9521"},
-        {cong:"Vila Vitória Riviera",dirigente:"Pb. Anderson Pereira de Oliveira",tel:"(41) 99829-4642",wpp:"https://wa.me/5541998294642",lider1:"Juliana Souza",tel1:"(41) 99736-2721"},
-        {cong:"Vitória Régia",dirigente:"Ev. Pedro Alves da Cruz",tel:"(41) 99965-8065",wpp:"https://wa.me/5541999658065",lider1:"Lucas Knop",tel1:"(41) 99986-9967"},
-        {cong:"Zimbros (Vila Nova)",dirigente:"Pb. Ewerton Gonçalves da Luz",tel:"(41) 99818-2211",wpp:"https://wa.me/5541998182211",lider1:"",tel1:""}
-      ],
-      "Matriz": [
-        {cong:"Água Verde",dirigente:"Ev. Claudinei Germano",tel:"(41) 98401-2028",wpp:"https://wa.me/5541984012028",lider1:"",tel1:""},
-        {cong:"Ahú",dirigente:"Pr. Arlindo Vieira da Silva",tel:"(41) 99971-7315",wpp:"https://wa.me/5541999717315",lider1:"",tel1:""},
-        {cong:"Mercês",dirigente:"Pb. Adelfo Barbosa de Melo",tel:"(41) 99513-1754",wpp:"https://wa.me/5541995131754",lider1:"",tel1:""},
-        {cong:"Prado Velho",dirigente:"Pr. Gilmar Antonio de Andrade",tel:"(41) 99106-7803",wpp:"https://wa.me/5541991067803",lider1:"Renildo",tel1:"41 999463622"},
-        {cong:"SEDE",dirigente:"Pr. Márcio Vinicius Rodrigues",tel:"(41) 99654-9151",wpp:"https://wa.me/5541996549151",lider1:"Giovani",tel1:"11 982214149"}
-      ],
-      "Pinheirinho": [
-        {cong:"Capão Raso",dirigente:"Pr. Celso Rodrigues da Silva",tel:"(41) 98466-7784",wpp:"https://wa.me/5541984667784",lider1:"Elton",tel1:"41 99623-6657"},
-        {cong:"Jardim Paraná",dirigente:"Pr. Albari Carvalho Moreira",tel:"(41) 99156-3998",wpp:"https://wa.me/5541991563998",lider1:"Tiago Lisboa",tel1:"41 99707-5658"},
-        {cong:"Jardim São Carlos",dirigente:"Ev. Ismael Ferreira da Rocha",tel:"(41) 99923-2352",wpp:"https://wa.me/5541999232352",lider1:"",tel1:""},
-        {cong:"Moradias Arroio",dirigente:"Ev. Emerson José da Silva",tel:"(41) 99648-2543",wpp:"https://wa.me/5541996482543",lider1:"Dc. Silas",tel1:"41 99837-2922"},
-        {cong:"Moradias São Lucas",dirigente:"Pb. Jaderson Galhardo Dias",tel:"(41) 99911-6894",wpp:"https://wa.me/5541999116894",lider1:"Lucas Oliveira",tel1:"41 99592-4781"},
-        {cong:"Parque Industrial",dirigente:"Pr. Paulo Cezar Pereira Schlizinnski",tel:"(41) 99138-9136",wpp:"https://wa.me/5541991389136",lider1:"Carlos Alberto",tel1:"41 99676-2224"},
-        {cong:"Pinheirinho",dirigente:"Pr. Auzias Paulo Nazário Rodrigues",tel:"(41) 99576-0200",wpp:"https://wa.me/5541995760200",lider1:"",tel1:""},
-        {cong:"Pirineus",dirigente:"Ev. Lourival Aparecido Silva",tel:"(41) 99649-9604",wpp:"https://wa.me/5541996499604",lider1:"Josnei Dias da Silva",tel1:"41 98882-6848"},
-        {cong:"Vila Acordes",dirigente:"Ev. Moisés Matias Corrêa",tel:"(41) 99915-3358",wpp:"https://wa.me/5541999153358",lider1:"Jonas Fernandes dos Santos",tel1:"41 99816-5970"},
-        {cong:"Vila Ipiranga",dirigente:"Ev. Robson Douglas Stein",tel:"(41) 98838-1994",wpp:"https://wa.me/5541988381994",lider1:"Anderson Teylon",tel1:"41 99181-4553"},
-        {cong:"Vila Machado",dirigente:"Pr. Augusto Pereira da Cruz",tel:"(41) 99595-4543",wpp:"https://wa.me/5541995954543",lider1:"Edivaldo Pinho Fernandes",tel1:"91 99133-3454"},
-        {cong:"Vila Piratini",dirigente:"Ev. Ailton Francisco Da Silva",tel:"(41) 99779-9349",wpp:"https://wa.me/5541997799349",lider1:"",tel1:""},
-        {cong:"Vila Pluma (Sto. Antonio)",dirigente:"Pb. Caio Vinicius Rezende",tel:"(41) 99719-9130",wpp:"https://wa.me/5541997199130",lider1:"Lindomar Vasconcelos",tel1:"41 99594-9717"},
-        {cong:"Vila Santo Antônio",dirigente:"Pr. Milton Gomes de Lima Rocha",tel:"(41) 99795-2660",wpp:"https://wa.me/5541997952660",lider1:"Jonatas",tel1:"41 99678-8017"},
-        {cong:"Vila São Pedro",dirigente:"Pr. Bento Moraes de Cerqueira",tel:"(41) 98820-8457",wpp:"https://wa.me/5541988208457",lider1:"",tel1:""}
-      ],
-      "Portão": [
-        {cong:"Fazendinha",dirigente:"Pr. Neilson Alves da Silva",tel:"(41) 99656-6590",wpp:"https://wa.me/5541996566590",lider1:"Oseias Moraes",tel1:"41 995475352"},
-        {cong:"Montese",dirigente:"Pb. Vinicius Euclides Soares Cassiano",tel:"(41) 99825-4022",wpp:"https://wa.me/5541998254022",lider1:"Mari Arcanjo",tel1:"41 999888320"},
-        {cong:"Parolin",dirigente:"Ev. Antonio Marcos Pires",tel:"(41) 99968-8100",wpp:"https://wa.me/5541999688100",lider1:"Andressa Fraga",tel1:"41 999584453"},
-        {cong:"Portão",dirigente:"Pr. Zulmiro Felix da Silva",tel:"(41) 99185-0992",wpp:"https://wa.me/5541991850992",lider1:"Pedro Ritter",tel1:"41 997228642"},
-        {cong:"Santa Quitéria",dirigente:"Pr. Eliseu dos Santos Marques",tel:"(41) 99685-5074",wpp:"https://wa.me/5541996855074",lider1:"",tel1:""},
-        {cong:"Vila Cubas",dirigente:"Pb. João Vitor da Silva Junior",tel:"(41) 99583-5672",wpp:"https://wa.me/5541995835672",lider1:"",tel1:""},
-        {cong:"Vila Estrela",dirigente:"Pb Leonardo de Oliveira",tel:"(41) 99884-8395",wpp:"https://wa.me/5541998848395",lider1:"",tel1:""},
-        {cong:"Vila Guilhermina",dirigente:"Pr. João Carlos Alves da Silva",tel:"(41) 99509-5179",wpp:"https://wa.me/5541995095179",lider1:"Maykon Messias",tel1:"41 995734536"},
-        {cong:"Vila Izabel",dirigente:"Pr. Paulo Pereira Costa",tel:"(41) 98863-8879",wpp:"https://wa.me/5541988638879",lider1:"Antonio Jacomini",tel1:"41 996660571"},
-        {cong:"Vila Leão",dirigente:"Ev. Daniel Antunes Fermiano",tel:"(41) 98821-3408",wpp:"https://wa.me/5541988213408",lider1:"",tel1:""},
-        {cong:"Vila Lindóia",dirigente:"Ev. Daniel Lopes Maia",tel:"(14) 98141-8252",wpp:"https://wa.me/5541981418252",lider1:"",tel1:""},
-        {cong:"Vila Maria",dirigente:"Ev. Daniel Sidnei Oliveira de Assis",tel:"(41) 99147-4255",wpp:"https://wa.me/5541991474255",lider1:"Andre Sales",tel1:"41 996605346"}
-      ],
-      "Santa Felicidade": [
-        {cong:"Campina do Siqueira",dirigente:"Ev. Jesiel Alves Martins",tel:"(41) 99915-1449",wpp:"https://wa.me/5541999151449",lider1:"Lucas",tel1:"(31) 99260-1525"},
-        {cong:"Jardim Califórnia",dirigente:"Ev. Alexandre Alves da Silva",tel:"(41) 98493-6906",wpp:"https://wa.me/5541984936906",lider1:"Ev. Adamo",tel1:"(34) 98855-9565"},
-        {cong:"Jardim Gabineto",dirigente:"Pr. Valter dos Santos Rodrigues",tel:"(41) 98413-4152",wpp:"https://wa.me/55419984134152",lider1:"Marcos",tel1:"(41) 99550-2854"},
-        {cong:"Jardim Pinheiros",dirigente:"Pr. José de Souza Soares",tel:"(41) 99695-8337",wpp:"https://wa.me/5541998521311",lider1:"Oseias Timoteo",tel1:"(41) 99286-5882"},
-        {cong:"Jardim Santos Andrade",dirigente:"Pr. Miguel Iaszczak",tel:"(41) 99816-2450",wpp:"https://wa.me/5541998162450",lider1:"Leonardo",tel1:"(41) 99679-1328"},
-        {cong:"José Culpi",dirigente:"Ev. Eneas Camargo Timoteo",tel:"(41) 99645-3285",wpp:"https://wa.me/5541996453285",lider1:"Thiago Freitas",tel1:"(41) 99752-8207"},
-        {cong:"Santa Felicidade",dirigente:"Ev. Ageu dos Santos",tel:"(41) 99745-0388",wpp:"https://wa.me/5541997450388",lider1:"Carlos",tel1:"(41) 99536-8292"},
-        {cong:"Sol Nascente",dirigente:"Pb. Adelço Andrade de Souza",tel:"(41) 99633-2395",wpp:"https://wa.me/5541996332395",lider1:"Silvia",tel1:"(41) 99651-4019"},
-        {cong:"São Braz",dirigente:"Pr. Jose Terbutino Filho",tel:"(41) 99930-0886",wpp:"https://wa.me/5541999300886",lider1:"Airton Ferreira",tel1:"(41) 99903-6458"},
-        {cong:"Vila Haquim",dirigente:"Ev. Valmir Barbosa de Melo",tel:"(41) 99686-1481",wpp:"https://wa.me/5541996861481",lider1:"Milton Batista",tel1:"(41) 99807-8492"},
-        {cong:"Vila Sandra",dirigente:"Pr. Selmai Silverio Teixeira",tel:"(41) 99845-9830",wpp:"https://wa.me/5541998459830",lider1:"Ezequiel Firmino",tel1:"(41) 98498-8721"}
-      ],
-      "Tatuquara": [
-        {cong:"Caximba",dirigente:"Pr. Abraão Ferreira",tel:"(41) 98504-9088",wpp:"https://wa.me/5541985049088",lider1:"Ezequiel",tel1:"(41) 9846-0380"},
-        {cong:"Jardim Dom Bosco",dirigente:"Ev. Leandro Perretto Lemes",tel:"(41) 99555-3610",wpp:"https://wa.me/5541995553610",lider1:"Pb. Emerson",tel1:"(41) 99178-7300"},
-        {cong:"Jardim Ludovica",dirigente:"Ev. Rodrigo Nebesniak",tel:"(41) 98828-6358",wpp:"https://wa.me/5541988286358",lider1:"Adenilson Carneiro",tel1:"(41) 99138-6725"},
-        {cong:"Jardim da Ordem",dirigente:"Pr. Alexandro Gato",tel:"(41) 99567-9220",wpp:"https://wa.me/5541995679220",lider1:"Eliel",tel1:"(41) 8840-5827"},
-        {cong:"Monteiro Lobato",dirigente:"Pb. Ademir Ribeiro dos Santos",tel:"(41) 99521-3792",wpp:"https://wa.me/5541995213792",lider1:"Dc. Venâncio",tel1:"(41) 99840-7702"},
-        {cong:"Moradias Janaina",dirigente:"Ev. Carlos de Moraes Cunha",tel:"(41) 99740-9744",wpp:"https://wa.me/5541997409744",lider1:"Cp. Wilson",tel1:"(41) 99172-8511"},
-        {cong:"Moradias Paraná",dirigente:"Pr. Luiz Valdo de Macedo",tel:"(41) 99625-6556",wpp:"https://wa.me/5541996256556",lider1:"Dc. Oziel Jr",tel1:"(41) 99991-5468"},
-        {cong:"Moradias Rio Bonito",dirigente:"Pb. Eder Robson Pereira dos Anjos",tel:"(41) 99116-4626",wpp:"https://wa.me/5541991164626",lider1:"",tel1:""},
-        {cong:"Rio Bonito",dirigente:"Pr. Luiz Ronaldo Rocha de Macedo",tel:"(41) 98447-6125",wpp:"https://wa.me/5541984476125",lider1:"Pb. Rivaldo",tel1:"(41) 99693-8377"},
-        {cong:"Tatuquara",dirigente:"Pr. Edson Jose dos Santos",tel:"(41) 99537-5757",wpp:"https://wa.me/5541995375757",lider1:"Karine",tel1:"(41) 99640-9820"},
-        {cong:"Terra Santa",dirigente:"Ev. Cesar Guareci Da Gama Carlin",tel:"(41) 99605-7891",wpp:"https://wa.me/5541996057891",lider1:"Sidney Rodrigues",tel1:"(41) 99176-5847"},
-        {cong:"Vila Evangélica",dirigente:"Ev. Sergio Roberto Prazeres da Cruz",tel:"(41) 99775-0215",wpp:"https://wa.me/55997750215",lider1:"Jean Faustinoni",tel1:"(41) 99657-6170"},
-        {cong:"Vila dos Cruz",dirigente:"Ev. Damião José dos Santos Neto",tel:"(41) 99626-5937",wpp:"https://wa.me/5541996265937",lider1:"Adriano",tel1:"(41) 99505-0051"}
-      ]
-    };
+  "Bairro Novo": [
+    {
+      "cong": "Bairro Novo I",
+      "dirigente": "Pr. Orandir Aparecido de Souza",
+      "lider1": "Adenilson Rodrigues",
+      "wpp_lider": "https://wa.me/5541996189148"
+    },
+    {
+      "cong": "Bairro Novo II",
+      "dirigente": "Pr Rubens da Cruz Junior",
+      "lider1": "Lucas Leski",
+      "wpp_lider": "https://wa.me/5541995606116"
+    },
+    {
+      "cong": "Bairro Novo III",
+      "dirigente": "Pr. Eron da Silva de Cerqueira",
+      "lider1": "Lucas Azevedo",
+      "wpp_lider": "https://wa.me/5541987976605"
+    },
+    {
+      "cong": "Bairro Novo VI",
+      "dirigente": "Pr. Ezequiel Corrêa de Oliveira",
+      "lider1": "Fred Souza",
+      "wpp_lider": "https://wa.me/5541998558284"
+    },
+    {
+      "cong": "Cachoeira II",
+      "dirigente": "Ev. Gilmar Pedro de Barros",
+      "lider1": "João Paulo",
+      "wpp_lider": "https://wa.me/5541999608783"
+    },
+    {
+      "cong": "Ganchinho",
+      "dirigente": "Ev. Eden Barbalho",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Moradias Coqueiros II",
+      "dirigente": "Ev. Alceni Ribeiro dos Santos",
+      "lider1": "Rubens",
+      "wpp_lider": "https://wa.me/5541999408503"
+    },
+    {
+      "cong": "Moradias Hebron",
+      "dirigente": "Ev. Elizeu Ruivo da Silva",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Novo Horizonte",
+      "dirigente": "Ev. Otoniel Barroso",
+      "lider1": "Gustavo Trecino",
+      "wpp_lider": "https://wa.me/5541991444472"
+    },
+    {
+      "cong": "Osternack",
+      "dirigente": "Pr. Edson Candido da Silva",
+      "lider1": "Melquisedeque Nobre",
+      "wpp_lider": "https://wa.me/5541999435674"
+    },
+    {
+      "cong": "Osternack II",
+      "dirigente": "Ev. Avelino Nogueira Gomes",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Santa Celeste",
+      "dirigente": "Pr. Geciel Paulo de Oliveira",
+      "lider1": "Allan Brito",
+      "wpp_lider": "https://wa.me/5541998925822"
+    },
+    {
+      "cong": "Umbará",
+      "dirigente": "Pr. Leandro Sauerbier",
+      "lider1": "Diego Angelo",
+      "wpp_lider": "https://wa.me/5541998234710"
+    },
+    {
+      "cong": "Vila Americana",
+      "dirigente": "Pr. Izaias Honorato Felício",
+      "lider1": "Willian Colman",
+      "wpp_lider": "https://wa.me/5541997060480"
+    },
+    {
+      "cong": "Vila Calixto",
+      "dirigente": "Pr. Januário Henrique Ferreira Mello",
+      "lider1": "Jhonni Picoli",
+      "wpp_lider": "https://wa.me/5541995869128"
+    },
+    {
+      "cong": "Vila Guilherme",
+      "dirigente": "Pb. Paulo Sérgio Lopes Ferreira",
+      "lider1": "Jonatham",
+      "wpp_lider": "https://wa.me/5541995258209"
+    },
+    {
+      "cong": "Vila Rio Negro",
+      "dirigente": "Ev. Jean Carlos Felipe",
+      "lider1": "Lucas Sidinei",
+      "wpp_lider": "https://wa.me/5541995253037"
+    },
+    {
+      "cong": "Xapinhal",
+      "dirigente": "Pr. Alex Sandro Rosa dos Santos",
+      "lider1": "Marcos Tarachu",
+      "wpp_lider": "https://wa.me/5541985161394"
+    },
+    {
+      "cong": "Xapinhal II",
+      "dirigente": "Pr. Pedro Alves Silva de Souza",
+      "lider1": "Givanildo",
+      "wpp_lider": "https://wa.me/5541996935373"
+    }
+  ],
+  "Boa Vista": [
+    {
+      "cong": "Alto Tarumã",
+      "dirigente": "Pb. Natanael Souza Affonso",
+      "lider1": "Rober",
+      "wpp_lider": "https://wa.me/5541996835052"
+    },
+    {
+      "cong": "Bacacheri",
+      "dirigente": "Pr. Laercio Rodrigues dos Santos",
+      "lider1": "Wuellinton",
+      "wpp_lider": "https://wa.me/5541999036730"
+    },
+    {
+      "cong": "Bairro Alto",
+      "dirigente": "Pr. Alessandro Lacerda de Assis",
+      "lider1": "Mirian",
+      "wpp_lider": "https://wa.me/5541985074320"
+    },
+    {
+      "cong": "Barreirinha",
+      "dirigente": "Ev. Felipe José da Silva Gonçalves",
+      "lider1": "Mateus",
+      "wpp_lider": "https://wa.me/5541995037990"
+    },
+    {
+      "cong": "Boa Vista",
+      "dirigente": "Pr. Edilson de Oliveira",
+      "lider1": "Flávio",
+      "wpp_lider": "https://wa.me/5541988506913"
+    },
+    {
+      "cong": "Copel",
+      "dirigente": "Pr. Elieber José da Silva",
+      "lider1": "Lucas",
+      "wpp_lider": "https://wa.me/5541991687417"
+    },
+    {
+      "cong": "Fernando de Noronha",
+      "dirigente": "Pr. Arlindo Vieira de Santana",
+      "lider1": "Mariana",
+      "wpp_lider": "https://wa.me/5541998635839"
+    },
+    {
+      "cong": "Higienópolis",
+      "dirigente": "Pr. Irineu Ricardo Ferreira Marios",
+      "lider1": "Anderson",
+      "wpp_lider": "https://wa.me/5541996036381"
+    },
+    {
+      "cong": "Jardim Arroio",
+      "dirigente": "Pb. Paulo Paulista",
+      "lider1": "Marcielly",
+      "wpp_lider": "https://wa.me/5541985251422"
+    },
+    {
+      "cong": "Jardim Cruzeiro do Sul",
+      "dirigente": "Pr. Fabio Augusto B. C. Bittencourt",
+      "lider1": "Thiago",
+      "wpp_lider": "https://wa.me/5541996551693"
+    },
+    {
+      "cong": "Jardim Granada",
+      "dirigente": "Ev. Isaias Conceição Daniel",
+      "lider1": "Priscila",
+      "wpp_lider": "https://wa.me/5541996916348"
+    },
+    {
+      "cong": "Jardim Paraiso",
+      "dirigente": "Pr. Jovito Inácio",
+      "lider1": "Thiago",
+      "wpp_lider": "https://wa.me/5541996654020"
+    },
+    {
+      "cong": "Jardim Primavera II",
+      "dirigente": "Ev. Lucas da Cunha Rodrigues",
+      "lider1": "Josiel",
+      "wpp_lider": "https://wa.me/5541997293889"
+    },
+    {
+      "cong": "Moradias Faxinal (Jd C do Sul)",
+      "dirigente": "Pb. Alexsandro Ferreira Lustosa",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Parque Tanguá",
+      "dirigente": "Ev. Jonival Siqueira",
+      "lider1": "Alex",
+      "wpp_lider": "https://wa.me/5541996429622"
+    },
+    {
+      "cong": "Pilarzinho",
+      "dirigente": "Pr. João Alves da Rocha",
+      "lider1": "Bem Hur",
+      "wpp_lider": "https://wa.me/5542999663994"
+    },
+    {
+      "cong": "Planta Califórnia",
+      "dirigente": "Ev. Everaldo Aparecido Vieira de Matos",
+      "lider1": "Juliano",
+      "wpp_lider": "https://wa.me/5541999310358"
+    },
+    {
+      "cong": "Planta Paraiso",
+      "dirigente": "Pb. Samuel de Souza",
+      "lider1": "Hellen",
+      "wpp_lider": "https://wa.me/5541996965728"
+    },
+    {
+      "cong": "Solar - (Bacacheri)",
+      "dirigente": "Pb. Izaias Rodrigues Cavalheiro",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Tingui",
+      "dirigente": "Ev. Alexandre de Matos Leal",
+      "lider1": "Gabriele",
+      "wpp_lider": "https://wa.me/5541985142038"
+    },
+    {
+      "cong": "Vila Esperança",
+      "dirigente": "Pr. Airton Zambeli Junker",
+      "lider1": "Claudinei",
+      "wpp_lider": "https://wa.me/5541999657183"
+    },
+    {
+      "cong": "Vila Fátima",
+      "dirigente": "Pr. Pedro Marques dos Santos",
+      "lider1": "Marco",
+      "wpp_lider": "https://wa.me/5541995069030"
+    },
+    {
+      "cong": "Vila Galia",
+      "dirigente": "Pr. Jeriel Vieira",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Krasinski",
+      "dirigente": "Ev. Alexandre Pereira Shlisinski",
+      "lider1": "Juliano",
+      "wpp_lider": "https://wa.me/5541998031786"
+    },
+    {
+      "cong": "Vila Leonice",
+      "dirigente": "Pr. Paulo Cezer Kremer dos Santos",
+      "lider1": "Daniel",
+      "wpp_lider": "https://wa.me/5541995899160"
+    },
+    {
+      "cong": "Vila São João",
+      "dirigente": "Pr. Hercilio Leodoro",
+      "lider1": "Tiago",
+      "wpp_lider": "https://wa.me/5541987404273"
+    },
+    {
+      "cong": "Vila Tupi",
+      "dirigente": "Pb. Haroldo Procopio de Oliveira",
+      "lider1": "Flávio",
+      "wpp_lider": "https://wa.me/5541997945039"
+    }
+  ],
+  "Boqueirão": [
+    {
+      "cong": "Areal",
+      "dirigente": "Pr. Andre Luis Souza",
+      "lider1": "CONCEIÇÃO",
+      "wpp_lider": "https://wa.me/5541996644991"
+    },
+    {
+      "cong": "Boqueirão",
+      "dirigente": "Ev. Eli Cesar Ribeiro",
+      "lider1": "ITALO",
+      "wpp_lider": "https://wa.me/5541995227787"
+    },
+    {
+      "cong": "Diagonal",
+      "dirigente": "Ev. Jonathan Carvalho De Souza",
+      "lider1": "FABIO",
+      "wpp_lider": "https://wa.me/5541998512863"
+    },
+    {
+      "cong": "Hauer",
+      "dirigente": "Pr. Linderson Marcos Romano",
+      "lider1": "ANDRE LUIZ BONGIOVANI",
+      "wpp_lider": "https://wa.me/5541988859768"
+    },
+    {
+      "cong": "Hauer Belém",
+      "dirigente": "Pr. Nelson José Rosa",
+      "lider1": "RODNEY",
+      "wpp_lider": "https://wa.me/5541997882387"
+    },
+    {
+      "cong": "Jardim Castelo Branco",
+      "dirigente": "Pr. Cesar Batista",
+      "lider1": "ALEKES CAMARGO",
+      "wpp_lider": "https://wa.me/5541995019490"
+    },
+    {
+      "cong": "Jardim Esmeralda",
+      "dirigente": "Ev. Marcelo Lima de Melo Montoski",
+      "lider1": "JOSIEL VENANCIO",
+      "wpp_lider": "https://wa.me/5541998655786"
+    },
+    {
+      "cong": "Jardim Itamarati",
+      "dirigente": "Pr. Josué Ferro de Souza",
+      "lider1": "JEREMIAS",
+      "wpp_lider": "https://wa.me/5541991718391"
+    },
+    {
+      "cong": "Jardim Maringá",
+      "dirigente": "Pr. Wanderlei Domingues da Silva Lopes",
+      "lider1": "MARCIO",
+      "wpp_lider": "https://wa.me/5541995530207"
+    },
+    {
+      "cong": "Jardim Paranaense",
+      "dirigente": "Pr. Elias de Oliveira",
+      "lider1": "ADRIEL VIEIRA",
+      "wpp_lider": "https://wa.me/5541984612654"
+    },
+    {
+      "cong": "Jardim Urano",
+      "dirigente": "Pr. Valdemar Ferreira dos Santos",
+      "lider1": "ESTANI",
+      "wpp_lider": "https://wa.me/5541996219440"
+    },
+    {
+      "cong": "Moradias Pantanal",
+      "dirigente": "Pb. Jurandir Candido Batista Junior",
+      "lider1": "SERGIO",
+      "wpp_lider": "https://wa.me/5541988501627"
+    },
+    {
+      "cong": "Planta Maria Luiza",
+      "dirigente": "Ev. Expedito Cilas Marcos Nunes",
+      "lider1": "RICARDO",
+      "wpp_lider": "https://wa.me/5541998197191"
+    },
+    {
+      "cong": "Santa Inês",
+      "dirigente": "Ev. Silvano Montoski (INTERINO)",
+      "lider1": "PETER FERNANDO",
+      "wpp_lider": "https://wa.me/5541988027823"
+    },
+    {
+      "cong": "Terminal do Boqueirão",
+      "dirigente": "Pr. Segio Luiz Schroeder",
+      "lider1": "MARCELO ROCHA",
+      "wpp_lider": "https://wa.me/5541996993251"
+    },
+    {
+      "cong": "Vila Barretos",
+      "dirigente": "Pr. Valdir Bergamaski",
+      "lider1": "MIZAEL",
+      "wpp_lider": "https://wa.me/5541997423614"
+    },
+    {
+      "cong": "Xaxim",
+      "dirigente": "Pr. Fábio Mariano de Oliveira",
+      "lider1": "FERNANDO",
+      "wpp_lider": "https://wa.me/5541999839655"
+    }
+  ],
+  "Cajuru": [
+    {
+      "cong": "Autódromo",
+      "dirigente": "Pr. Samuel Wellington Moreira",
+      "lider1": "NELCIDES PEREIRA",
+      "wpp_lider": "https://wa.me/5541997644793"
+    },
+    {
+      "cong": "Cajuru",
+      "dirigente": "Pr. Luiz Carlos da Costa",
+      "lider1": "LEANDRO FERREIRA",
+      "wpp_lider": "https://wa.me/5541998264943"
+    },
+    {
+      "cong": "Capão da Imbuía",
+      "dirigente": "Pr. Rogerio Lacerda Marchiode",
+      "lider1": "RENAN FALAVINHA",
+      "wpp_lider": "https://wa.me/5541998126219"
+    },
+    {
+      "cong": "Jardim Acrópole",
+      "dirigente": "Pr. Ednalvo Rodrigues Evangelista",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Jardim Araguaia",
+      "dirigente": "EV. Ronaldo Dias de Oliveira",
+      "lider1": "EDINO WOLPE",
+      "wpp_lider": "https://wa.me/5541998791050"
+    },
+    {
+      "cong": "Jardim Icaraí",
+      "dirigente": "Pr. Ivo Valentim de Souza",
+      "lider1": "LORENA",
+      "wpp_lider": "https://wa.me/5541995068926"
+    },
+    {
+      "cong": "Jardim Natália",
+      "dirigente": "Pr. Valdecir de Paula Rodrigues",
+      "lider1": "ELTON MACIEL",
+      "wpp_lider": "https://wa.me/5541999036383"
+    },
+    {
+      "cong": "Jardim Petrópolis",
+      "dirigente": "Pr. Rogerio Marçal de Souza",
+      "lider1": "LUIZ ALBERTO",
+      "wpp_lider": "https://wa.me/5541988670753"
+    },
+    {
+      "cong": "Jardim União",
+      "dirigente": "Ev. Vinicius de Paula Pinto",
+      "lider1": "THIAGO ABDALA",
+      "wpp_lider": "https://wa.me/5541987008315"
+    },
+    {
+      "cong": "Jardim das Américas",
+      "dirigente": "Ev. Denilson Soares de Lima",
+      "lider1": "GLEISSON",
+      "wpp_lider": "https://wa.me/5588994550142"
+    },
+    {
+      "cong": "Lotiguaçu",
+      "dirigente": "Ev. Jocsã Ramos da Silva",
+      "lider1": "RONALDO NUNES",
+      "wpp_lider": "https://wa.me/5541999646117"
+    },
+    {
+      "cong": "Planta Evaristo",
+      "dirigente": "Ev. Ivo Alves Santana",
+      "lider1": "ROSE",
+      "wpp_lider": "https://wa.me/5541996379361"
+    },
+    {
+      "cong": "Santa Bárbara",
+      "dirigente": "Ev. Andre Luis Nascimento Santos",
+      "lider1": "VAI DAR POSSE A NOVA LIDERANÇA DIA 21",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Santa Rosa",
+      "dirigente": "Pr. Vanderlei Boy",
+      "lider1": "ALINE",
+      "wpp_lider": "https://wa.me/5541999059440"
+    },
+    {
+      "cong": "Uberaba de Cima",
+      "dirigente": "Ev. Jurandir da Silveira Penha Júnior",
+      "lider1": "ANDRE",
+      "wpp_lider": "https://wa.me/5541996276432"
+    },
+    {
+      "cong": "Vila Camargo",
+      "dirigente": "Pb. Laucenir Francisco de Assis Gomes",
+      "lider1": "SEM GRUPO DE JOVENS",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Germano",
+      "dirigente": "Pr. Isaac Pires de Oliveira",
+      "lider1": "IVAN CANOZI",
+      "wpp_lider": "https://wa.me/5541985078275"
+    },
+    {
+      "cong": "Vila Macedo",
+      "dirigente": "Ev. Deocar Fernando Abdalla",
+      "lider1": "JACI",
+      "wpp_lider": "https://wa.me/5541995872429"
+    },
+    {
+      "cong": "Vila Oficinas",
+      "dirigente": "Pr. Jeziel Moraes Pereira",
+      "lider1": "JEAN WILLEMANN",
+      "wpp_lider": "https://wa.me/5541998445989"
+    },
+    {
+      "cong": "Vila Oficinas II",
+      "dirigente": "Pb. Argemiro Beltrani",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Reno",
+      "dirigente": "Ev. Hamilton Ramalho dos Santos",
+      "lider1": "PAULO SERGIO",
+      "wpp_lider": "https://wa.me/5541995675449"
+    },
+    {
+      "cong": "Vila Sofia",
+      "dirigente": "Pr. Elias Ferreira dos Santos",
+      "lider1": "SOLANGE SANTOS",
+      "wpp_lider": "https://wa.me/5541987918354"
+    },
+    {
+      "cong": "Vila São Domingos",
+      "dirigente": "Pr. Flavio de Souza Gomes",
+      "lider1": "NEILA",
+      "wpp_lider": "https://wa.me/5571992490201"
+    },
+    {
+      "cong": "Vila São Paulo",
+      "dirigente": "Pb. Izaias Ferreira de Oliveira",
+      "lider1": "SUELI ALMEIDA",
+      "wpp_lider": "https://wa.me/5541996728469"
+    }
+  ],
+  "Matriz": [
+    {
+      "cong": "Ahú",
+      "dirigente": "Pr. Arlindo Vieira da Silva",
+      "lider1": "SEM LIDER",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Mercês",
+      "dirigente": "Pb. Adelfo Barbosa de Melo",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Prado Velho",
+      "dirigente": "Pr. Gilmar Antonio de Andrade",
+      "lider1": "RENILDO",
+      "wpp_lider": "https://wa.me/5541999463622"
+    },
+    {
+      "cong": "SEDE",
+      "dirigente": "Pr. Márcio Vinicius Rodrigues",
+      "lider1": "GIOVANI",
+      "wpp_lider": "https://wa.me/5511982214149"
+    },
+    {
+      "cong": "Água Verde",
+      "dirigente": "Ev. Claudinei Germano",
+      "lider1": "SEM LIDER",
+      "wpp_lider": ""
+    }
+  ],
+  "CIC": [
+    {
+      "cong": "Alto Barigui",
+      "dirigente": "Pr. Alex Rodrigues de Jesus",
+      "lider1": "Leandro Augusto dos Santos da silva",
+      "wpp_lider": "https://wa.me/5541999814360"
+    },
+    {
+      "cong": "Alto Bela Vista",
+      "dirigente": "Pr. Eziquiel Trincaus",
+      "lider1": "Joabe",
+      "wpp_lider": "https://wa.me/5541995006005"
+    },
+    {
+      "cong": "Alto Bela Vista II (Vera Cruz)",
+      "dirigente": "Pr. Sebastião Bispo de Assunção",
+      "lider1": "Antônio  Carlos  leopoldino",
+      "wpp_lider": "https://wa.me/5541995329206"
+    },
+    {
+      "cong": "CIC",
+      "dirigente": "Pr. Cleverson Padilha",
+      "lider1": "Bruno Gabriel",
+      "wpp_lider": "https://wa.me/5541997695992"
+    },
+    {
+      "cong": "Diadema II",
+      "dirigente": "Ev. Paulo Sérgio Teodoro",
+      "lider1": "Marcelo Ferreira",
+      "wpp_lider": "https://wa.me/5541999733596"
+    },
+    {
+      "cong": "Itatiaia",
+      "dirigente": "Ev. Francisco Borges Filho",
+      "lider1": "Eron",
+      "wpp_lider": "https://wa.me/5541997865146"
+    },
+    {
+      "cong": "Jardim Independência",
+      "dirigente": "Pb. Marcelo Martins da Silva",
+      "lider1": "Priscila",
+      "wpp_lider": "https://wa.me/5541988939521"
+    },
+    {
+      "cong": "Porto Belo",
+      "dirigente": "Pb. Ailton Tavares de Santana",
+      "lider1": "Edson Luiz",
+      "wpp_lider": "https://wa.me/5541999888951"
+    },
+    {
+      "cong": "Santa Helena",
+      "dirigente": "Pr. Jeter Brocanelli Barbosa",
+      "lider1": "Sem líder no momento",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "São José do Passaúna",
+      "dirigente": "Pr. Arnaldo Pereira Pardinho",
+      "lider1": "Daniel",
+      "wpp_lider": "https://wa.me/5541996157419"
+    },
+    {
+      "cong": "São Rafael",
+      "dirigente": "Pr. Gilberto de Melo",
+      "lider1": "Não tem Jovens",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vera Cruz",
+      "dirigente": "Pr. Jizreel Oséias Maciel",
+      "lider1": "Alisson Gabriel",
+      "wpp_lider": "https://wa.me/5541997306963"
+    },
+    {
+      "cong": "Vila Augusta",
+      "dirigente": "Pb. José Roberto Miranda",
+      "lider1": "Douglas Alves",
+      "wpp_lider": "https://wa.me/5541996374246"
+    },
+    {
+      "cong": "Vila Nova",
+      "dirigente": "Ev. Alceu Ferreira Lima",
+      "lider1": "Ivan",
+      "wpp_lider": "https://wa.me/5541996757611"
+    },
+    {
+      "cong": "Vila Rigoni",
+      "dirigente": "Ev. Enoc Nogueira dos Reis",
+      "lider1": "Samuel",
+      "wpp_lider": "https://wa.me/5541984824728"
+    },
+    {
+      "cong": "Vila Rose",
+      "dirigente": "Pr. João Carlos Alves Leite",
+      "lider1": "Ricardo",
+      "wpp_lider": "https://wa.me/5541991388190"
+    },
+    {
+      "cong": "Vila Sabará",
+      "dirigente": "Ev Fabio Pinheiro de Almeida",
+      "lider1": "Gabriel Mello",
+      "wpp_lider": "https://wa.me/5541987737154"
+    },
+    {
+      "cong": "Vila Santana",
+      "dirigente": "Pr. Elias Pereira Pardinho",
+      "lider1": "Marcelo Santana",
+      "wpp_lider": "https://wa.me/5541996821671"
+    },
+    {
+      "cong": "Vila Verde",
+      "dirigente": "Pr. Agnaldo Almeida Vieira",
+      "lider1": "Nielson Manoel da Silva",
+      "wpp_lider": "https://wa.me/5541988449521"
+    },
+    {
+      "cong": "Vila Vitória Riviera",
+      "dirigente": "Pb. Anderson Pereira de Oliveira",
+      "lider1": "Juliana Souza",
+      "wpp_lider": "https://wa.me/5541997362721"
+    },
+    {
+      "cong": "Vitória Régia",
+      "dirigente": "Ev. Pedro Alves da Cruz",
+      "lider1": "Lucas Knop",
+      "wpp_lider": "https://wa.me/5541999869967"
+    },
+    {
+      "cong": "Zimbros - (Vila Nova)",
+      "dirigente": "Pb. Ewerton Gonçalves da Luz",
+      "lider1": "Sem líder no momento",
+      "wpp_lider": ""
+    }
+  ],
+  "Santa Felicidade": [
+    {
+      "cong": "Campina do Siqueira",
+      "dirigente": "Ev. Jesiel Alves Martins",
+      "lider1": "Lucas",
+      "wpp_lider": "https://wa.me/5531992601525"
+    },
+    {
+      "cong": "Jardim Califórnia",
+      "dirigente": "Ev. Alexandre Alves da Silva",
+      "lider1": "Ev. Adamo",
+      "wpp_lider": "https://wa.me/5534988559565"
+    },
+    {
+      "cong": "Jardim Gabineto",
+      "dirigente": "Pr. Valter dos Santos Rodrigues",
+      "lider1": "Marcos",
+      "wpp_lider": "https://wa.me/5541995502854"
+    },
+    {
+      "cong": "Jardim Pinheiros",
+      "dirigente": "Pr. José de Souza Soares",
+      "lider1": "Oseias Timoteo",
+      "wpp_lider": "https://wa.me/5541992865882"
+    },
+    {
+      "cong": "Jardim Santos Andrade",
+      "dirigente": "Pr. Miguel Iaszczak",
+      "lider1": "Leonardo",
+      "wpp_lider": "https://wa.me/5541996791328"
+    },
+    {
+      "cong": "José Culpi",
+      "dirigente": "Ev. Eneas Camargo Timoteo",
+      "lider1": "Thiago Freitas",
+      "wpp_lider": "https://wa.me/5541997528207"
+    },
+    {
+      "cong": "Santa Felicidade",
+      "dirigente": "Ev. Ageu dos Santos",
+      "lider1": "Carlos",
+      "wpp_lider": "https://wa.me/5541995368292"
+    },
+    {
+      "cong": "Sol Nascente",
+      "dirigente": "Pb. Adelço Andrade de Souza",
+      "lider1": "Silvia",
+      "wpp_lider": "https://wa.me/5541996514019"
+    },
+    {
+      "cong": "São Braz",
+      "dirigente": "Pr. Jose Terbutino Filho",
+      "lider1": "Airton Ferreira",
+      "wpp_lider": "https://wa.me/5541999036458"
+    },
+    {
+      "cong": "Vila Haquim",
+      "dirigente": "Ev. Valmir Barbosa de Melo",
+      "lider1": "Milton Batista",
+      "wpp_lider": "https://wa.me/5541998078492"
+    },
+    {
+      "cong": "Vila Sandra",
+      "dirigente": "Pr. Selmai Silverio Teixeira",
+      "lider1": "Ezequiel Firmino",
+      "wpp_lider": "https://wa.me/5541984988721"
+    }
+  ],
+  "Tatuquara": [
+    {
+      "cong": "Caximba",
+      "dirigente": "Pr. Abraão Ferreira",
+      "lider1": "Ezequiel",
+      "wpp_lider": "https://wa.me/554198460380"
+    },
+    {
+      "cong": "Jardim Dom Bosco",
+      "dirigente": "Ev. Leandro Perretto Lemes",
+      "lider1": "Pb. Emerson",
+      "wpp_lider": "https://wa.me/5541991787300"
+    },
+    {
+      "cong": "Jardim Ludovica",
+      "dirigente": "Ev. Rodrigo Nebesniak",
+      "lider1": "Adenilson Carneiro",
+      "wpp_lider": "https://wa.me/5541991386725"
+    },
+    {
+      "cong": "Jardim da Ordem",
+      "dirigente": "Pr. Alexandro Gato",
+      "lider1": "Eliel",
+      "wpp_lider": "https://wa.me/554188405827"
+    },
+    {
+      "cong": "Monteiro Lobato",
+      "dirigente": "Pb. Ademir Ribeiro dos Santos",
+      "lider1": "Dc. Venâncio",
+      "wpp_lider": "https://wa.me/5541998407702"
+    },
+    {
+      "cong": "Moradias Janaina",
+      "dirigente": "Ev. Carlos de Moraes Cunha",
+      "lider1": "Cp. Wilson",
+      "wpp_lider": "https://wa.me/5541991728511"
+    },
+    {
+      "cong": "Moradias Paraná",
+      "dirigente": "Pr. Luiz Valdo de Macedo",
+      "lider1": "Dc. Oziel Jr",
+      "wpp_lider": "https://wa.me/5541999915468"
+    },
+    {
+      "cong": "Moradias Rio Bonito",
+      "dirigente": "Pb. Eder Robson Pereira dos Anjos",
+      "lider1": "Sem líder no momento",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Rio Bonito",
+      "dirigente": "Pr. Luiz Ronaldo Rocha de Macedo",
+      "lider1": "Pb. Rivaldo",
+      "wpp_lider": "https://wa.me/5541996938377"
+    },
+    {
+      "cong": "Tatuquara",
+      "dirigente": "Pr. Edson Jose dos Santos",
+      "lider1": "Karine",
+      "wpp_lider": "https://wa.me/5541996409820"
+    },
+    {
+      "cong": "Terra Santa",
+      "dirigente": "Ev. Cesar Guareci Da Gama Carlin",
+      "lider1": "Sidney Rodrigues",
+      "wpp_lider": "https://wa.me/5541991765847"
+    },
+    {
+      "cong": "Vila Evangélica",
+      "dirigente": "Ev. Sergio Roberto Prazeres da Cruz",
+      "lider1": "Jean Faustinoni",
+      "wpp_lider": "https://wa.me/5541996576170"
+    },
+    {
+      "cong": "Vila dos Cruz",
+      "dirigente": "Ev. Damião José dos Santos Neto",
+      "lider1": "Adriano",
+      "wpp_lider": "https://wa.me/5541995050051"
+    }
+  ],
+  "Pinheirinho": [
+    {
+      "cong": "Capão Raso",
+      "dirigente": "Pr. Celso Rodrigues da Silva",
+      "lider1": "Elton",
+      "wpp_lider": "https://wa.me/5541996236657"
+    },
+    {
+      "cong": "Jardim Paraná",
+      "dirigente": "Pr. Albari Carvalho Moreira",
+      "lider1": "Tiago Lisboa",
+      "wpp_lider": "https://wa.me/5541997075658"
+    },
+    {
+      "cong": "Jardim São Carlos",
+      "dirigente": "Ev. Ismael Ferreira da Rocha",
+      "lider1": "SEM LIDERANÇA",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Moradias Arroio",
+      "dirigente": "Ev. Emerson José da Silva",
+      "lider1": "Dc. Silas",
+      "wpp_lider": "https://wa.me/5541998372922"
+    },
+    {
+      "cong": "Moradias São Lucas",
+      "dirigente": "Pb. Jaderson Galhardo Dias",
+      "lider1": "Lucas Oliveira",
+      "wpp_lider": "https://wa.me/5541995924781"
+    },
+    {
+      "cong": "Parque Industrial",
+      "dirigente": "Pr. Paulo Cezar Pereira Schlizinnski",
+      "lider1": "Carlos Alberto",
+      "wpp_lider": "https://wa.me/5541996762224"
+    },
+    {
+      "cong": "Pinheirinho",
+      "dirigente": "Pr. Auzias Paulo Nazário Rodrigues",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Pirineus",
+      "dirigente": "Ev. Lourival Aparecido Silva",
+      "lider1": "Josnei Dias da Silva",
+      "wpp_lider": "https://wa.me/5541988826848"
+    },
+    {
+      "cong": "Vila Acordes",
+      "dirigente": "Ev. Moisés Matias Corrêa",
+      "lider1": "Jonas Fernandes dos Santos",
+      "wpp_lider": "https://wa.me/5541998165970"
+    },
+    {
+      "cong": "Vila Ipiranga",
+      "dirigente": "Ev. Robson Douglas Stein",
+      "lider1": "Anderson Teylon",
+      "wpp_lider": "https://wa.me/5541991814553"
+    },
+    {
+      "cong": "Vila Machado",
+      "dirigente": "Pr. Augusto Pereira da Cruz",
+      "lider1": "Edivaldo Pinho Fernandes",
+      "wpp_lider": "https://wa.me/5591991333454"
+    },
+    {
+      "cong": "Vila Piratini",
+      "dirigente": "Ev. Ailton Francisco Da Silva",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Pluma - (Sto. Antonio)",
+      "dirigente": "Pb. Caio Vinicius Rezende",
+      "lider1": "Lindomar Vasconcelos",
+      "wpp_lider": "https://wa.me/5541995949717"
+    },
+    {
+      "cong": "Vila Santo Antônio",
+      "dirigente": "Pr. Milton Gomes de Lima Rocha",
+      "lider1": "Jonatas",
+      "wpp_lider": "https://wa.me/5541996788017"
+    },
+    {
+      "cong": "Vila São Pedro",
+      "dirigente": "Pr. Bento Moraes de Cerqueira",
+      "lider1": "",
+      "wpp_lider": ""
+    }
+  ],
+  "Portão": [
+    {
+      "cong": "Fazendinha",
+      "dirigente": "Pr. Neilson Alves da Silva",
+      "lider1": "OSEIAS MORAES",
+      "wpp_lider": "https://wa.me/5541995475352"
+    },
+    {
+      "cong": "Montese",
+      "dirigente": "Pb. Vinicius Euclides Soares Cassiano",
+      "lider1": "MARI ARCANJO",
+      "wpp_lider": "https://wa.me/5541999888320"
+    },
+    {
+      "cong": "Parolin",
+      "dirigente": "Ev. Antonio Marcos Pires",
+      "lider1": "ANDRESSA FRAGA",
+      "wpp_lider": "https://wa.me/5541999584453"
+    },
+    {
+      "cong": "Portão",
+      "dirigente": "Pr. Zulmiro Felix da Silva",
+      "lider1": "PEDRO RITTER",
+      "wpp_lider": "https://wa.me/5541997228642"
+    },
+    {
+      "cong": "Santa Quitéria",
+      "dirigente": "Pr. Eliseu dos Santos Marques",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Cubas",
+      "dirigente": "Pb. João Vitor da Silva Junior",
+      "lider1": "SEM LIDER CONTATO É COM O PASTOR",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Estrela (Vila Maria)",
+      "dirigente": "Pb Leonardo de Oliveira",
+      "lider1": "IGREJA SEM JOVENS",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Guilhermina",
+      "dirigente": "Pr. João Carlos Alves da Silva",
+      "lider1": "MAYKON MESSIAS",
+      "wpp_lider": "https://wa.me/5541995734536"
+    },
+    {
+      "cong": "Vila Izabel",
+      "dirigente": "Pr. Paulo Pereira Costa",
+      "lider1": "ANTONIO JACOMINI",
+      "wpp_lider": "https://wa.me/5541996660571"
+    },
+    {
+      "cong": "Vila Leão",
+      "dirigente": "Ev. Daniel Antunes Fermiano",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Lindóia",
+      "dirigente": "Ev. Daniel Lopes Maia",
+      "lider1": "",
+      "wpp_lider": ""
+    },
+    {
+      "cong": "Vila Maria",
+      "dirigente": "Ev. Daniel Sidnei Oliveira de Assis",
+      "lider1": "ANDRE SALES",
+      "wpp_lider": "https://wa.me/5541996605346"
+    }
+  ]
+};
 
     // ============================================================
     // MODAL — LÍDERES
@@ -1496,13 +2322,19 @@
             container.innerHTML = '<div style="text-align:center;color:#94A3B8;padding:2rem;font-size:0.85rem;">Nenhum resultado encontrado</div>';
             return;
         }
+        const semLider = ['sem lider','sem grupo de jovens','sem liderança','sem jovens','não tem jovens','sem líder no momento','vai dar posse','sem lider contato','igreja sem jovens'];
         lista.forEach((c, i) => {
-            const temLider = c.lider1 && c.lider1.trim() && !['sem lider','sem grupo de jovens','sem liderança','sem jovens','não tem jovens','sem líder no momento'].some(s => c.lider1.toLowerCase().includes(s));
-            const wppLink = c.wpp ? `<a href="${c.wpp}" target="_blank" style="color:#25D366;font-size:0.72rem;font-weight:700;text-decoration:none;background:rgba(37,211,102,0.1);padding:2px 8px;border-radius:10px;border:1px solid rgba(37,211,102,0.3);">WPP</a>` : '';
+            const temLider = c.lider1 && c.lider1.trim() && !semLider.some(s => c.lider1.toLowerCase().includes(s));
+            const wppLider = temLider && c.wpp_lider
+                ? `<a href="${c.wpp_lider}" target="_blank" style="color:#25D366;font-size:0.72rem;font-weight:700;text-decoration:none;background:rgba(37,211,102,0.1);padding:2px 8px;border-radius:10px;border:1px solid rgba(37,211,102,0.3);">WPP</a>`
+                : '';
             const liderHtml = temLider
-                ? `<div style="margin-top:6px;padding:6px 10px;background:rgba(245,158,11,0.08);border-left:2px solid #F59E0B;border-radius:0 8px 8px 0;">
-                    <span style="font-size:0.6rem;letter-spacing:2px;color:#F59E0B;font-weight:700;text-transform:uppercase;">1º Líder</span>
-                    <div style="color:white;font-size:0.82rem;font-weight:600;">${c.lider1}${c.tel1 ? ' <span style="color:#94A3B8;font-weight:400;">· ' + c.tel1 + '</span>' : ''}</div>
+                ? `<div style="margin-top:6px;padding:6px 10px;background:rgba(245,158,11,0.08);border-left:2px solid #F59E0B;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+                    <div>
+                      <span style="font-size:0.6rem;letter-spacing:2px;color:#F59E0B;font-weight:700;text-transform:uppercase;display:block;">1º Líder</span>
+                      <span style="color:white;font-size:0.82rem;font-weight:600;">${c.lider1}</span>
+                    </div>
+                    ${wppLider}
                    </div>`
                 : `<div style="margin-top:6px;font-size:0.72rem;color:rgba(148,163,184,0.5);font-style:italic;">Sem líder de jovens</div>`;
 
@@ -1511,16 +2343,11 @@
             card.onmouseover = () => card.style.borderColor = 'rgba(245,158,11,0.3)';
             card.onmouseout  = () => card.style.borderColor = 'rgba(255,255,255,0.07)';
             card.innerHTML = `
-                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:0.5rem;">
-                    <div style="flex:1;">
-                        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:4px;">
-                            <span style="font-size:0.65rem;color:#94A3B8;font-weight:700;background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:10px;">${String(i+1).padStart(2,'0')}</span>
-                            <span style="font-size:0.95rem;font-weight:800;color:white;">${c.cong}</span>
-                        </div>
-                        <div style="font-size:0.8rem;color:#94A3B8;">${c.dirigente}</div>
-                    </div>
-                    <div style="display:flex;gap:0.4rem;flex-shrink:0;align-items:center;">${wppLink}</div>
+                <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:4px;">
+                    <span style="font-size:0.65rem;color:#94A3B8;font-weight:700;background:rgba(255,255,255,0.06);padding:2px 8px;border-radius:10px;">${String(i+1).padStart(2,'0')}</span>
+                    <span style="font-size:0.95rem;font-weight:800;color:white;">${c.cong}</span>
                 </div>
+                <div style="font-size:0.8rem;color:#94A3B8;margin-bottom:2px;">${c.dirigente}</div>
                 ${liderHtml}
             `;
             container.appendChild(card);
