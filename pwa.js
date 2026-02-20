@@ -1,12 +1,12 @@
 (function () {
-  const SW_PATH = "./service-worker.js";
+  // GitHub Pages (repo subpath): /UMADC/
+  const SW_URL = "/UMADC/service-worker.js";
+  const SW_SCOPE = "/UMADC/";
 
   async function registerSW() {
     if (!("serviceWorker" in navigator)) return null;
     try {
-      return await navigator.serviceWorker.register("./service-worker.js", {
-  scope: "/UMADC/"
-});
+      return await navigator.serviceWorker.register(SW_URL, { scope: SW_SCOPE });
     } catch (e) {
       console.warn("SW register failed", e);
       return null;
@@ -54,6 +54,5 @@
 
   document.addEventListener("DOMContentLoaded", async () => {
     await registerSW();
-    // Push button is handled in push.js (so we keep responsibilities separated)
   });
 })();
