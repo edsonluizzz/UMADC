@@ -458,16 +458,16 @@
 <script>
 // ── DADOS DAS REGIONAIS ──────────────────────────────────
 const regionais = [
-    { nome:'Boa Vista',        congregacoes:28, populacao:268, jovens:67000, descricao:'Maior regional em habitantes. Norte da cidade.',    featured:false, coordenador:'Dc. Daniel Tararan'            },
-    { nome:'Cajuru',           congregacoes:25, populacao:241, jovens:60000, descricao:'Alta densidade. Leste da cidade.',                  featured:false, coordenador:'Coop. Paulo Bigode'             },
-    { nome:'CIC',              congregacoes:22, populacao:224, jovens:61500, descricao:'Bairro mais populoso de Curitiba. Oeste.',           featured:true,  coordenador:'Coop. Edson Luiz da Silva'      },
-    { nome:'Bairro Novo',      congregacoes:19, populacao:212, jovens:65000, descricao:'Alta densidade. Sul da cidade.',                    featured:false, coordenador:'Coop. Marcos Moreira dos Santos'},
-    { nome:'Boqueirão',        congregacoes:17, populacao:180, jovens:45000, descricao:'Corredor sul. Alta circulação.',                    featured:false, coordenador:'Pb. JimmyAlan de Oliveira'      },
-    { nome:'Tatuquara',        congregacoes:13, populacao:153, jovens:55000, descricao:'Regional mais jovem. Forte crescimento.',           featured:false, coordenador:'Coop. Dyenison Santos'          },
-    { nome:'Pinheirinho',      congregacoes:15, populacao:145, jovens:40000, descricao:'Sul da cidade. Perfil popular.',                    featured:false, coordenador:'Pb. Caio Vinícius Rezende'      },
-    { nome:'Portão',           congregacoes:12, populacao:155, jovens:38000, descricao:'Centro-sul. Mix comercial e residencial.',          featured:false, coordenador:'Coop. Pedro H. A. Ritter'       },
-    { nome:'Santa Felicidade', congregacoes:13, populacao:110, jovens:27000, descricao:'Oeste. Área mais arborizada da cidade.',            featured:false, coordenador:'Coop. Lucas Wagner Andrade'     },
-    { nome:'Matriz',           congregacoes:5,  populacao:103, jovens:22000, descricao:'Centro histórico. Alta circulação diária.',         featured:false, coordenador:'Coop. Charles de Oliveira'      }
+    { nome:'Boa Vista',        congregacoes:28, populacao:268, jovens:67000, descricao:'Maior regional em habitantes. Norte da cidade.',    featured:false, coordenador:'Dc. Daniel Tararan',             wpp:'https://wa.me/5541995899160' },
+    { nome:'Cajuru',           congregacoes:25, populacao:241, jovens:60000, descricao:'Alta densidade. Leste da cidade.',                  featured:false, coordenador:'Coop. Paulo Sérgio de Oliveira',  wpp:'https://wa.me/5541995675449' },
+    { nome:'CIC',              congregacoes:22, populacao:224, jovens:61500, descricao:'Bairro mais populoso de Curitiba. Oeste.',           featured:true,  coordenador:'Coop. Edson Luiz da Silva',       wpp:'https://wa.me/5541999888951' },
+    { nome:'Bairro Novo',      congregacoes:19, populacao:212, jovens:65000, descricao:'Alta densidade. Sul da cidade.',                    featured:false, coordenador:'Coop. Marcos Moreira dos Santos', wpp:'https://wa.me/5541991841894' },
+    { nome:'Boqueirão',        congregacoes:17, populacao:180, jovens:45000, descricao:'Corredor sul. Alta circulação.',                    featured:false, coordenador:'Pb. JimmyAlan de Oliveira',       wpp:'https://wa.me/5541998138156' },
+    { nome:'Tatuquara',        congregacoes:13, populacao:153, jovens:55000, descricao:'Regional mais jovem. Forte crescimento.',           featured:false, coordenador:'Coop. Dyenison Santos',           wpp:'https://wa.me/5541984647631' },
+    { nome:'Pinheirinho',      congregacoes:15, populacao:145, jovens:40000, descricao:'Sul da cidade. Perfil popular.',                    featured:false, coordenador:'Pb. Caio Vinícius Rezende',       wpp:'https://wa.me/5541997199130' },
+    { nome:'Portão',           congregacoes:12, populacao:155, jovens:38000, descricao:'Centro-sul. Mix comercial e residencial.',          featured:false, coordenador:'Coop. Pedro H. A. Ritter',        wpp:'https://wa.me/5541997228642' },
+    { nome:'Santa Felicidade', congregacoes:13, populacao:110, jovens:27000, descricao:'Oeste. Área mais arborizada da cidade.',            featured:false, coordenador:'Coop. Lucas Wagner Andrade',      wpp:'https://wa.me/5541998415278' },
+    { nome:'Matriz',           congregacoes:5,  populacao:103, jovens:22000, descricao:'Centro histórico. Alta circulação diária.',         featured:false, coordenador:'Coop. Charles de Oliveira',       wpp:'https://wa.me/5551993822488' }
 ];
 
 // Render grid
@@ -477,6 +477,8 @@ regionais.forEach((r, i) => {
     a.href = `regional.html?regional=${encodeURIComponent(r.nome)}`;
     a.className = 'card' + (r.featured ? ' featured' : '');
     a.style.animationDelay = `${0.05*i+0.1}s`;
+    const wppIcon = '';
+
     a.innerHTML = `
         <div class="card-num">${String(i+1).padStart(2,'0')}</div>
         <div class="card-badge">Regional</div>
