@@ -313,6 +313,34 @@
         .indicator-value { font-size: 1.8rem; font-weight: 900; color: white; }
         .indicator-sub { font-size: 0.75rem; color: var(--muted); }
 
+        /* ================================================
+           FOOTER
+        ================================================ */
+        footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(180deg, rgba(5,10,20,0), rgba(5,10,20,0.95));
+            padding: 2rem 1rem 1rem 1rem;
+            text-align: center;
+            z-index: 50;
+            pointer-events: none;
+        }
+        .footer-content {
+            font-size: 0.75rem;
+            color: #94A3B8;
+            letter-spacing: 1px;
+            pointer-events: auto;
+        }
+        .footer-content a {
+            color: #F59E0B;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .footer-content a:hover {
+            color: #FFFFFF;
+            text-decoration: underline;
+        }
+
         /* RESPONSIVE */
         @media (max-width:1024px) {
             .grid-split { grid-template-columns:1fr; gap:2rem; text-align:center; }
@@ -441,6 +469,12 @@
                         <div class="badge">Nossa Regional</div>
                         <h2 id="s2-nome">Regional</h2>
                         <p id="s2-desc" style="font-size:clamp(1rem,1.8vw,1.4rem); color:rgba(255,255,255,0.8); margin-bottom:2rem;"></p>
+                        <a id="s2-instagram" href="#" target="_blank" style="display:inline-flex;align-items:center;gap:8px;color:white;text-decoration:none;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:8px 16px;border-radius:25px;font-size:0.85rem;font-weight:600;margin-bottom:1.5rem;transition:all 0.3s;hover:transform:translateY(-2px);">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.266.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.265-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                            Acompanhe no Instagram
+                        </a>
                         <div class="grid-3" style="margin-top:1rem;">
                             <div class="card" style="text-align:center; padding:1.2rem;">
                                 <div class="big-number count-up" id="s2-igrejas" data-target="22" style="font-size:3rem;">0</div>
@@ -775,6 +809,7 @@
             caracteristicas: ['Maior bairro da cidade', 'Alta circulação', 'Campo acessível'],
             slogan: 'O CAMPO ESTÁ PERTO',
             descricao: 'Oeste da cidade. CIC é o bairro mais populoso de Curitiba, com forte presença operária e crescimento constante.',
+            instagram: 'https://www.instagram.com/umadcregionalcic_oficial/',
             mapCenter: [-25.4900, -49.3300], zoom: 12,
             polygon: [[-25.4600,-49.3600],[-25.4500,-49.3300],[-25.4700,-49.3100],[-25.5100,-49.2900],[-25.5300,-49.3100],[-25.5400,-49.3500],[-25.5100,-49.3800]],
             congregacoesList: [
@@ -816,6 +851,7 @@
             caracteristicas: ['Maior regional', 'Norte da cidade', 'Parques e natureza'],
             slogan: 'A MAIOR REGIONAL DA CIDADE',
             descricao: 'Norte de Curitiba. Maior regional em número de habitantes, com bairros como Bairro Alto, Cachoeira, Bacacheri e Santa Cândida.',
+            instagram: 'https://www.instagram.com/umadcregionalbv/',
             mapCenter: [-25.4000, -49.2600], zoom: 12,
             polygon: [[-25.3500,-49.2800],[-25.3600,-49.2200],[-25.4000,-49.2000],[-25.4500,-49.2200],[-25.4600,-49.2800],[-25.4200,-49.3100],[-25.3700,-49.3000]],
             congregacoesList: [
@@ -862,6 +898,7 @@
             caracteristicas: ['Alta densidade', 'Leste da cidade', 'Perfil jovem'],
             slogan: 'ALTA DENSIDADE, GRANDE OPORTUNIDADE',
             descricao: 'Leste de Curitiba. Uma das regiões mais densas, com Cajuru (90k hab), Uberaba (73k) e Capão da Imbuía entre os bairros mais movimentados.',
+            instagram: 'https://www.instagram.com/umadcregionalcajuru_/',
             mapCenter: [-25.4800, -49.2100], zoom: 12,
             polygon: [[-25.4400,-49.2400],[-25.4300,-49.1800],[-25.4700,-49.1500],[-25.5200,-49.1700],[-25.5300,-49.2200],[-25.5000,-49.2500],[-25.4600,-49.2500]],
             congregacoesList: [
@@ -905,6 +942,7 @@
             caracteristicas: ['Maior densidade', 'Sul da cidade', 'Forte crescimento'],
             slogan: 'A DENSIDADE É NOSSA MISSÃO',
             descricao: 'Sul de Curitiba. Inclui o Sítio Cercado (102k hab), 2º bairro mais populoso da cidade. Alta concentração de famílias jovens.',
+            instagram: 'https://www.instagram.com/umadcbairronovo/',
             mapCenter: [-25.5700, -49.2700], zoom: 12,
             polygon: [[-25.5300,-49.2800],[-25.5200,-49.2300],[-25.5500,-49.2000],[-25.6000,-49.2200],[-25.6200,-49.2700],[-25.5900,-49.3000],[-25.5500,-49.3000]],
             congregacoesList: [
@@ -943,6 +981,7 @@
             caracteristicas: ['Corredor sul', 'Alta circulação', 'Mix residencial'],
             slogan: 'O CORREDOR DO ALCANCE',
             descricao: 'Sul-centro de Curitiba. Inclui Boqueirão (65k), Xaxim e Hauer. Forte circulação pelo eixo da Av. Marechal Floriano.',
+            instagram: 'https://www.instagram.com/umadc_regional.boqueirao/',
             mapCenter: [-25.5000, -49.2300], zoom: 12,
             polygon: [[-25.4700,-49.2500],[-25.4700,-49.2000],[-25.5100,-49.1900],[-25.5400,-49.2100],[-25.5400,-49.2600],[-25.5100,-49.2700],[-25.4800,-49.2600]],
             congregacoesList: [
@@ -979,6 +1018,7 @@
             caracteristicas: ['Mais jovem de Curitiba', 'Forte crescimento', 'Perfil de jovens'],
             slogan: 'A REGIONAL QUE MAIS CRESCE',
             descricao: 'Extremo sul de Curitiba. Tatuquara (+89% em 10 anos), Campo de Santana (+52%) e Caximba (+189%). A regional mais jovem e de maior crescimento da cidade.',
+            instagram: 'https://www.instagram.com/umadcregionaltatuquara/',
             mapCenter: [-25.6200, -49.3200], zoom: 12,
             polygon: [[-25.5800,-49.3500],[-25.5700,-49.2900],[-25.6100,-49.2600],[-25.6500,-49.2900],[-25.6700,-49.3400],[-25.6400,-49.3700],[-25.6000,-49.3700]],
             congregacoesList: [
@@ -1011,6 +1051,7 @@
             caracteristicas: ['Sul da cidade', 'Perfil popular', 'Comunidades consolidadas'],
             slogan: 'PRESENÇA CONSOLIDADA NO SUL',
             descricao: 'Sul de Curitiba. Pinheirinho, Capão Raso e Novo Mundo formam uma das regiões mais tradicionais e populosas do eixo sul.',
+            instagram: 'https://www.instagram.com/umadcregionalpinheirinho/',
             mapCenter: [-25.5500, -49.3000], zoom: 12,
             polygon: [[-25.5100,-49.3200],[-25.5000,-49.2700],[-25.5400,-49.2500],[-25.5800,-49.2700],[-25.5900,-49.3100],[-25.5600,-49.3400],[-25.5200,-49.3300]],
             congregacoesList: [
@@ -1045,6 +1086,7 @@
             caracteristicas: ['Centro-sul', 'Alta densidade', 'Mix comercial e residencial'],
             slogan: 'ESTRATÉGIA NO CENTRO-SUL',
             descricao: 'Centro-sul de Curitiba. Portão, Fazendinha, Parolin e Montese formam uma das regiões de maior densidade e movimentação da cidade.',
+            instagram: 'https://www.instagram.com/umadc.regionalportao/',
             mapCenter: [-25.4800, -49.3000], zoom: 12,
             polygon: [[-25.4400,-49.3000],[-25.4400,-49.2600],[-25.4700,-49.2400],[-25.5000,-49.2600],[-25.5100,-49.3000],[-25.4800,-49.3200],[-25.4500,-49.3100]],
             congregacoesList: [
@@ -1076,6 +1118,7 @@
             caracteristicas: ['Menor densidade', 'Oeste arborizado', 'Bairros extensos'],
             slogan: 'ALCANÇANDO O OESTE VERDE',
             descricao: 'Oeste de Curitiba. Menor densidade da cidade, mas bairros extensos com grande potencial de crescimento. Santa Felicidade, Butiatuvinha e Lamenha Pequena.',
+            instagram: 'https://www.instagram.com/regionalstafelicidade/',
             mapCenter: [-25.4000, -49.3500], zoom: 12,
             polygon: [[-25.3600,-49.3700],[-25.3700,-49.3000],[-25.4200,-49.2900],[-25.4500,-49.3300],[-25.4400,-49.3800],[-25.4000,-49.4000],[-25.3700,-49.3900]],
             congregacoesList: [
@@ -1106,6 +1149,7 @@
             caracteristicas: ['Maior densidade da cidade', 'Centro histórico', 'Alta rotatividade'],
             slogan: 'O CORAÇÃO DA CIDADE',
             descricao: 'Centro de Curitiba. A maior densidade demográfica (~9.500 hab/km²). Alta circulação diária com trabalhadores, estudantes e moradores.',
+            instagram: 'https://www.instagram.com/umadc_regionalmatriz/',
             mapCenter: [-25.4300, -49.2700], zoom: 13,
             polygon: [[-25.4000,-49.2900],[-25.4000,-49.2400],[-25.4400,-49.2200],[-25.4700,-49.2400],[-25.4700,-49.2800],[-25.4400,-49.3000],[-25.4100,-49.3000]],
             congregacoesList: [
@@ -1135,6 +1179,7 @@
     document.getElementById('titulo-regional').textContent = `REGIONAL ${R.nome.toUpperCase()}`;
     document.getElementById('s2-nome').textContent = R.nomeCompleto;
     document.getElementById('s2-desc').textContent = R.descricao;
+    document.getElementById('s2-instagram').href = R.instagram || '#';
     document.getElementById('legend-regional').textContent = `Regional ${R.nome}`;
 
     // Targets para count-up
@@ -2457,7 +2502,7 @@
         lista.forEach((c, i) => {
             const temLider = c.lider1 && c.lider1.trim() && !semLider.some(s => c.lider1.toLowerCase().includes(s));
             const wppLider = temLider && c.wpp_lider
-                ? `<a href="${c.wpp_lider}" target="_blank" style="color:#25D366;font-size:0.72rem;font-weight:700;text-decoration:none;background:rgba(37,211,102,0.1);padding:2px 8px;border-radius:10px;border:1px solid rgba(37,211,102,0.3);">WPP</a>`
+                ? `<a href="${c.wpp_lider}" target="_blank" style="color:#25D366;font-size:0.72rem;font-weight:700;text-decoration:none;background:rgba(37,211,102,0.1);padding:4px 12px;border-radius:10px;border:1px solid rgba(37,211,102,0.3);display:flex;align-items:center;gap:4px;"><span>📱 WhatsApp</span></a>`
                 : '';
             const liderHtml = temLider
                 ? `<div style="margin-top:6px;padding:6px 10px;background:rgba(245,158,11,0.08);border-left:2px solid #F59E0B;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
@@ -2489,3 +2534,13 @@
     document.addEventListener('keydown', e => { if(e.key === 'Escape') fecharLideres(); });
 
     </script>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            Direitos reservados | Desenvolvido por <a href="https://www.instagram.com/oedsonluizz" target="_blank">@oedsonluizz</a>
+        </div>
+    </footer>
+
+</body>
+</html>
