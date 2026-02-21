@@ -73,27 +73,8 @@
             display:flex; justify-content:space-between; align-items:center;
             z-index:100; pointer-events:none;
         }
-        .logo { height:40px; width:auto; object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,255,255,0.2)); pointer-events:auto; }
-
-        .back-btn {
-            position:fixed; top:1.2rem; left:50%; transform:translateX(-50%);
-            background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
-            color:var(--muted); padding:6px 16px; border-radius:30px;
-            cursor:pointer; z-index:1000; font-family:inherit; font-weight:600;
-            font-size:12px; backdrop-filter:blur(5px); transition:all 0.3s;
-            text-decoration:none; letter-spacing:1px;
-            pointer-events:auto;
-        }
-        .back-btn:hover { background:var(--accent); color:black; border-color:var(--accent); }
-
-        .fullscreen-btn {
-            position:fixed; top:1.2rem; right:2rem;
-            background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);
-            color:var(--muted); padding:6px 14px; border-radius:30px;
-            cursor:pointer; z-index:1000; font-family:inherit; font-weight:500;
-            font-size:12px; backdrop-filter:blur(5px); transition:all 0.3s;
-        }
-        .fullscreen-btn:hover { background:var(--accent); color:black; border-color:var(--accent); }
+        .logo { height:40px; width:auto; object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,255,255,0.2)); pointer-events:auto; cursor:pointer; transition:transform 0.3s ease; }
+        .logo:hover { transform:scale(1.05); }
 
         .nav-prev, .nav-next {
             position:fixed; top:50%; transform:translateY(-50%);
@@ -123,13 +104,13 @@
             overflow-y:scroll; scroll-snap-type:y mandatory; scroll-behavior:smooth;
         }
         .slide {
-            height:100vh; width:100vw; scroll-snap-align:start;
+            min-height:100vh; width:100vw; scroll-snap-align:start;
             display:flex; flex-direction:column;
             justify-content:center; align-items:center;
-            padding:0 5%; position:relative; overflow:hidden;
+            padding:0 5%; position:relative; overflow:visible;
         }
         .slide-content {
-            width:100%; max-width:1200px;
+            width:100%; max-width:1400px;
             opacity:0; transform:translateY(40px) scale(0.98);
             transition:opacity 1s cubic-bezier(0.2,0.8,0.2,1), transform 1s cubic-bezier(0.2,0.8,0.2,1);
             will-change:opacity,transform;
@@ -423,8 +404,10 @@
     <button onclick="nextSlide()" class="nav-next">❯</button>
 
     <header>
-        <img src="logo-ieadc.png" alt="IEADC" class="logo">
-        <img src="logo-umadc.png" alt="UMADC" class="logo">
+        <a href="index.html" style="display:flex; gap:1rem; pointer-events:auto; text-decoration:none;">
+            <img src="logo-ieadc.png" alt="IEADC" class="logo">
+            <img src="logo-umadc.png" alt="UMADC" class="logo">
+        </a>
     </header>
 
     <div id="deck">
@@ -2502,7 +2485,7 @@
         lista.forEach((c, i) => {
             const temLider = c.lider1 && c.lider1.trim() && !semLider.some(s => c.lider1.toLowerCase().includes(s));
             const wppLider = temLider && c.wpp_lider
-                ? `<a href="${c.wpp_lider}" target="_blank" style="color:#25D366;font-size:0.72rem;font-weight:700;text-decoration:none;background:rgba(37,211,102,0.1);padding:4px 12px;border-radius:10px;border:1px solid rgba(37,211,102,0.3);display:flex;align-items:center;gap:4px;"><span>📱 WhatsApp</span></a>`
+                ? `<a href="${c.wpp_lider}" target="_blank" style="color:#25D366;font-size:0.72rem;font-weight:700;text-decoration:none;background:rgba(37,211,102,0.1);padding:4px 12px;border-radius:10px;border:1px solid rgba(37,211,102,0.3);display:flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a6.963 6.963 0 0 0-6.93 6.93c0 1.928.648 3.782 1.845 5.282L2.556 21.942l5.848-1.532c1.447.881 3.137 1.346 4.829 1.346 3.837 0 6.97-3.134 6.97-6.971 0-1.862-.726-3.61-2.045-4.928-1.319-1.32-3.065-2.046-4.929-2.046zM19.448 0H4.552C2.04 0 0 2.04 0 4.552v14.896C0 21.96 2.04 24 4.552 24h14.896c2.512 0 4.552-2.04 4.552-4.552V4.552C24 2.04 21.96 0 19.448 0z"/></svg><span>WhatsApp</span></a>`
                 : '';
             const liderHtml = temLider
                 ? `<div style="margin-top:6px;padding:6px 10px;background:rgba(245,158,11,0.08);border-left:2px solid #F59E0B;border-radius:0 8px 8px 0;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
