@@ -222,6 +222,38 @@
         .cor-nome { font-weight: 700; color: white; }
         .cor-hex { color: var(--muted); font-size: 0.65rem; letter-spacing: 1px; }
 
+/* ===== GC DOWNLOAD PREMIUM EFFECT ===== */
+
+.proj-card-download {
+    position: relative;
+    transition: all .25s ease;
+}
+
+.proj-card-download:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 40px rgba(0, 86, 210, 0.25);
+}
+
+.gc-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: linear-gradient(135deg, #0056D2, #1E90FF);
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    letter-spacing: .6px;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all .25s ease;
+    pointer-events: none;
+}
+
+.proj-card-download:hover .gc-badge {
+    opacity: 1;
+    transform: translateY(0);
+}
 </style>
 </head>
 <body>
@@ -655,16 +687,15 @@
     </div>
 
     <!-- GC COM DOWNLOAD + BADGE -->
-    <a class="proj-card" href="gc-grupo%20de%20crescimento.pdf" download style="text-decoration:none;color:inherit;position:relative;">
-        
-        <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.08);padding:4px 10px;border-radius:20px;font-size:11px;letter-spacing:.5px;">
-            📥 Baixar Material
-        </div>
+    <a class="proj-card proj-card-download" href="gc-grupo%20de%20crescimento.pdf" download style="text-decoration:none;color:inherit;">
+    
+    <div class="gc-badge">📥 Baixar Material</div>
 
-        <div class="proj-num">Ação Interna 02</div>
-        <div class="proj-title">🌱 <em>GC – Grupo de Crescimento</em></div>
-        <div class="proj-desc">Liturgia simples com linguagem acessível para crentes e não convertidos nas sextas-feiras.</div>
-    </a>
+    <div class="proj-num">Ação Interna 02</div>
+    <div class="proj-title">🌱 <em>GC – Grupo de Crescimento</em></div>
+    <div class="proj-desc">Liturgia simples com linguagem acessível para crentes e não convertidos nas sextas-feiras.</div>
+
+</a>
 
     <div class="proj-card">
         <div class="proj-num">Ação Interna 03</div>
