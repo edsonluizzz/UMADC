@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Presença UMADC - 23/02/2026</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #0f172a;
+            --secondary-bg: #1e293b;
+            --tertiary-bg: #334155;
+            --border-color: #475569;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+main {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .kpi-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .kpi-card.presentes {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .kpi-card.ausentes {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .kpi-card.taxa {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .kpi-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: rgba(51, 65, 85, 0.5);
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            width: fit-content;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-bottom: 1.5rem;
+        }
+
+        .regional-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .regional-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .regional-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+
+        .regional-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .regional-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .regional-taxa {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .regional-stats {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .taxa-bar {
+            height: 0.5rem;
+            background: var(--tertiary-bg);
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+        }
+
+        .taxa-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-excelente {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.5);
+        }
+
+        .status-medio {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.5);
+        }
+
+        .status-critico {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.5);
+        }
+
+        /* Modal para Faltantes */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--accent-blue);
+        }
+
+        .faltante-item {
+            background: rgba(51, 65, 85, 0.5);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .faltante-info h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .faltante-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .faltante-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .btn-whatsapp {
+            padding: 0.5rem 1rem;
+            background: #25d366;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-whatsapp:hover {
+            background: #1ead56;
+            transform: translateY(-2px);
+        }
+
+        .btn-whatsapp.disabled {
+            background: var(--tertiary-bg);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .btn-copy {
+            padding: 0.5rem 0.75rem;
+            background: var(--tertiary-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-copy:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .modal-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 0.5rem;
+        }
+
+        .stat-box .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-box .value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .insight-card {
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .insight-card.critical {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .insight-card.warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%);
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        .insight-card.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .insight-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .insight-list {
+            list-style: none;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .insight-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--accent-blue);
+        }
+
+        .recommendation-icon {
+            font-size: 1.5rem;
+            min-width: 1.5rem;
+        }
+
+        .recommendation-content p:first-child {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .recommendation-content p:last-child {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.5);
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 3rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .search-box::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .search-container {
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .regional-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .faltante-item {
+                flex-direction: column;
+            }
+
+            .faltante-actions {
+                width: 100%;
+            }
+
+            .btn-whatsapp, .btn-copy {
+                flex: 1;
+            }
+        }
+
+        
+        @media print {
+            /* Bloqueia impressão/exportação: imprime apenas um aviso */
+            body * {
+                display: none !important;
+                visibility: hidden !important;
+            }
+            #printBlocked {
+                display: block !important;
+                visibility: visible !important;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                padding: 32px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+                font-size: 18px;
+                line-height: 1.4;
+                color: #0f172a;
+                background: #ffffff;
+                border: 2px solid #0f172a;
+            }
+        }
+}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div>
+                <h1>Reunião Geral UMADC</h1>
+                <p>23 de Fevereiro de 2026 | Análise Completa de Presença</p>
+            </div>
+</div>
+    </header>
+
+    <main>
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-label">Total de Congregações</span>
+                    <div class="kpi-icon" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">📊</div>
+                </div>
+                <div class="kpi-value">165</div>
+                <p class="kpi-subtitle">Representadas na reunião</p>
+            </div>
+
+            <div class="kpi-card presentes">
+                <div class="kpi-header">
+                    <span class="kpi-label">Presentes</span>
+                    <div class="kpi-icon" style="background: rgba(16, 185, 129, 0.2); color: #10b981;">✓</div>
+                </div>
+                <div class="kpi-value" style="color: #10b981;">90</div>
+                <p class="kpi-subtitle">54.55% do total</p>
+            </div>
+
+            <div class="kpi-card ausentes">
+                <div class="kpi-header">
+                    <span class="kpi-label">Ausentes</span>
+                    <div class="kpi-icon" style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">✕</div>
+                </div>
+                <div class="kpi-value" style="color: #ef4444;">75</div>
+                <p class="kpi-subtitle">45.45% do total</p>
+            </div>
+
+            <div class="kpi-card taxa">
+                <div class="kpi-header">
+                    <span class="kpi-label">Taxa Geral</span>
+                    <div class="kpi-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">📈</div>
+                </div>
+                <div class="kpi-value" style="color: #f59e0b;">54.55%</div>
+                <p class="kpi-subtitle">Comparecimento médio</p>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">📊 Visão Geral</button>
+            <button class="tab-btn" onclick="switchTab('regionais')">📍 Regionais</button>
+            <button class="tab-btn" onclick="switchTab('analise')">🎯 Análise</button>
+        </div>
+
+        <!-- Tab: Overview -->
+        <div id="overview" class="tab-content active">
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Distribuição de Presença</h3>
+                    <div class="chart-container">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Top 5 Regionais (Taxa %)</h3>
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Regionais -->
+        <div id="regionais" class="tab-content">
+            <div class="card">
+                <h3>Clique em uma regional para ver os faltantes</h3>
+                <div class="regional-grid" id="regionaisGrid"></div>
+            </div>
+        </div>
+
+        <!-- Tab: Análise -->
+        <div id="analise" class="tab-content">
+            <div class="insights-grid">
+                <div class="insight-card critical">
+                    <div class="insight-title">🔴 Regionais Críticas</div>
+                    <p class="insight-subtitle">Taxa < 40% - Ação imediata necessária</p>
+                    <ul class="insight-list">
+                        <li><strong>Portão:</strong> 25.00%</li>
+                        <li><strong>Boa Vista:</strong> 29.63%</li>
+                        <li><strong>Bairro Novo:</strong> 31.58%</li>
+                    </ul>
+                </div>
+
+                <div class="insight-card warning">
+                    <div class="insight-title">🟡 Problemas Estruturais</div>
+                    <p class="insight-subtitle">Impactos identificados</p>
+                    <ul class="insight-list">
+                        <li>• 22 congregações sem contato</li>
+                        <li>• 19 sem liderança formal</li>
+                        <li>• Disparidade de 59,62%</li>
+                    </ul>
+                </div>
+
+                <div class="insight-card success">
+                    <div class="insight-title">🟢 Regionais Destaque</div>
+                    <p class="insight-subtitle">Taxa ≥ 70% - Referências</p>
+                    <ul class="insight-list">
+                        <li><strong>Tatuquara:</strong> 84.62%</li>
+                        <li><strong>Boqueirão:</strong> 82.35%</li>
+                        <li><strong>Cajuru:</strong> 79.17%</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Plano de Ação Estratégica</h3>
+                <div class="recommendation" style="border-left-color: #ef4444;">
+                    <div class="recommendation-icon">⚡</div>
+                    <div class="recommendation-content">
+                        <p>CURTO PRAZO (2 semanas)</p>
+                        <p>Contato com 79 faltantes | Priorizar 3 regionais críticas | Diagnóstico de impedimentos</p>
+                    </div>
+                </div>
+
+                <div class="recommendation" style="border-left-color: #f59e0b;">
+                    <div class="recommendation-icon">📈</div>
+                    <div class="recommendation-content">
+                        <p>MÉDIO PRAZO (4 semanas)</p>
+                        <p>Mobilização regional | Mentoria cruzada entre lideranças | Criação de estrutura formal</p>
+                    </div>
+                </div>
+
+                <div class="recommendation" style="border-left-color: #10b981;">
+                    <div class="recommendation-icon">🎯</div>
+                    <div class="recommendation-content">
+                        <p>LONGO PRAZO (3 meses)</p>
+                        <p>META: 70% de comparecimento | Eliminar regionais <40% | Fortalecer lideranças</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal para Faltantes -->
+    <div id="faltantesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Faltantes da Regional</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-stats" id="modalStats"></div>
+            <div id="faltantesList"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Relatório de Presença UMADC | 23 de Fevereiro de 2026 | 165 congregações analisadas</p>
+    </footer>
+
+    <script>
+        // Dados completos das regionais
+        const regionaisData = [
+            {
+                        'nome': 'Tatuquara',
+                        'emoji': '🥇',
+                        'total': 13,
+                        'presentes': 11,
+                        'ausentes': 2,
+                        'taxa': 84.62,
+                        'faltantes': 2
+            },
+            {
+                        'nome': 'Boqueirão',
+                        'emoji': '🥈',
+                        'total': 17,
+                        'presentes': 14,
+                        'ausentes': 3,
+                        'taxa': 82.35,
+                        'faltantes': 3
+            },
+            {
+                        'nome': 'Cajuru',
+                        'emoji': '🥉',
+                        'total': 24,
+                        'presentes': 19,
+                        'ausentes': 5,
+                        'taxa': 79.17,
+                        'faltantes': 5
+            },
+            {
+                        'nome': 'Santa Felicidade',
+                        'emoji': '4️⃣',
+                        'total': 11,
+                        'presentes': 7,
+                        'ausentes': 4,
+                        'taxa': 63.64,
+                        'faltantes': 4
+            },
+            {
+                        'nome': 'Pinheirinho',
+                        'emoji': '5️⃣',
+                        'total': 15,
+                        'presentes': 9,
+                        'ausentes': 6,
+                        'taxa': 60.0,
+                        'faltantes': 6
+            },
+            {
+                        'nome': 'CIC',
+                        'emoji': '6️⃣',
+                        'total': 22,
+                        'presentes': 11,
+                        'ausentes': 11,
+                        'taxa': 50.0,
+                        'faltantes': 11
+            },
+            {
+                        'nome': 'Matriz',
+                        'emoji': '7️⃣',
+                        'total': 5,
+                        'presentes': 2,
+                        'ausentes': 3,
+                        'taxa': 40.0,
+                        'faltantes': 3
+            },
+            {
+                        'nome': 'Bairro Novo',
+                        'emoji': '8️⃣',
+                        'total': 19,
+                        'presentes': 6,
+                        'ausentes': 13,
+                        'taxa': 31.58,
+                        'faltantes': 13
+            },
+            {
+                        'nome': 'Boa Vista',
+                        'emoji': '9️⃣',
+                        'total': 27,
+                        'presentes': 8,
+                        'ausentes': 19,
+                        'taxa': 29.63,
+                        'faltantes': 19
+            },
+            {
+                        'nome': 'Portão',
+                        'emoji': '🔟',
+                        'total': 12,
+                        'presentes': 3,
+                        'ausentes': 9,
+                        'taxa': 25.0,
+                        'faltantes': 9
+            }
+];
+
+
+        // Dados de faltantes por regional (exemplo - em produção vem do backend)
+        const faltantesCompleto = {
+            'Bairro Novo': [
+                        {
+                                    'congregacao': 'Bairro Novo I',
+                                    'lider': 'Adenilson Rodrigues',
+                                    'telefone': '41 99618-9148'
+                        },
+                        {
+                                    'congregacao': 'Bairro Novo II',
+                                    'lider': 'Lucas Leski',
+                                    'telefone': '41 99560-6116'
+                        },
+                        {
+                                    'congregacao': 'Bairro Novo III',
+                                    'lider': 'Lucas Azevedo',
+                                    'telefone': '41 98797-6605'
+                        },
+                        {
+                                    'congregacao': 'Ganchinho',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Moradias Hebron',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Novo Horizonte',
+                                    'lider': 'Gustavo Trecino',
+                                    'telefone': '41 99144-4472'
+                        },
+                        {
+                                    'congregacao': 'Osternack II',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Umbará',
+                                    'lider': 'Diego Angelo',
+                                    'telefone': '41 99823-4710'
+                        },
+                        {
+                                    'congregacao': 'Vila Calixto',
+                                    'lider': 'Jhonni Picoli',
+                                    'telefone': '41 99586-9128'
+                        },
+                        {
+                                    'congregacao': 'Vila Guilherme',
+                                    'lider': 'Jonatham',
+                                    'telefone': '41 99525-8209'
+                        },
+                        {
+                                    'congregacao': 'Vila Rio Negro',
+                                    'lider': 'Lucas Sidinei',
+                                    'telefone': '41 99525-3037'
+                        },
+                        {
+                                    'congregacao': 'Xapinhal',
+                                    'lider': 'Marcos Tarachu',
+                                    'telefone': '41 98516-1394'
+                        },
+                        {
+                                    'congregacao': 'Xapinhal II',
+                                    'lider': 'Givanildo',
+                                    'telefone': '41 99693-5373'
+                        }
+            ],
+            'Boa Vista': [
+                        {
+                                    'congregacao': 'Alto Tarumã',
+                                    'lider': 'Rober',
+                                    'telefone': '41 99683-5052'
+                        },
+                        {
+                                    'congregacao': 'Bairro Alto',
+                                    'lider': 'Mirian',
+                                    'telefone': '41 98507-4320'
+                        },
+                        {
+                                    'congregacao': 'Copel',
+                                    'lider': 'Lucas',
+                                    'telefone': '41 99168-7417'
+                        },
+                        {
+                                    'congregacao': 'Fernando de Noronha',
+                                    'lider': 'Mariana',
+                                    'telefone': '41 99863-5839'
+                        },
+                        {
+                                    'congregacao': 'Higienópolis',
+                                    'lider': 'Anderson',
+                                    'telefone': '41 99603-6381'
+                        },
+                        {
+                                    'congregacao': 'Jardim Cruzeiro do Sul',
+                                    'lider': 'Thiago',
+                                    'telefone': '41 99655-1693'
+                        },
+                        {
+                                    'congregacao': 'Jardim Granada',
+                                    'lider': 'Priscila',
+                                    'telefone': '41 99691-6348'
+                        },
+                        {
+                                    'congregacao': 'Jardim Paraiso',
+                                    'lider': 'Abner',
+                                    'telefone': '41 99254-4257'
+                        },
+                        {
+                                    'congregacao': 'Jardim Primavera II',
+                                    'lider': 'Josiel',
+                                    'telefone': '41 99729-3889'
+                        },
+                        {
+                                    'congregacao': 'Moradias Faxinal (Jd C do Sul)',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Parque Tanguá',
+                                    'lider': 'Alex',
+                                    'telefone': '41 99642-9622'
+                        },
+                        {
+                                    'congregacao': 'Pilarzinho',
+                                    'lider': 'Bem Hur',
+                                    'telefone': '42 99966-3994'
+                        },
+                        {
+                                    'congregacao': 'Planta Paraiso',
+                                    'lider': 'Hellen',
+                                    'telefone': '41 99696-5728'
+                        },
+                        {
+                                    'congregacao': 'Solar - (Bacacheri)',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Tingui',
+                                    'lider': 'Gabriele',
+                                    'telefone': '41 98514-2038'
+                        },
+                        {
+                                    'congregacao': 'Vila Esperança',
+                                    'lider': 'Claudinei',
+                                    'telefone': '41 99965-7183'
+                        },
+                        {
+                                    'congregacao': 'Vila Galia',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Krasinski',
+                                    'lider': 'Juliano',
+                                    'telefone': '41 99803-1786'
+                        },
+                        {
+                                    'congregacao': 'Vila São João',
+                                    'lider': 'Tiago',
+                                    'telefone': '41 98740-4273'
+                        }
+            ],
+            'Boqueirão': [
+                        {
+                                    'congregacao': 'Hauer Belém',
+                                    'lider': 'RODNEY',
+                                    'telefone': '41 997882387'
+                        },
+                        {
+                                    'congregacao': 'Planta Maria Luiza',
+                                    'lider': 'RICARDO',
+                                    'telefone': '41 998197191'
+                        },
+                        {
+                                    'congregacao': 'Xaxim',
+                                    'lider': 'FERNANDO',
+                                    'telefone': '41 999839655'
+                        }
+            ],
+            'CIC': [
+                        {
+                                    'congregacao': 'Alto Barigui',
+                                    'lider': 'Leandro Augusto dos Santos da silva',
+                                    'telefone': '(41) 99981-4360'
+                        },
+                        {
+                                    'congregacao': 'Alto Bela Vista',
+                                    'lider': 'Joabe',
+                                    'telefone': '(41) 99500-6005'
+                        },
+                        {
+                                    'congregacao': 'Alto Bela Vista II (Vera Cruz)',
+                                    'lider': 'Antônio Carlos leopoldino',
+                                    'telefone': '(41) 99532-9206'
+                        },
+                        {
+                                    'congregacao': 'Itatiaia',
+                                    'lider': 'Eron',
+                                    'telefone': '(41) 99786-5146'
+                        },
+                        {
+                                    'congregacao': 'Santa Helena',
+                                    'lider': 'Sem líder no momento',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'São Rafael',
+                                    'lider': 'Não tem Jovens',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Nova',
+                                    'lider': 'Ivan',
+                                    'telefone': '(41) 99675-7611'
+                        },
+                        {
+                                    'congregacao': 'Vila Rigoni',
+                                    'lider': 'Samuel',
+                                    'telefone': '(41) 98482-4728'
+                        },
+                        {
+                                    'congregacao': 'Vila Santana',
+                                    'lider': 'Marcelo Santana',
+                                    'telefone': '(41) 99682-1671'
+                        },
+                        {
+                                    'congregacao': 'Vila Vitória Riviera',
+                                    'lider': 'Juliana Souza',
+                                    'telefone': '(41) 99736-2721'
+                        },
+                        {
+                                    'congregacao': 'Zimbros - (Vila Nova)',
+                                    'lider': 'Sem líder no momento',
+                                    'telefone': null
+                        }
+            ],
+            'Cajuru': [
+                        {
+                                    'congregacao': 'Santa Rosa',
+                                    'lider': 'ALINE',
+                                    'telefone': '41 999059440'
+                        },
+                        {
+                                    'congregacao': 'Vila Camargo',
+                                    'lider': 'SEM GRUPO DE JOVENS',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Macedo',
+                                    'lider': 'JACI',
+                                    'telefone': '41 995872429'
+                        },
+                        {
+                                    'congregacao': 'Vila Oficinas II',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila São Domingos',
+                                    'lider': 'NEILA',
+                                    'telefone': '71 992490201'
+                        }
+            ],
+            'Matriz': [
+                        {
+                                    'congregacao': 'Ahú',
+                                    'lider': 'SEM LIDER',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Mercês',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Prado Velho',
+                                    'lider': 'RENILDO',
+                                    'telefone': '41 999463622'
+                        }
+            ],
+            'Pinheirinho': [
+                        {
+                                    'congregacao': 'Capão Raso',
+                                    'lider': 'Elton',
+                                    'telefone': '41 99623-6657'
+                        },
+                        {
+                                    'congregacao': 'Jardim Paraná',
+                                    'lider': 'Tiago Lisboa',
+                                    'telefone': '41 99707-5658'
+                        },
+                        {
+                                    'congregacao': 'Jardim São Carlos',
+                                    'lider': 'SEM LIDERANÇA',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Pinheirinho',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Piratini',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila São Pedro',
+                                    'lider': '---',
+                                    'telefone': null
+                        }
+            ],
+            'Portão': [
+                        {
+                                    'congregacao': 'Montese',
+                                    'lider': 'MARI ARCANJO',
+                                    'telefone': '41 999888320'
+                        },
+                        {
+                                    'congregacao': 'Santa Quitéria',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Cubas',
+                                    'lider': 'SEM LIDER CONTATO É COM O PASTOR',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Estrela (Vila Maria)',
+                                    'lider': 'IGREJA SEM JOVENS',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Guilhermina',
+                                    'lider': 'MAYKON MESSIAS',
+                                    'telefone': '41 995734536'
+                        },
+                        {
+                                    'congregacao': 'Vila Izabel',
+                                    'lider': 'ANTONIO JACOMINI',
+                                    'telefone': '41 996660571'
+                        },
+                        {
+                                    'congregacao': 'Vila Leão',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Lindóia',
+                                    'lider': '---',
+                                    'telefone': null
+                        },
+                        {
+                                    'congregacao': 'Vila Maria',
+                                    'lider': 'ANDRE SALES',
+                                    'telefone': '41 996605346'
+                        }
+            ],
+            'Santa Felicidade': [
+                        {
+                                    'congregacao': 'Jardim Califórnia',
+                                    'lider': 'Ev. Adamo',
+                                    'telefone': '(34) 98855-9565'
+                        },
+                        {
+                                    'congregacao': 'José Culpi',
+                                    'lider': 'Thiago Freitas',
+                                    'telefone': '(41) 99752-8207'
+                        },
+                        {
+                                    'congregacao': 'Sol Nascente',
+                                    'lider': 'Silvia',
+                                    'telefone': '(41) 99651-4019'
+                        },
+                        {
+                                    'congregacao': 'Vila Sandra',
+                                    'lider': 'Ezequiel Firmino',
+                                    'telefone': '(41) 98498-8721'
+                        }
+            ],
+            'Tatuquara': [
+                        {
+                                    'congregacao': 'Jardim Ludovica',
+                                    'lider': 'Adenilson Carneiro',
+                                    'telefone': '(41) 99138-6725'
+                        },
+                        {
+                                    'congregacao': 'Vila dos Cruz',
+                                    'lider': 'Adriano',
+                                    'telefone': '(41) 99505-0051'
+                        }
+            ]
+};
+
+        function getCorForTaxa(taxa) {
+            if (taxa >= 70) return '#10b981';
+            if (taxa >= 50) return '#f59e0b';
+            return '#ef4444';
+        }
+
+        function getStatusBadge(taxa) {
+            if (taxa >= 70) return 'status-excelente';
+            if (taxa >= 50) return 'status-medio';
+            return 'status-critico';
+        }
+
+        function getStatusLabel(taxa) {
+            if (taxa >= 70) return '🟢 Excelente';
+            if (taxa >= 50) return '🟡 Médio';
+            return '🔴 Crítico';
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'regionais') {
+                renderRegionaisGrid();
+            }
+        }
+
+        function renderRegionaisGrid() {
+            const container = document.getElementById('regionaisGrid');
+            container.innerHTML = regionaisData.map((r) => `
+                <div class="regional-card" onclick="openFaltantesModal('${r.nome}')">
+                    <div class="regional-header">
+                        <div>
+                            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">${r.emoji}</div>
+                            <div class="regional-name">${r.nome}</div>
+                        </div>
+                        <div>
+                            <div class="regional-taxa" style="color: ${getCorForTaxa(r.taxa)}">${r.taxa.toFixed(1)}%</div>
+                        </div>
+                    </div>
+                    <div class="taxa-bar">
+                        <div class="taxa-fill" style="width: ${r.taxa}%; background: ${getCorForTaxa(r.taxa)};"></div>
+                    </div>
+                    <div class="regional-stats">
+                        <div class="stat-item"><span style="color: #10b981;">✓</span> ${r.presentes}</div>
+                        <div class="stat-item"><span style="color: #ef4444;">✕</span> ${r.ausentes}</div>
+                        <div class="stat-item">📊 ${r.total}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="status-badge ${getStatusBadge(r.taxa)}">${getStatusLabel(r.taxa)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openFaltantesModal(regional) {
+            const modal = document.getElementById('faltantesModal');
+            const data = regionaisData.find(r => r.nome === regional);
+            const faltantes = faltantesCompleto[regional] || [];
+
+            document.getElementById('modalTitle').textContent = `Faltantes - ${regional}`;
+            
+            // Stats
+            const comContato = faltantes.filter(f => f.telefone).length;
+            const semContato = faltantes.length - comContato;
+            
+            document.getElementById('modalStats').innerHTML = `
+                <div class="stat-box">
+                    <div class="label">Total de Faltantes</div>
+                    <div class="value" style="color: #ef4444;">${faltantes.length}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Com Contato</div>
+                    <div class="value" style="color: #10b981;">${comContato}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Sem Contato</div>
+                    <div class="value" style="color: #f59e0b;">${semContato}</div>
+                </div>
+            `;
+
+            // Faltantes list
+            document.getElementById('faltantesList').innerHTML = faltantes.map((f, idx) => {
+                const telefoneFormatado = formatTelefone(f.telefone);
+                const hasContato = f.telefone !== null;
+                
+                return `
+                    <div class="faltante-item">
+                        <div class="faltante-info">
+                            <h4>${idx + 1}. ${f.congregacao}</h4>
+                            <p><strong>Líder:</strong> ${f.lider}</p>
+                            <p><strong>Telefone:</strong> ${hasContato ? telefoneFormatado : '❌ Sem contato'}</p>
+                        </div>
+                        <div class="faltante-actions">
+                            ${hasContato ? `
+                                <a href="https://wa.me/55${limparTelefone(f.telefone)}?text=Olá%20${encodeURIComponent(f.lider)}%2C%20estamos%20mobilizando%20nossa%20reunião%20geral%20UMADC%20e%20gostaria%20de%20contar%20com%20a%20presença%20da%20${encodeURIComponent(f.congregacao)}." target="_blank" class="btn-whatsapp">📲 WhatsApp</a>
+                                <button class="btn-copy" onclick="copiarTelefone('${telefoneFormatado}')">📋 Copiar</button>
+                            ` : `
+                                <button class="btn-whatsapp disabled">📲 Sem contato</button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            modal.classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('faltantesModal').classList.remove('show');
+        }
+
+        function formatTelefone(tel) {
+            if (!tel) return '';
+            const cleaned = tel.replace(/\D/g, '');
+            if (cleaned.length === 11) {
+                return `(${cleaned.substring(0, 2)}) ${cleaned.substring(2, 7)}-${cleaned.substring(7)}`;
+            }
+            return tel;
+        }
+
+        function limparTelefone(tel) {
+            if (!tel) return '';
+            return tel.replace(/\D/g, '');
+        }
+
+        function copiarTelefone(tel) {
+            navigator.clipboard.writeText(tel).then(() => {
+                alert('Telefone copiado para a área de transferência!');
+            });
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('faltantesModal').addEventListener('click', (e) => {
+            if (e.target.id === 'faltantesModal') {
+                closeModal();
+            }
+        });
+
+        // Charts
+        function initCharts() {
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Presentes', 'Ausentes'],
+                    datasets: [{
+                        data: [90, 75],
+                        backgroundColor: ['#10b981', '#ef4444'],
+                        borderColor: '#1e293b',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#cbd5e1', font: { size: 14 } }
+                        }
+                    }
+                }
+            });
+
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: regionaisData.slice(0, 5).map(r => r.nome),
+                    datasets: [{
+                        label: 'Taxa %',
+                        data: regionaisData.slice(0, 5).map(r => r.taxa),
+                        backgroundColor: regionaisData.slice(0, 5).map(r => getCorForTaxa(r.taxa)),
+                        borderRadius: 8,
+                        borderColor: '#475569',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#cbd5e1' } }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#cbd5e1' },
+                            grid: { color: '#475569', drawBorder: false }
+                        },
+                        y: {
+                            ticks: { color: '#cbd5e1' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        // Bloqueio de impressão/exportação (Ctrl/Cmd+P e window.print)
+        (function blockPrintExport() {
+            try {
+                const msg = 'Impressão/Exportação desativada neste dashboard.';
+                window.print = function () {
+                    alert(msg);
+                    return false;
+                };
+
+                document.addEventListener('keydown', (e) => {
+                    const key = (e.key || '').toLowerCase();
+                    const isPrint = (e.ctrlKey || e.metaKey) && key === 'p';
+                    if (isPrint) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        alert(msg);
+                        return false;
+                    }
+                }, { capture: true });
+
+                window.addEventListener('beforeprint', () => {
+                    alert(msg);
+                });
+            } catch (err) {
+                // silencioso
+            }
+        })();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+        });
+    </script>
+
+    <!-- Aviso para tentativas de impressão/exportação -->
+    <div id="printBlocked">
+        Impressão/Exportação desativada neste dashboard.
+    </div>
+
+</body>
+</html>

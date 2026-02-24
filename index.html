@@ -254,6 +254,16 @@
     opacity: 1;
     transform: translateY(0);
 }
+
+/* ── Área restrita ───────────────────────────── */
+.restrita-iframe{
+  width:100%;
+  height:80vh;
+  border:1px solid var(--glass-border);
+  border-radius:16px;
+  background:rgba(0,0,0,0.15);
+}
+
 </style>
 </head>
 <body>
@@ -279,6 +289,7 @@
     <button class="tab-btn"         onclick="switchTab('agenda',this)">Agenda</button>
     <button class="tab-btn"         onclick="switchTab('projetos',this)">Projetos</button>
     <button class="tab-btn"         onclick="switchTab('material',this)">Material</button>
+    <button class="tab-btn"         onclick="switchTab('restrita',this)">Área restrita</button>
 </nav>
 
 <!-- ══════════════════════════════════════
@@ -1169,7 +1180,145 @@ function gerarPDFAgenda() {
 
     doc.save('UMADC-Agenda-2026.pdf');
 }
+
+
+// ── ÁREA RESTRITA (login simples) ───────────────────────────
+const __RESTRITA_LOGIN = "diretoriaumadc";
+const __RESTRITA_SENHA = "gestao2026";
+let __restritaAutenticado = false;
+
+function mostrarRestrita(logado){
+  const box = document.getElementById('restrita-login-box');
+  const content = document.getElementById('restrita-content');
+  const err = document.getElementById('restrita-erro');
+  if (err) err.style.display = 'none';
+  if (box) box.style.display = logado ? 'none' : 'block';
+  if (content) content.style.display = logado ? 'block' : 'none';
+}
+
+function restritaLogin(){
+  const u = (document.getElementById('restrita-user')?.value || '').trim();
+  const p = (document.getElementById('restrita-pass')?.value || '').trim();
+  const err = document.getElementById('restrita-erro');
+
+  if (u === __RESTRITA_LOGIN && p === __RESTRITA_SENHA){
+    __restritaAutenticado = true;
+    mostrarRestrita(true);
+  } else {
+    __restritaAutenticado = false;
+    if (err) err.style.display = 'block';
+  }
+}
+
+function restritaLogout(){
+  __restritaAutenticado = false;
+  const u = document.getElementById('restrita-user');
+  const p = document.getElementById('restrita-pass');
+  if (u) u.value = '';
+  if (p) p.value = '';
+  const wrap = document.getElementById('restrita-dashboard-wrap');
+  if (wrap){
+    wrap.innerHTML = '<div style="font-size:0.75rem;color:var(--muted);">Selecione o item acima para carregar o dashboard.</div>';
+  }
+  mostrarRestrita(false);
+}
+
+function abrirDashboardReuniao(){
+  if (!__restritaAutenticado){
+    mostrarRestrita(false);
+    return;
+  }
+  const wrap = document.getElementById('restrita-dashboard-wrap');
+  if (!wrap) return;
+
+  wrap.innerHTML = `
+    <div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:900;margin-bottom:0.9rem;">
+      Dashboard — 23/02/2026
+    </div>
+    <iframe class="restrita-iframe" src="dashboardreuniao.html" title="Dashboard Reunião 23/02/2026" loading="lazy"></iframe>
+  `;
+  setTimeout(()=>wrap.scrollIntoView({behavior:'smooth', block:'start'}), 60);
+}
+
+// Enter para logar (quando estiver na aba restrita)
+document.addEventListener('keydown', (e)=>{
+  const tab = document.getElementById('tab-restrita');
+  if (!tab || !tab.classList.contains('active')) return;
+  if (!__restritaAutenticado && (e.key || '').toLowerCase() === 'enter'){
+    e.preventDefault();
+    restritaLogin();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', ()=>{ mostrarRestrita(false); });
+
 </script>
+
+
+<!-- ══════════════════════════════════════
+     ABA ÁREA RESTRITA
+══════════════════════════════════════ -->
+<div id="tab-restrita" class="tab-panel">
+<div class="page-wrap">
+
+    <div class="sec-label">Área restrita</div>
+
+    <!-- LOGIN -->
+    <div id="restrita-login-box" class="glass-card" style="max-width:560px;margin:1.5rem auto;">
+        <div style="font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:0.8rem;">
+            Acesso exclusivo da diretoria
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0.8rem;">
+            <input id="restrita-user" type="text" placeholder="Login"
+                style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);color:white;font-family:inherit;font-size:0.95rem;padding:0.85rem 1.1rem;border-radius:14px;outline:none;">
+            <input id="restrita-pass" type="password" placeholder="Senha"
+                style="width:100%;background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);color:white;font-family:inherit;font-size:0.95rem;padding:0.85rem 1.1rem;border-radius:14px;outline:none;">
+
+            <button class="btn-primary" onclick="restritaLogin()" style="width:100%;">
+                Entrar
+            </button>
+
+            <div id="restrita-erro" style="display:none;color:#fca5a5;font-size:0.85rem;letter-spacing:0.3px;">
+                Login ou senha inválidos.
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO APÓS LOGIN -->
+    <div id="restrita-content" style="display:none;">
+        <div class="glass-card" style="padding:1.2rem 1.2rem;margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <div style="font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:800;">
+                        Selecione um relatório
+                    </div>
+                    <div style="font-size:1.15rem;font-weight:900;color:white;margin-top:0.15rem;">
+                        Dashboards de Reunião
+                    </div>
+                </div>
+
+                <button class="btn-secondary" onclick="restritaLogout()" style="white-space:nowrap;">
+                    Sair
+                </button>
+            </div>
+        </div>
+
+        <div class="grid" style="padding-bottom:1rem;">
+            <div class="proj-card" onclick="abrirDashboardReuniao()" style="cursor:pointer;">
+                <div class="proj-num">Reunião 01</div>
+                <div class="proj-title">📊 <em>Reunião do dia 23/02/2026</em></div>
+                <div class="proj-desc">Abrir dashboard completo de presença e análise por regional.</div>
+            </div>
+        </div>
+
+        <div id="restrita-dashboard-wrap" class="glass-card" style="padding:1.1rem;">
+            <div style="font-size:0.75rem;color:var(--muted);">Selecione o item acima para carregar o dashboard.</div>
+        </div>
+    </div>
+
+</div><!-- /page-wrap restrita -->
+</div>
 
 </body>
 </html>
