@@ -27,7 +27,15 @@
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         ::-webkit-scrollbar { width:4px; background:transparent; }
         ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
-        body { font-family:"MuseoModerno",sans-serif; background:var(--bg); color:var(--text); min-height:100svh; overflow-x:hidden; }
+        body { 
+    font-family:"MuseoModerno",sans-serif; 
+    background:var(--bg); 
+    color:var(--text); 
+    overflow-x:hidden;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+}
 
         .bg-overlay { position:fixed; top:0; left:0; width:100vw; height:100vh; background-image:url('fundo.png'); background-size:cover; background-position:center; opacity:0.12; z-index:-2; pointer-events:none; filter:contrast(120%) brightness(80%); }
         .noise { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:-1; opacity:0.03; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
@@ -188,7 +196,11 @@
         @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
         @keyframes cardIn { from{opacity:0;transform:translateY(25px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
 
-        footer { text-align:center; padding:2rem; font-size:0.75rem; color:rgba(255,255,255,0.7); border-top:1px solid var(--glass-border); letter-spacing:1px; }
+        .tab-panel {
+    flex: 1;
+}
+footer { margin-top: auto; }
+footer { text-align:center; padding:2rem; font-size:0.75rem; color:rgba(255,255,255,0.7); border-top:1px solid var(--glass-border); letter-spacing:1px; }
         footer a { color:#F59E0B; text-decoration:none; font-weight:600; transition:color 0.3s ease; }
         footer a:hover { color:#FFFFFF; text-decoration:underline; }
 
@@ -263,6 +275,45 @@
   border-radius:16px;
   background:rgba(0,0,0,0.15);
 }
+/* ✅ Rodapé sempre no final (não sobe em abas pequenas) */
+body { padding-bottom: 70px; }  /* reserva espaço para o footer */
+
+footer{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: rgba(5,10,20,0.90);
+  backdrop-filter: blur(12px);
+}
+/* ── Footer ultra discreto ───────────────────────────── */
+body { padding-bottom: 32px; }
+
+footer{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  padding: 6px 0;
+  font-size: 0.60rem;
+  letter-spacing: 1px;
+
+  background: rgba(5,10,20,0.35);
+  backdrop-filter: blur(4px);
+
+  border-top: 1px solid rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.35);
+}
+
+footer a{
+  color: rgba(245,158,11,0.55);
+}
+
+footer a:hover{
+  color: rgba(255,255,255,0.75);
+}
 
 </style>
 </head>
@@ -289,6 +340,7 @@
     <button class="tab-btn"         onclick="switchTab('agenda',this)">Agenda</button>
     <button class="tab-btn"         onclick="switchTab('projetos',this)">Projetos</button>
     <button class="tab-btn"         onclick="switchTab('material',this)">Material</button>
+    <button class="tab-btn"         onclick="switchTab('eventos',this)">Eventos</button>
     <button class="tab-btn"         onclick="switchTab('restrita',this)">Área restrita</button>
 </nav>
 
@@ -761,6 +813,7 @@
 </div><!-- /page-wrap projetos -->
 </div>
 
+footer { margin-top: auto; }
 <footer>Direitos reservados | Desenvolvido por <a href="https://www.instagram.com/oedsonluizz" target="_blank">@oedsonluizz</a></footer>
 
 <script>
@@ -1318,6 +1371,161 @@ document.addEventListener('DOMContentLoaded', ()=>{ mostrarRestrita(false); });
     </div>
 
 </div><!-- /page-wrap restrita -->
+</div>
+
+
+
+<div id="tab-eventos" class="tab-panel">
+    <div class="page-wrap">
+        <div class="sec-label">Eventos</div>
+
+        <!-- MINI PÁGINA DE VENDAS — EJP 2026 -->
+        <div class="glass-card" style="padding:1.4rem 1.4rem; margin-top:1.2rem;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <div>
+                    <div style="font-size:0.7rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:900;">
+                        EJP 2026
+                    </div>
+                    <h2 style="margin-top:0.35rem;font-size:1.55rem;line-height:1.2;font-weight:900;color:white;">
+                        Escola de Jovens Pregadores
+                    </h2>
+                    <p style="margin-top:0.8rem;color:rgba(255,255,255,0.72);line-height:1.6;max-width:820px;">
+                        Um programa de capacitação para jovens chamados ao ministério da Palavra.
+                        Formação com foco em <strong style="color:white;">pregação</strong>, <strong style="color:white;">doutrina</strong>,
+                        <strong style="color:white;">vida com Deus</strong> e <strong style="color:white;">serviço</strong>,
+                        para fortalecer a vocação e formar uma geração que pregue com convicção e unção.
+                    </p>
+                </div>
+
+                <a href="https://umadc.digital/ejp26" target="_blank" rel="noopener"
+                   style="display:inline-flex;align-items:center;justify-content:center;gap:10px;
+                          padding:0.95rem 1.15rem;border-radius:16px;
+                          border:1px solid rgba(245,158,11,0.45);
+                          background:rgba(245,158,11,0.14);
+                          color:var(--accent);text-decoration:none;
+                          font-weight:900;letter-spacing:2px;text-transform:uppercase;
+                          transition:transform 0.2s, background 0.2s, border-color 0.2s;">
+                    Pré-inscrição
+                    <span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;
+                                 background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);
+                                 color:white;font-weight:900;">↗</span>
+                </a>
+            </div>
+
+            <div style="height:1px;background:rgba(255,255,255,0.08);margin:1.25rem 0 1.15rem;"></div>
+
+            <!-- BENEFÍCIOS / FORMATO -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.9rem;">
+                <div class="missao-strip" style="margin:0;border-left-color:rgba(59,130,246,0.9);">
+                    <p style="font-style:normal;margin:0;color:rgba(255,255,255,0.78);">
+                        <strong style="color:white;">Aulas ao vivo</strong><br>
+                        Conteúdo transmitido ao vivo, com acompanhamento.
+                    </p>
+                </div>
+                <div class="missao-strip" style="margin:0;border-left-color:rgba(16,185,129,0.9);">
+                    <p style="font-style:normal;margin:0;color:rgba(255,255,255,0.78);">
+                        <strong style="color:white;">Encontros presenciais</strong><br>
+                        A cada três meses, para alinhamento e prática.
+                    </p>
+                </div>
+                <div class="missao-strip" style="margin:0;border-left-color:rgba(245,158,11,0.9);">
+                    <p style="font-style:normal;margin:0;color:rgba(255,255,255,0.78);">
+                        <strong style="color:white;">Grupo tira-dúvidas</strong><br>
+                        Canal para dúvidas, direcionamento e suporte.
+                    </p>
+                </div>
+                <div class="missao-strip" style="margin:0;border-left-color:rgba(239,68,68,0.9);">
+                    <p style="font-style:normal;margin:0;color:rgba(255,255,255,0.78);">
+                        <strong style="color:white;">Certificado</strong><br>
+                        Certificado de conclusão ao final do programa.
+                    </p>
+                </div>
+            </div>
+
+            <!-- PREÇOS -->
+            <div style="margin-top:1.35rem;">
+                <div style="font-size:0.75rem;letter-spacing:4px;text-transform:uppercase;color:var(--muted);font-weight:900;margin-bottom:0.75rem;">
+                    Investimento
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0.9rem;">
+                    <div class="glass-card" style="padding:1.1rem 1.1rem;border:1px solid rgba(255,255,255,0.10);">
+                        <div style="font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.65);font-weight:900;">
+                            Novos alunos
+                        </div>
+                        <div style="margin-top:0.55rem;font-size:1.9rem;font-weight:900;color:white;">
+                            R$ 169,00
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="padding:1.1rem 1.1rem;border:1px solid rgba(255,255,255,0.10);">
+                        <div style="font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.65);font-weight:900;">
+                            Indicações
+                        </div>
+                        <div style="margin-top:0.55rem;font-size:1.9rem;font-weight:900;color:white;">
+                            R$ 149,00
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="padding:1.1rem 1.1rem;border:1px solid rgba(255,255,255,0.10);">
+                        <div style="font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.65);font-weight:900;">
+                            Ex-alunos
+                        </div>
+                        <div style="margin-top:0.55rem;font-size:1.9rem;font-weight:900;color:white;">
+                            R$ 149,00
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="padding:1.1rem 1.1rem;border:1px solid rgba(245,158,11,0.40);
+                                                  background:linear-gradient(135deg, rgba(245,158,11,0.16), rgba(255,255,255,0.03));">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;flex-wrap:wrap;">
+                            <div style="font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:900;">
+                                Líderes (especial)
+                            </div>
+                            <div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.65);font-weight:900;">
+                                Destaque
+                            </div>
+                        </div>
+
+                        <div style="margin-top:0.55rem;font-size:1.9rem;font-weight:900;color:white;">
+                            R$ 99,00
+                        </div>
+                        <div style="margin-top:0.2rem;color:rgba(255,255,255,0.75);font-weight:700;">
+                            ou 4x de R$ 25,00
+                        </div>
+
+                        <div style="height:1px;background:rgba(255,255,255,0.10);margin:0.85rem 0 0.75rem;"></div>
+
+                        <div style="color:rgba(255,255,255,0.78);line-height:1.55;">
+                            <strong style="color:white;">Bônus do líder:</strong><br>
+                            Cada líder que trouxer <strong style="color:white;">5 alunos</strong> ganha a própria inscrição.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top:1.25rem;display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center;justify-content:flex-start;">
+                    <a href="https://umadc.digital/ejp26" target="_blank" rel="noopener"
+                       style="display:inline-flex;align-items:center;justify-content:center;gap:10px;
+                              padding:0.95rem 1.25rem;border-radius:16px;
+                              border:1px solid rgba(59,130,246,0.45);
+                              background:rgba(59,130,246,0.14);
+                              color:white;text-decoration:none;
+                              font-weight:900;letter-spacing:2px;text-transform:uppercase;">
+                        Fazer pré-inscrição agora
+                        <span style="opacity:0.9;">→</span>
+                    </a>
+
+                    <div style="font-size:0.85rem;color:rgba(255,255,255,0.55);">
+                        Link: <span style="color:rgba(255,255,255,0.8);">umadc.digital/ejp26</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:1.2rem;">
+                <cite>UMADC Curitiba • EJP 2026</cite>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>
