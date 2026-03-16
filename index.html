@@ -1,950 +1,580 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<!-- ============================================================
-     UMADC Curitiba · Planejamento 2026
-     Versão: 2.0
-     Data: 04/03/2026
-     Identidade Visual: Nova ID 2026
-     Paleta: Laranja #D4470A · Teal #4A9E8A · Fundo #0D0A07
-     Tema: "Até que todos ouçam" — Romanos 10.14
-============================================================ -->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UMADC Curitiba — Planejamento 2026 · v2.0</title>
-
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.webmanifest">
-    <meta name="theme-color" content="#0D0A07">
-
-    <!-- iOS (Add to Home Screen) -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="UMADC 2026">
-    <link rel="apple-touch-icon" href="icon-512.png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #0D0A07; --primary: #D4470A; --accent: #D4470A;
-            --secondary: #4A9E8A; --text: #FFFFFF; --muted: #A89880;
-            --glass: rgba(255,248,235,0.03); --glass-border: rgba(255,220,180,0.08);
-        }
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        ::-webkit-scrollbar { width:4px; background:transparent; }
-        ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
-        body { font-family:"MuseoModerno",sans-serif; background:var(--bg); color:var(--text); min-height:100svh; overflow-x:hidden; }
-
-        .bg-overlay { position:fixed; top:0; left:0; width:100vw; height:100vh; background-image:url('parte_da_nova_is_visual.png'); background-size:cover; background-position:center; opacity:0.08; z-index:-2; pointer-events:none; filter:contrast(110%) brightness(70%) saturate(120%); }
-        .noise { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:-1; opacity:0.03; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-        canvas#particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; opacity:0.35; pointer-events:none; }
-
-        /* ── HEADER ── */
-        header { padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:200; border-bottom:1px solid var(--glass-border); backdrop-filter:blur(20px); background:rgba(13,10,7,0.90); }
-        .logos { display:flex; gap:1.5rem; align-items:center; }
-        .logo { height:36px; width:auto; object-fit:contain; filter:drop-shadow(0 0 8px rgba(255,255,255,0.15)); }
-        .year-badge { background:rgba(212,71,10,0.15); border:1px solid rgba(212,71,10,0.4); color:var(--accent); padding:5px 14px; border-radius:30px; font-weight:700; font-size:0.75rem; letter-spacing:2px; }
-
-        /* ── ABAS ── */
-        .tab-nav { display:flex; justify-content:center; padding:0; border-bottom:1px solid var(--glass-border); background:rgba(13,10,7,0.80); backdrop-filter:blur(10px); position:sticky; top:63px; z-index:199; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
-        .tab-nav::-webkit-scrollbar { display:none; }
-        .tab-btn { padding:0.85rem 1.4rem; background:none; border:none; color:var(--muted); font-family:inherit; font-size:0.75rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.3s, border-color 0.3s; white-space:nowrap; flex-shrink:0; }
-        .tab-btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:4px; }
-        .tab-btn:hover { color:white; }
-        .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); }
-        .tab-panel { display:none; opacity:0; }
-        .tab-panel.active { display:block; animation:tabFadeIn 0.35s ease forwards; }
-        @keyframes tabFadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
-        /* ── HERO ── */
-        .hero { text-align:center; padding:4.5rem 2rem 3rem; }
-        .hero-label { font-size:0.7rem; font-weight:700; letter-spacing:4px; text-transform:uppercase; color:var(--accent); margin-bottom:1rem; display:block; opacity:0; animation:fadeUp 0.8s 0.1s forwards; }
-        .hero h1 { font-size:clamp(2.8rem,7vw,7rem); font-weight:900; line-height:0.9; letter-spacing:-3px; background:linear-gradient(180deg,#fff 40%,#6b5b4e); -webkit-background-clip:text; -webkit-text-fill-color:transparent; opacity:0; animation:fadeUp 0.8s 0.25s forwards; }
-        .hero-slogan { font-size:clamp(1rem,2.2vw,1.5rem); font-weight:900; letter-spacing:6px; text-transform:uppercase; color:var(--accent); margin-top:1.2rem; opacity:0; animation:fadeUp 0.8s 0.4s forwards; }
-        .hero-sub { font-size:clamp(0.85rem,1.6vw,1.1rem); color:var(--muted); margin-top:0.5rem; font-weight:300; letter-spacing:1px; opacity:0; animation:fadeUp 0.8s 0.5s forwards; }
-        .hero-ref { font-size:0.72rem; color:rgba(255,255,255,0.22); letter-spacing:3px; margin-top:0.4rem; opacity:0; animation:fadeUp 0.8s 0.6s forwards; }
-        .hero-stats { display:flex; gap:3rem; justify-content:center; margin-top:3rem; opacity:0; animation:fadeUp 0.8s 0.7s forwards; }
-        .stat { text-align:center; }
-        .stat-number { font-size:2.5rem; font-weight:900; color:var(--accent); line-height:1; }
-        .stat-label { font-size:0.65rem; color:var(--muted); letter-spacing:2px; text-transform:uppercase; margin-top:4px; }
-
-        /* ── PAGE WRAP ── */
-        .page-wrap { max-width:1200px; margin:0 auto; padding:0 2rem 5rem; }
-
-        /* ── MISSÃO / MANIFESTO (Home) ── */
-        .missao-strip { margin:2.5rem auto; padding:2rem 2.5rem; background:var(--glass); border:1px solid var(--glass-border); border-radius:20px; border-left:4px solid var(--accent); }
-        .missao-strip p { font-size:clamp(1rem,1.8vw,1.3rem); color:rgba(255,255,255,0.75); line-height:1.7; font-style:italic; }
-        .missao-strip cite { display:block; margin-top:0.8rem; font-size:0.72rem; color:var(--accent); letter-spacing:2px; text-transform:uppercase; font-style:normal; font-weight:700; }
-        .ate-que { display:grid; gap:0.7rem; margin:0 auto 4rem; }
-        .ate-que-item { display:flex; align-items:center; gap:1rem; padding:1rem 1.5rem; background:var(--glass); border:1px solid var(--glass-border); border-radius:12px; transition:border-color 0.3s, background 0.3s; }
-        .ate-que-item:hover { border-color:rgba(212,71,10,0.3); background:rgba(212,71,10,0.04); }
-        .ate-que-dot { width:8px; height:8px; border-radius:50%; background:var(--accent); flex-shrink:0; }
-        .ate-que-label { font-size:clamp(0.85rem,1.5vw,1rem); color:var(--muted); flex:1; }
-        .ate-que-label strong { color:white; font-weight:700; }
-
-        /* ── SECTION DIVIDER ── */
-        .sec-label { font-size:0.6rem; letter-spacing:4px; text-transform:uppercase; color:var(--accent); font-weight:700; padding:2.5rem 0 1rem; border-bottom:1px solid var(--glass-border); margin-bottom:1.2rem; }
-
-        /* ── DIRETORIA CARDS ── */
-        .dir-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(255px,1fr)); gap:1rem; margin-bottom:0.5rem; }
-        .dir-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:14px; padding:1.2rem 1.4rem; display:flex; align-items:flex-start; gap:1rem; transition:border-color 0.3s, transform 0.3s; }
-        .dir-card:hover { border-color:rgba(212,71,10,0.3); transform:translateY(-3px); }
-        .dir-card.gold { border-color:rgba(212,71,10,0.3); background:rgba(212,71,10,0.04); }
-        .dir-card.blue { border-color:rgba(74,158,138,0.3); background:rgba(74,158,138,0.04); }
-        .dir-icon { font-size:1.4rem; width:40px; height:40px; background:rgba(255,255,255,0.05); border-radius:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-        .dir-card.gold .dir-icon { background:rgba(212,71,10,0.12); }
-        .dir-card.blue .dir-icon { background:rgba(74,158,138,0.12); }
-        .dir-cargo { font-size:0.55rem; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
-        .dir-card.gold .dir-cargo { color:var(--accent); }
-        .dir-card.blue .dir-cargo { color:#4A9E8A; }
-        .dir-nome { font-size:0.95rem; font-weight:700; color:white; line-height:1.2; }
-        .dir-sub { font-size:0.7rem; color:rgba(255,255,255,0.35); margin-top:2px; }
-        .dir-funcao { font-size:0.73rem; color:rgba(255,255,255,0.5); margin-top:4px; line-height:1.4; }
-
-        /* Regionais dentro de Diretoria */
-        .reg-dir-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; }
-        .reg-dir-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:12px; padding:1rem 1.2rem; transition:border-color 0.3s; }
-        .reg-dir-card:hover { border-color:rgba(212,71,10,0.3); }
-        .reg-nome { font-size:0.6rem; letter-spacing:3px; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:5px; }
-        .reg-lider { font-size:0.92rem; font-weight:700; color:white; }
-        .reg-lider2 { font-size:0.75rem; color:var(--muted); margin-top:2px; }
-        .reg-cong { font-size:0.65rem; color:rgba(255,255,255,0.3); margin-top:3px; }
-
-        /* ── CARDS COM FOTO (Presidência & Assessorias) ── */
-        .foto-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1.2rem; margin-bottom:0.5rem; }
-        .foto-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:16px; padding:1.6rem 1.4rem 1.4rem; display:flex; flex-direction:column; align-items:center; text-align:center; gap:0.9rem; transition:border-color 0.3s, transform 0.3s; position:relative; overflow:hidden; }
-        .foto-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--secondary),#6dbfaa); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; }
-        .foto-card:hover { border-color:rgba(212,71,10,0.4); transform:translateY(-4px); }
-        .foto-card:hover::before { transform:scaleX(1); }
-        .foto-card.gold { border-color:rgba(212,71,10,0.3); background:rgba(212,71,10,0.04); }
-        .foto-card.gold::before { background:linear-gradient(90deg,var(--accent),#e8603a); }
-        .foto-card.blue { border-color:rgba(74,158,138,0.3); background:rgba(74,158,138,0.04); }
-
-        .foto-avatar { width:80px; height:80px; border-radius:50%; overflow:hidden; flex-shrink:0; position:relative; border:2px solid rgba(255,255,255,0.1); }
-        .foto-card.gold .foto-avatar { border-color:rgba(212,71,10,0.5); box-shadow:0 0 20px rgba(212,71,10,0.2); }
-        .foto-card.blue .foto-avatar { border-color:rgba(74,158,138,0.5); box-shadow:0 0 20px rgba(74,158,138,0.2); }
-        .foto-avatar img { width:100%; height:100%; object-fit:cover; object-position:center top; display:block; }
-        .foto-avatar .foto-iniciais { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; font-weight:900; letter-spacing:-1px; }
-        .foto-card.gold .foto-iniciais { background:rgba(212,71,10,0.15); color:var(--accent); }
-        .foto-card.blue .foto-iniciais { background:rgba(74,158,138,0.15); color:#4A9E8A; }
-        .foto-iniciais { background:rgba(255,255,255,0.07); color:var(--muted); }
-
-        .foto-cargo { font-size:0.55rem; letter-spacing:2px; text-transform:uppercase; color:var(--muted); font-weight:700; }
-        .foto-card.gold .foto-cargo { color:var(--accent); }
-        .foto-card.blue .foto-cargo { color:#4A9E8A; }
-        .foto-nome { font-size:0.95rem; font-weight:800; color:white; line-height:1.2; }
-        .foto-sub { font-size:0.72rem; color:rgba(255,255,255,0.35); margin-top:-4px; }
-        .foto-funcao { font-size:0.72rem; color:rgba(255,255,255,0.45); line-height:1.4; margin-top:-2px; }
-
-        .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1.2rem; padding:0 0 4rem; }
-        .card { background:var(--glass); border:1px solid var(--glass-border); border-radius:16px; padding:1.8rem; cursor:pointer; text-decoration:none; color:var(--text); display:block; position:relative; overflow:hidden; transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1), border-color 0.35s, box-shadow 0.35s; opacity:0; animation:cardIn 0.6s ease forwards; }
-        .card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(212,71,10,0.08),transparent 60%); opacity:0; transition:opacity 0.35s; }
-        .card:hover::before { opacity:1; }
-        .card:hover { transform:translateY(-6px); border-color:rgba(212,71,10,0.5); box-shadow:0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,71,10,0.2); }
-        .card-num { position:absolute; top:1rem; right:1.5rem; font-size:3.5rem; font-weight:900; color:rgba(255,255,255,0.04); line-height:1; pointer-events:none; }
-        .card-badge { font-size:0.65rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--primary); background:rgba(212,71,10,0.15); border:1px solid rgba(212,71,10,0.3); padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:1rem; }
-        .card h2 { font-size:clamp(1.3rem,2.5vw,1.7rem); font-weight:800; letter-spacing:-0.5px; line-height:1.1; margin-bottom:0.8rem; transition:color 0.3s; }
-        .card:hover h2 { color:var(--accent); }
-        .card-coord { display:flex; flex-direction:column; gap:2px; margin-top:0.8rem; padding:0.6rem 0.8rem; background:rgba(255,255,255,0.03); border-radius:8px; border-left:2px solid var(--accent); }
-        .coord-label { font-size:0.55rem; letter-spacing:2px; text-transform:uppercase; color:var(--accent); font-weight:700; }
-        .coord-nome { font-size:0.82rem; font-weight:600; color:rgba(255,255,255,0.85); }
-        .card-info { display:flex; gap:1.5rem; margin-top:1.2rem; padding-top:1.2rem; border-top:1px solid var(--glass-border); }
-        .info-item { display:flex; flex-direction:column; gap:2px; }
-        .info-value { font-size:1.4rem; font-weight:800; color:white; line-height:1; }
-        .info-label { font-size:0.6rem; letter-spacing:2px; color:var(--muted); text-transform:uppercase; }
-        .card-arrow { position:absolute; bottom:1.5rem; right:1.5rem; width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); display:flex; align-items:center; justify-content:center; font-size:14px; color:var(--muted); transition:all 0.3s; }
-        .card:hover .card-arrow { background:var(--accent); border-color:var(--accent); color:white; transform:translateX(3px); }
-        .card.featured { border-color:rgba(212,71,10,0.3); background:rgba(212,71,10,0.04); }
-        .card.featured .card-badge { background:rgba(212,71,10,0.2); border-color:rgba(212,71,10,0.4); color:var(--accent); }
-
-        /* ── PROJETOS TAB ── */
-        .agenda-table { width:100%; border-collapse:collapse; margin-bottom:3rem; }
-        .agenda-table th { text-align:left; padding:0.7rem 1rem; font-size:0.58rem; letter-spacing:3px; text-transform:uppercase; color:var(--muted); font-weight:700; border-bottom:1px solid var(--glass-border); }
-        .agenda-table td { padding:0.8rem 1rem; font-size:0.85rem; color:rgba(255,255,255,0.8); border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:top; }
-        .agenda-table tr:hover td { background:rgba(255,255,255,0.02); }
-        .a-mes { font-weight:800; color:var(--accent); font-size:0.62rem; letter-spacing:2px; text-transform:uppercase; white-space:nowrap; }
-        .a-dia { font-weight:800; color:white; font-size:1.1rem; white-space:nowrap; }
-        .a-hora { color:var(--muted); font-size:0.75rem; white-space:nowrap; }
-        .a-local { color:var(--muted); font-size:0.78rem; }
-        .a-evento { font-weight:700; color:white; }
-        .a-tag { display:inline-block; margin-top:3px; padding:2px 8px; border-radius:10px; font-size:0.58rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; }
-        .t-vig { background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.3); color:#a78bfa; }
-        .t-ebj { background:rgba(74,158,138,0.15); border:1px solid rgba(74,158,138,0.3); color:#4A9E8A; }
-        .t-lid { background:rgba(74,158,138,0.15); border:1px solid rgba(74,158,138,0.3); color:#4A9E8A; }
-        .t-esp { background:rgba(212,71,10,0.15); border:1px solid rgba(212,71,10,0.3); color:var(--accent); }
-
-        .proj-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:1rem; margin-bottom:1rem; }
-        .proj-card { background:var(--glass); border:1px solid var(--glass-border); border-radius:14px; padding:1.4rem 1.6rem; transition:border-color 0.3s, transform 0.3s; position:relative; overflow:hidden; }
-        .proj-grid-ext .proj-card:hover { border-color:rgba(212,71,10,0.35); transform:translateY(-3px); }
-        .proj-grid-ext .proj-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#D4470A,#b83a08); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; }
-        .proj-grid-ext .proj-card:hover::before { transform:scaleX(1); }
-        .proj-grid-int .proj-card { border-color:rgba(74,158,138,0.1); }
-        .proj-grid-int .proj-card:hover { border-color:rgba(74,158,138,0.4); transform:translateY(-3px); }
-        .proj-grid-int .proj-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,#4A9E8A,#6dbfaa); transform:scaleX(0); transform-origin:left; transition:transform 0.4s; }
-        .proj-grid-int .proj-card:hover::before { transform:scaleX(1); }
-        .proj-grid-int .proj-num { color:#4A9E8A; }
-        .reg-wpp { display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border-radius:50%;text-decoration:none;transition:transform 0.2s,background 0.2s;flex-shrink:0; }
-        .reg-wpp:hover { transform:scale(1.15); background:rgba(37,211,102,0.1); }
-        .proj-num { font-size:0.58rem; letter-spacing:3px; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:5px; }
-        .proj-title { font-size:1rem; font-weight:800; color:white; margin-bottom:0.5rem; }
-        .proj-title em { color:var(--accent); font-style:normal; }
-        .proj-desc { font-size:0.8rem; color:rgba(255,255,255,0.5); line-height:1.5; }
-
-        /* ── ANIMAÇÕES ── */
-        @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes cardIn { from{opacity:0;transform:translateY(25px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
-
-        footer { text-align:center; padding:2rem; font-size:0.68rem; color:rgba(255,255,255,0.15); border-top:1px solid var(--glass-border); letter-spacing:1px; }
-
-        @media(max-width:600px){
-            .hero{padding:3rem 1.5rem 2rem;} .hero-stats{gap:1.5rem;}
-            .page-wrap{padding:0 1rem 4rem;} header{padding:0.8rem 1.2rem;}
-            .tab-btn{padding:0.75rem 0.9rem;font-size:0.68rem;letter-spacing:1px;}
-            .agenda-table td,.agenda-table th{padding:0.5rem 0.4rem;font-size:0.75rem;}
-        }
-    
-        /* ── ABA MATERIAL ── */
-        .material-section { margin-bottom: 2.5rem; }
-        .material-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-top: 1rem; }
-        .material-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 1.2rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; cursor: pointer; transition: border-color 0.3s, transform 0.3s; text-decoration: none; color: var(--text); }
-        .material-card:hover { border-color: rgba(212,71,10,0.4); transform: translateY(-3px); }
-        .material-card img { width: 100%; max-height: 90px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4)); }
-        .material-card-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-align: center; color: rgba(255,255,255,0.7); }
-        .material-card-sub { font-size: 0.6rem; color: var(--muted); text-align: center; margin-top: -4px; }
-        .material-download-btn { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.4rem; font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); border: 1px solid rgba(212,71,10,0.3); padding: 3px 10px; border-radius: 20px; transition: background 0.2s; }
-        .material-card:hover .material-download-btn { background: rgba(212,71,10,0.1); }
-        .material-doc-card { background: var(--glass); border: 1px solid var(--glass-border); border-radius: 14px; padding: 1.4rem 1.6rem; display: flex; align-items: center; gap: 1.2rem; cursor: pointer; transition: border-color 0.3s, transform 0.3s; text-decoration: none; color: var(--text); }
-        .material-doc-card:hover { border-color: rgba(212,71,10,0.4); transform: translateY(-2px); }
-        .material-doc-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
-        .material-doc-info { flex: 1; }
-        .material-doc-title { font-size: 0.95rem; font-weight: 700; color: white; }
-        .material-doc-sub { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-        .cor-swatch { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1); }
-        .cor-grid { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
-        .cor-item { display: flex; align-items: center; gap: 0.8rem; }
-        .cor-info { font-size: 0.75rem; }
-        .cor-nome { font-weight: 700; color: white; }
-        .cor-hex { color: var(--muted); font-size: 0.65rem; letter-spacing: 1px; }
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UMADC • Lista de Presença Online</title>
+  <style>
+    :root {
+      --bg: #081426;
+      --card: rgba(255,255,255,0.08);
+      --border: rgba(255,255,255,0.14);
+      --text: #f5f8ff;
+      --muted: #b7c5dd;
+      --blue: #4da3ff;
+      --blue-2: #8ec5ff;
+      --gold: #f6c454;
+      --danger: #ff7070;
+      --success: #46d48b;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(77,163,255,0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(246,196,84,0.12), transparent 22%),
+        linear-gradient(180deg, #07111f 0%, #0a1930 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 46px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+    .hero-main { padding: 28px; }
+    .badge {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(246,196,84,0.12);
+      border: 1px solid rgba(246,196,84,0.26);
+      color: #ffe09b;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 16px 0 10px;
+      font-size: clamp(30px, 4vw, 44px);
+      line-height: 1.05;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+      max-width: 760px;
+      margin: 0 0 18px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .stat {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .stat .label { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+    .stat .value { font-size: 30px; font-weight: 800; }
+    .hero-side {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .qr-box {
+      width: 100%;
+      background: white;
+      border-radius: 22px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 250px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+    .card { padding: 24px; }
+    .card h2 { margin: 0 0 8px; font-size: 22px; }
+    .card p.top {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+    .fields { display: grid; gap: 14px; }
+    label {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    input, select {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      padding: 14px 14px;
+      border-radius: 14px;
+      outline: none;
+      font-size: 15px;
+    }
+    select option { color: #111827; }
+    input::placeholder { color: #90a5c7; }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .15s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    .primary {
+      background: linear-gradient(135deg, var(--blue), var(--blue-2));
+      color: #04101f;
+    }
+    .secondary {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+    .notice {
+      margin-top: 14px;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      display: none;
+    }
+    .notice.show { display: block; }
+    .notice.ok { background: rgba(70,212,139,0.12); color: #c8f7df; border: 1px solid rgba(70,212,139,0.2); }
+    .notice.err { background: rgba(255,112,112,0.12); color: #ffd7d7; border: 1px solid rgba(255,112,112,0.22); }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .toolbar input, .toolbar select { flex: 1 1 180px; }
+    .list {
+      max-height: 480px;
+      overflow: auto;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.10);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: rgba(12, 25, 45, 0.96);
+      z-index: 1;
+      font-size: 13px;
+      text-align: left;
+      padding: 14px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+    tbody td {
+      padding: 13px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px;
+      color: #e9efff;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.04); }
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      background: rgba(246,196,84,0.12);
+      color: #ffe2a4;
+      border: 1px solid rgba(246,196,84,0.18);
+    }
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .small { font-size: 12px; color: var(--muted); }
+    code.inline {
+      background: rgba(255,255,255,0.08);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+    @media (max-width: 980px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      .hero-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .wrap { width: min(100% - 20px, 100%); padding-top: 16px; }
+      .hero-main, .hero-side, .card { padding: 18px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .btn-row, .toolbar { flex-direction: column; }
+      button { width: 100%; }
+    }
+  </style>
 </head>
 <body>
-
-<div class="bg-overlay"></div>
-<div class="noise"></div>
-<canvas id="particles"></canvas>
-
-<!-- HEADER -->
-<header>
-    <div class="logos">
-        <img src="logo-ieadc.png" alt="IEADC" class="logo">
-        <img src="logo-umadc.png" alt="UMADC" class="logo">
-    </div>
-    <div class="year-badge">GESTÃO 2026/2027</div>
-</header>
-
-<!-- ABAS -->
-<nav class="tab-nav">
-    <button class="tab-btn active"  onclick="switchTab('home',this)">Home</button>
-    <button class="tab-btn"         onclick="switchTab('diretoria',this)">Diretoria</button>
-    <button class="tab-btn"         onclick="switchTab('regionais',this)">Regionais</button>
-    <button class="tab-btn"         onclick="switchTab('agenda',this)">Agenda</button>
-    <button class="tab-btn"         onclick="switchTab('projetos',this)">Projetos</button>
-    <button class="tab-btn"         onclick="switchTab('material',this)">Material</button>
-</nav>
-
-<!-- ══════════════════════════════════════
-     ABA HOME
-══════════════════════════════════════ -->
-<div id="tab-home" class="tab-panel active">
+  <div class="wrap">
     <section class="hero">
-        <span class="hero-label">Assembleia de Deus em Curitiba · Projeto Anual UMADC</span>
-        <h1>10 REGIONAIS<br>1 VISÃO</h1>
-        <p class="hero-slogan">ATÉ QUE TODOS OUÇAM</p>
-        <p class="hero-sub">Território · Juventude · Expansão</p>
-        <p class="hero-ref">Romanos 10.14</p>
-        <div class="hero-stats">
-            <div class="stat"><div class="stat-number" id="count-igrejas">0</div><div class="stat-label">Congregações</div></div>
-            <div class="stat"><div class="stat-number">10</div><div class="stat-label">Regionais</div></div>
-            <div class="stat"><div class="stat-number" id="count-pop">0</div><div class="stat-label">Mil habitantes</div></div>
+      <div class="panel hero-main">
+        <div class="badge">UMADC • Até que todos ouçam</div>
+        <h1>Lista de Presença Online</h1>
+        <p class="subtitle">
+          Esta versão foi preparada para funcionar com <strong>Google Sheets + Apps Script</strong>. Basta colar a URL do Web App no arquivo e publicar a página.
+        </p>
+        <div class="hero-grid">
+          <div class="stat">
+            <div class="label">Presentes registrados</div>
+            <div class="value" id="totalPresentes">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Regionais com presença</div>
+            <div class="value" id="totalRegionais">0</div>
+          </div>
+          <div class="stat">
+            <div class="label">Congregações com presença</div>
+            <div class="value" id="totalCongregacoes">0</div>
+          </div>
         </div>
+      </div>
+
+      <div class="panel hero-side">
+        <p style="font-size:18px;font-weight:800;margin:0;">Escaneie para registrar presença</p>
+        <div class="qr-box"><div id="qrcode"></div></div>
+        <p class="small" id="qrUrl"></p>
+      </div>
     </section>
-    <div class="page-wrap">
-        <div class="missao-strip">
-            <p>"Como ouvirão, se não há quem pregue? E como pregarão, se não forem enviados?"</p>
-            <cite>Romanos 10.14–15 · Base bíblica do Projeto Anual 2026</cite>
+
+    <section class="grid">
+      <div class="panel card">
+        <h2>Registrar presença</h2>
+        <p class="top">Antes de usar, troque a constante <code class="inline">APPS_SCRIPT_URL</code> no código pela URL do seu Web App do Google Apps Script.</p>
+
+        <form id="presencaForm" class="fields">
+          <label>Nome completo
+            <input type="text" id="nome" placeholder="Digite o nome completo" required />
+          </label>
+
+          <label>Telefone
+            <input type="tel" id="telefone" placeholder="(41) 99999-9999" required />
+          </label>
+
+          <label>Regional
+            <select id="regional" required>
+              <option value="">Selecione a regional</option>
+            </select>
+          </label>
+
+          <label>Congregação
+            <select id="congregacao" required disabled>
+              <option value="">Selecione primeiro a regional</option>
+            </select>
+          </label>
+
+          <label>Cargo
+            <select id="cargo" required>
+              <option value="">Selecione o cargo</option>
+              <option>1º Líder</option>
+              <option>2º Líder</option>
+              <option>Regente</option>
+              <option>Representante</option>
+            </select>
+          </label>
+
+          <div class="btn-row">
+            <button type="submit" class="primary" id="btnSubmit">Registrar presença</button>
+            <button type="button" class="secondary" id="btnAtualizar">Atualizar painel</button>
+          </div>
+        </form>
+
+        <div class="notice" id="notice"></div>
+
+        <p class="footer-note">
+          Esta versão não usa localStorage como fonte principal. Os dados vão para a planilha e o painel busca os registros online.
+        </p>
+      </div>
+
+      <div class="panel card">
+        <h2>Painel online</h2>
+        <p class="top">O painel consulta a base online e mostra os registros mais recentes.</p>
+
+        <div class="toolbar">
+          <input type="text" id="busca" placeholder="Buscar por nome, telefone ou congregação" />
+          <select id="filtroRegional">
+            <option value="">Todas as regionais</option>
+          </select>
         </div>
-        <div class="ate-que">
-            <div class="ate-que-item"><div class="ate-que-dot"></div><p class="ate-que-label">Até que todos ouçam. <strong>Nós iremos.</strong></p></div>
-            <div class="ate-que-item"><div class="ate-que-dot"></div><p class="ate-que-label">Até que todos ouçam. <strong>Nós falaremos.</strong></p></div>
-            <div class="ate-que-item"><div class="ate-que-dot"></div><p class="ate-que-label">Até que todos ouçam. <strong>Nós serviremos.</strong></p></div>
-            <div class="ate-que-item"><div class="ate-que-dot"></div><p class="ate-que-label">Até que todos ouçam. <strong>Não paramos.</strong></p></div>
+
+        <div class="list">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Regional</th>
+                <th>Congregação</th>
+                <th>Cargo</th>
+                <th>Horário</th>
+              </tr>
+            </thead>
+            <tbody id="listaPresencas"></tbody>
+          </table>
         </div>
-    </div>
-</div>
+      </div>
+    </section>
+  </div>
 
-<!-- ══════════════════════════════════════
-     ABA DIRETORIA
-══════════════════════════════════════ -->
-<div id="tab-diretoria" class="tab-panel">
-<div class="page-wrap">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxP7j-RnGIW86kDRUpfH71Q4lRNGCN34eTU4GRF524HV2OgKHWmuVLsaM4YXdbGwd5m/exec';
 
-    <div style="padding:1.5rem 0 0.5rem;">
-        <input id="busca-diretoria" type="text" placeholder="🔍  Buscar membro da diretoria..." oninput="filtrarDiretoria()" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white;font-family:inherit;font-size:0.85rem;padding:0.7rem 1.1rem;border-radius:12px;outline:none;transition:border-color 0.3s;" onfocus="this.style.borderColor='rgba(212,71,10,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
-        <div id="busca-diretoria-empty" style="display:none;text-align:center;color:#A89880;padding:2rem;font-size:0.85rem;">Nenhum resultado encontrado</div>
-    </div>
-    <div style="display:flex;gap:1rem;flex-wrap:wrap;padding:0.8rem 0 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:0.5rem;">
-        <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#A89880;"><div style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#D4470A,#b83a08);flex-shrink:0;"></div> Liderança principal</div>
-        <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#A89880;"><div style="width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#4A9E8A,#357a6a);flex-shrink:0;"></div> Coordenação de área</div>
-        <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.7rem;color:#A89880;"><div style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.15);flex-shrink:0;"></div> Assessoria</div>
-    </div>
+    const congregacoesPorRegional = {
+      'Bairro Novo': ['Bairro Novo I','Bairro Novo II','Bairro Novo III','Bairro Novo VI','Cachoeira II','Ganchinho','Moradias Coqueiros II','Moradias Hebron','Novo Horizonte','Osternack','Osternack II','Santa Celeste','Umbará','Vila Americana','Vila Calixto','Vila Guilherme','Vila Rio Negro','Xapinhal','Xapinhal II'],
+      'Boa Vista': ['Alto Tarumã','Bacacheri','Bairro Alto','Barreirinha','Boa Vista','Copel','Fernando de Noronha','Higienópolis','Jardim Arroio','Jardim Cruzeiro do Sul','Jardim Granada','Jardim Paraiso','Jardim Primavera II','Parque Tanguá','Pilarzinho','Planta Califórnia','Planta Paraiso','Tingui','Vila Esperança','Vila Fátima','Vila Galia','Vila Krasinski','Vila Leonice','Vila São João','Vila Tupi','Moradias Faxinal (Jd C do Sul)','Solar (Bacacheri)'],
+      'Boqueirão': ['Areal','Boqueirão','Diagonal','Hauer','Hauer Belém','Jardim Castelo Branco','Jardim Esmeralda','Jardim Itamarati','Jardim Maringá','Jardim Paranaense','Jardim Urano','Moradias Pantanal','Planta Maria Luiza','Santa Inês','Terminal do Boqueirão','Vila Barretos','Xaxim'],
+      'Cajuru': ['Autódromo','Cajuru','Capão da Imbuía','Jardim Acrópole','Jardim Araguaia','Jardim das Américas','Jardim Icaraí','Jardim Natália','Jardim Petrópolis','Jardim União','Lotiguaçu','Planta Evaristo','Santa Bárbara','Santa Rosa','Uberaba de Cima','Vila Camargo','Vila Germano','Vila Macedo','Vila Oficinas','Vila Reno','Vila São Domingos','Vila São Paulo','Vila Sofia','Vila Oficinas II'],
+      'CIC': ['Alto Barigui','Alto Bela Vista','CIC','Diadema II','Itatiaia','Jardim Independência','Porto Belo','Santa Helena','São José do Passaúna','São Rafael','Vera Cruz','Vila Augusta','Vila Nova','Vila Rigoni','Vila Rose','Vila Sabará','Vila Santana','Vila Verde','Vila Vitória Riviera','Vitória Régia','Zimbros (Vila Nova)','Alto Bela Vista II (Vera Cruz)'],
+      'Matriz': ['Água Verde','Ahú','Mercês','Prado Velho','SEDE'],
+      'Pinheirinho': ['Capão Raso','Jardim Paraná','Jardim São Carlos','Moradias Arroio','Moradias São Lucas','Parque Industrial','Pinheirinho','Pirineus','Vila Acordes','Vila Ipiranga','Vila Machado','Vila Piratini','Vila Santo Antônio','Vila São Pedro','Vila Pluma (Sto. Antonio)'],
+      'Portão': ['Fazendinha','Montese','Parolin','Portão','Santa Quitéria','Vila Cubas','Vila Guilhermina','Vila Izabel','Vila Leão','Vila Lindóia','Vila Maria','Vila Estrela (Vila Maria)'],
+      'Santa Felicidade': ['Campina do Siqueira','Jardim Califórnia','Jardim Gabineto','Jardim Pinheiros','Jardim Santos Andrade','José Culpi','Santa Felicidade','São Braz','Sol Nascente','Vila Haquim','Vila Sandra'],
+      'Tatuquara': ['Caximba','Jardim da Ordem','Jardim Dom Bosco','Jardim Ludovica','Monteiro Lobato','Moradias Janaina','Moradias Paraná','Moradias Rio Bonito','Rio Bonito','Tatuquara','Terra Santa','Vila dos Cruz','Vila Evangélica']
+    };
 
-    <div class="sec-label">Presidência &amp; Coordenação Geral</div>
-    <div class="foto-grid">
-        <div class="foto-card gold">
-            <div class="foto-avatar"><img src="fotos/wagner-gaby.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">WG</div></div>
-            <div class="foto-cargo">Pastor Presidente da IEADC</div>
-            <div class="foto-nome">Pr. Wagner Gaby</div>
-        </div>
-        <div class="foto-card gold">
-            <div class="foto-avatar"><img src="fotos/linderson-romano.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">LR</div></div>
-            <div class="foto-cargo">Pastor Superintendente da Família</div>
-            <div class="foto-nome">Pr. Linderson Marcos Romano</div>
-        </div>
-        <div class="foto-card gold">
-            <div class="foto-avatar"><img src="fotos/rogerio-marchiore.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">RM</div></div>
-            <div class="foto-cargo">Coordenador Geral UMADC</div>
-            <div class="foto-nome">Pr. Rogério Marchiore</div>
-            <div class="foto-funcao">Visão, unidade e direção espiritual</div>
-        </div>
-        <div class="foto-card">
-            <div class="foto-avatar"><img src="fotos/vinicius-paula.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">VP</div></div>
-            <div class="foto-cargo">1º Vice Coordenador UMADC</div>
-            <div class="foto-nome">Ev. Vinicius de Paula</div>
-            <div class="foto-funcao">Elo de ligação com os regionais</div>
-        </div>
-        <div class="foto-card">
-            <div class="foto-avatar"><img src="fotos/everton-rodrigues.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">ER</div></div>
-            <div class="foto-cargo">2º Vice Coordenador UMADC</div>
-            <div class="foto-nome">Coop. Everton Rodrigues</div>
-            <div class="foto-funcao">Elo de ligação com líderes locais</div>
-        </div>
-    </div>
+    const regionais = Object.keys(congregacoesPorRegional);
+    const regionalEl = document.getElementById('regional');
+    const congregacaoEl = document.getElementById('congregacao');
+    const filtroRegionalEl = document.getElementById('filtroRegional');
+    const formEl = document.getElementById('presencaForm');
+    const listaEl = document.getElementById('listaPresencas');
+    const noticeEl = document.getElementById('notice');
+    const buscaEl = document.getElementById('busca');
+    const totalPresentesEl = document.getElementById('totalPresentes');
+    const totalRegionaisEl = document.getElementById('totalRegionais');
+    const totalCongregacoesEl = document.getElementById('totalCongregacoes');
+    const btnSubmit = document.getElementById('btnSubmit');
 
-    <div class="sec-label">Assessorias</div>
-    <div class="foto-grid">
-        <div class="foto-card blue">
-            <div class="foto-avatar"><img src="fotos/caio-rezende.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">CR</div></div>
-            <div class="foto-cargo">Assessor das Regionais</div>
-            <div class="foto-nome">Pb. Caio Rezende</div>
-            <div class="foto-sub">Pluma</div>
-        </div>
-        <div class="foto-card">
-            <div class="foto-avatar"><img src="fotos/leonardo-ribeiro.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">LR</div></div>
-            <div class="foto-cargo">Assessor da Coordenação</div>
-            <div class="foto-nome">Coop. Leonardo Ribeiro</div>
-            <div class="foto-sub">IEADC Diagonal</div>
-        </div>
-        <div class="foto-card">
-            <div class="foto-avatar"><img src="fotos/thiago-abdala.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">TA</div></div>
-            <div class="foto-cargo">Assessor da Coordenação</div>
-            <div class="foto-nome">Coop. Thiago Abdala</div>
-            <div class="foto-sub">Jardim União</div>
-        </div>
-        <div class="foto-card">
-            <div class="foto-avatar"><img src="fotos/matheus-felipe.jpg" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt=""><div class="foto-iniciais" style="display:none">MF</div></div>
-            <div class="foto-cargo">Assessor da Coordenação</div>
-            <div class="foto-nome">Coop. Matheus Felipe</div>
-            <div class="foto-sub">Jardim União</div>
-        </div>
-    </div>
+    let registrosOnline = [];
 
-    <div class="sec-label">Secretaria &amp; Tesouraria</div>
-    <div class="dir-grid">
-        <div class="dir-card"><div class="dir-icon">📝</div><div><div class="dir-cargo">Secretaria</div><div class="dir-nome">Alessandra</div><div class="dir-sub">Pluma</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📝</div><div><div class="dir-cargo">Secretaria</div><div class="dir-nome">Andressa</div><div class="dir-sub">Porto Belo</div></div></div>
-        <div class="dir-card"><div class="dir-icon">💰</div><div><div class="dir-cargo">Tesouraria</div><div class="dir-nome">Cristiano Rocha</div><div class="dir-sub">Capão da Imbuia</div></div></div>
-        <div class="dir-card"><div class="dir-icon">💰</div><div><div class="dir-cargo">Tesouraria</div><div class="dir-nome">Bruno Alex</div><div class="dir-sub">Moradias São Lucas</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🔗</div><div><div class="dir-cargo">Assessoria UMADEPAR</div><div class="dir-nome">Pb. Gerson Colen</div><div class="dir-sub">CIC</div></div></div>
-    </div>
+    function preencherRegionais() {
+      regionais.forEach(regional => {
+        const opt1 = document.createElement('option');
+        opt1.value = regional;
+        opt1.textContent = regional;
+        regionalEl.appendChild(opt1);
 
-    <div class="sec-label">Comunicação &amp; Mídia</div>
-    <div class="dir-grid">
-        <div class="dir-card blue"><div class="dir-icon">📱</div><div><div class="dir-cargo">Mídia e Comunicação</div><div class="dir-nome">Luís Felipe Tissot</div><div class="dir-sub">Vila Izabel</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📖</div><div><div class="dir-cargo">Entrelinhas</div><div class="dir-nome">Céfora</div><div class="dir-sub">Sede</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📻</div><div><div class="dir-cargo">Programa Entrelinhas Rádio</div><div class="dir-nome">Pb. Fernando</div><div class="dir-sub">Coqueiros</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🎙️</div><div><div class="dir-cargo">Programa UMADC</div><div class="dir-nome">Lucas Marques</div><div class="dir-sub">Vila Hakin</div></div></div>
-    </div>
-
-    <div class="sec-label">Música, Coral &amp; Orquestra</div>
-    <div class="dir-grid">
-        <div class="dir-card blue"><div class="dir-icon">🎵</div><div><div class="dir-cargo">Coral</div><div class="dir-nome">Juliana Ribeiro</div><div class="dir-sub">Sede</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🎺</div><div><div class="dir-cargo">Orquestra</div><div class="dir-nome">André Santos</div><div class="dir-sub">Sede</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🔊</div><div><div class="dir-cargo">Sonoplastia</div><div class="dir-nome">Roberto Meguro</div><div class="dir-sub">Sede</div></div></div>
-    </div>
-
-    <div class="sec-label">Logística, Recepção &amp; Pregadores</div>
-    <div class="dir-grid">
-        <div class="dir-card"><div class="dir-icon">🚛</div><div><div class="dir-cargo">Logística</div><div class="dir-nome">Dc. Josué</div><div class="dir-sub">Capão da Imbuia</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🤝</div><div><div class="dir-cargo">Recepção</div><div class="dir-nome">Coop. Magdiel · Renata</div><div class="dir-sub">Caximba</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📣</div><div><div class="dir-cargo">Recebimento de Pregadores</div><div class="dir-nome">Pb. Alder</div><div class="dir-sub">Boqueirão</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📣</div><div><div class="dir-cargo">Recebimento de Pregadores</div><div class="dir-nome">Coop. Isaque Romano</div><div class="dir-sub">Vila Hauer</div></div></div>
-    </div>
-
-    <div class="sec-label">Evangelismo, Ação Social &amp; Novos Convertidos</div>
-    <div class="dir-grid">
-        <div class="dir-card blue"><div class="dir-icon">✋</div><div><div class="dir-cargo">Evangelismo</div><div class="dir-nome">Pb. Nilson Rodrigues</div><div class="dir-sub">Bairro Novo II</div></div></div>
-        <div class="dir-card blue"><div class="dir-icon">✋</div><div><div class="dir-cargo">Evangelismo</div><div class="dir-nome">Ev. Alexandre P. Shlisinski</div><div class="dir-sub">Vila Krasinski</div></div></div>
-        <div class="dir-card"><div class="dir-icon">❤️</div><div><div class="dir-cargo">Acolhimento Novos Convertidos</div><div class="dir-nome">Pb. Matheus</div><div class="dir-sub">Bairro Novo II</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🫱</div><div><div class="dir-cargo">Assistência Social</div><div class="dir-nome">Bruno Letrinta</div><div class="dir-sub">Vila Angélica</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🫱</div><div><div class="dir-cargo">Assistência Social</div><div class="dir-nome">Coop. Fernando</div><div class="dir-sub">Xaxim</div></div></div>
-    </div>
-
-    <div class="sec-label">Intercessão, Vigílias &amp; Escola de Jovens Pregadores</div>
-    <div class="dir-grid">
-        <div class="dir-card gold"><div class="dir-icon">🙏</div><div><div class="dir-cargo">Intercessão e Vigílias</div><div class="dir-nome">Pb. Renan Falavinha</div><div class="dir-sub">Capão da Imbuia</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🙏</div><div><div class="dir-cargo">Intercessão e Vigílias</div><div class="dir-nome">Coop. Rafael Jeremias</div><div class="dir-sub">Jardim Icaraí</div></div></div>
-        <div class="dir-card"><div class="dir-icon">🙏</div><div><div class="dir-cargo">Intercessão e Vigílias</div><div class="dir-nome">Ev. Ebson</div><div class="dir-sub">Campina do Siqueira</div></div></div>
-        <div class="dir-card blue"><div class="dir-icon">📚</div><div><div class="dir-cargo">Escola de Jovens Pregadores</div><div class="dir-nome">Karina Meguro · Sara Cruz</div><div class="dir-sub">Sede</div></div></div>
-        <div class="dir-card"><div class="dir-icon">📚</div><div><div class="dir-cargo">Escola de Jovens Pregadores</div><div class="dir-nome">Ev. Vicente</div><div class="dir-sub">Bairro Alto</div></div></div>
-    </div>
-
-    <div class="sec-label">Coordenadores Regionais</div>
-    <div class="reg-dir-grid">
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Boa Vista</div><div class="reg-lider">Daniel Tararan</div><div class="reg-lider2">2º Flávio · Boa Vista</div><div class="reg-cong">Vila Leonice</div></div><a href="https://wa.me/5541995899160" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Cajuru</div><div class="reg-lider">Paulo Sérgio de Oliveira</div><div class="reg-cong">Vila Reno</div></div><a href="https://wa.me/5541995675449" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">CIC</div><div class="reg-lider">Edson Luiz da Silva</div><div class="reg-cong">Porto Belo</div></div><a href="https://wa.me/5541999888951" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Bairro Novo</div><div class="reg-lider">Marcos Moreira dos Santos</div><div class="reg-lider2">2º Mercadante · V. Americana</div><div class="reg-cong">Bairro Novo IV</div></div><a href="https://wa.me/5541991841894" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Boqueirão</div><div class="reg-lider">JimmyAlan de Oliveira</div><div class="reg-lider2">2º Alekes · Castelo Branco</div><div class="reg-cong">Santa Inês</div></div><a href="https://wa.me/5541998138156" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Tatuquara</div><div class="reg-lider">Dyenison Santos</div><div class="reg-lider2">2º Matheus · Rio Bonito</div><div class="reg-cong">Moradias Paraná</div></div><a href="https://wa.me/5541984647631" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Pinheirinho</div><div class="reg-lider">Caio Vinícius Rezende</div><div class="reg-cong">Vila Pluma</div></div><a href="https://wa.me/5541997199130" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Portão</div><div class="reg-lider">Pedro Henrique A. Ritter</div><div class="reg-cong">Portão</div></div><a href="https://wa.me/5541997228642" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Santa Felicidade</div><div class="reg-lider">Lucas Wagner Andrade</div><div class="reg-cong">Santa Felicidade</div></div><a href="https://wa.me/5541998415278" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-        <div class="reg-dir-card"><div style="display:flex;align-items:center;justify-content:space-between;"><div><div class="reg-nome">Matriz</div><div class="reg-lider">Charles de Oliveira</div><div class="reg-cong">Água Verde</div></div><a href="https://wa.me/5551993822488" target="_blank" class="reg-wpp"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.55 2 2.11 6.43 2.11 11.93c0 1.97.52 3.82 1.51 5.45L2 22l4.77-1.58a9.87 9.87 0 005.27 1.51h.01c5.49 0 9.93-4.43 9.93-9.93C21.98 6.43 17.54 2 12.04 2zm0 18.11c-1.64 0-3.24-.44-4.63-1.28l-.33-.2-2.83.94.93-2.76-.21-.35a7.87 7.87 0 01-1.22-4.18c0-4.37 3.56-7.93 7.93-7.93 4.37 0 7.93 3.56 7.93 7.93 0 4.37-3.56 7.93-7.93 7.93zm4.46-5.93c-.24-.12-1.4-.69-1.62-.77-.22-.08-.38-.12-.54.12-.16.24-.62.77-.76.93-.14.16-.28.18-.52.06-.24-.12-1.02-.37-1.94-1.18-.72-.64-1.2-1.42-1.34-1.66-.14-.24-.01-.37.11-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.48-.4-.41-.54-.42l-.46-.01c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2 0 1.18.86 2.32.98 2.48.12.16 1.7 2.6 4.12 3.65.58.25 1.03.4 1.38.51.58.18 1.11.15 1.53.09.47-.07 1.4-.57 1.6-1.12.2-.55.2-1.02.14-1.12-.06-.1-.22-.16-.46-.28z"/></svg></a></div></div>
-    </div>
-
-</div><!-- /page-wrap diretoria -->
-</div>
-
-<!-- ══════════════════════════════════════
-     ABA REGIONAIS
-══════════════════════════════════════ -->
-<div id="tab-regionais" class="tab-panel">
-    <div class="page-wrap">
-        <div class="grid" id="grid"></div>
-    </div>
-</div>
-
-<!-- ══════════════════════════════════════
-     ABA AGENDA
-══════════════════════════════════════ -->
-<div id="tab-agenda" class="tab-panel">
-<div class="page-wrap">
-
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding:2.5rem 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">
-        <span style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;">Agenda Oficial 2026</span>
-        <button onclick="gerarPDFAgenda()" style="display:flex;align-items:center;gap:0.5rem;padding:0.55rem 1.2rem;background:rgba(212,71,10,0.1);border:1px solid rgba(212,71,10,0.4);color:#D4470A;font-family:inherit;font-size:0.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:20px;cursor:pointer;transition:all 0.3s;" onmouseover="this.style.background='rgba(212,71,10,0.2)'" onmouseout="this.style.background='rgba(212,71,10,0.1)'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Exportar PDF
-        </button>
-    </div>
-    <table class="agenda-table">
-        <thead><tr><th>Mês</th><th>Dia</th><th>Hora</th><th>Local</th><th>Evento</th></tr></thead>
-        <tbody>
-            <tr class="agenda-row" data-date="2026-02-23"><td><span class="a-mes">Fevereiro</span></td><td><span class="a-dia">23</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr class="agenda-row" data-date="2026-03-16"><td><span class="a-mes">Março</span></td><td><span class="a-dia">16</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr class="agenda-row" data-date="2026-04-09"><td><span class="a-mes">Abril</span></td><td><span class="a-dia">09</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Anfiteatro – FCC</span></td><td><span class="a-evento">Aula Magna – EJP UMADC</span><br><span class="a-tag t-ebj">EJP</span></td></tr>
-            <tr class="agenda-row" data-date="2026-04-11"><td><span class="a-mes">Abril</span></td><td><span class="a-dia">11</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
-            <tr class="agenda-row" data-date="2026-04-20"><td><span class="a-mes">Abril</span></td><td><span class="a-dia">20</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr class="agenda-row" data-date="2026-05-01"><td><span class="a-mes">Maio</span></td><td><span class="a-dia">01</span></td><td><span class="a-hora">14h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">UMADC+</span><br><span class="a-tag t-esp">Especial</span></td></tr>
-            <tr class="agenda-row" data-date="2026-06-15"><td><span class="a-mes">Junho</span></td><td><span class="a-dia">15</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr class="agenda-row" data-date="2026-07-11"><td><span class="a-mes">Julho</span></td><td><span class="a-dia">11</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
-            <tr class="agenda-row" data-date="2026-07-16"><td><span class="a-mes">Julho</span></td><td><span class="a-dia">16–18</span></td><td><span class="a-hora">19h30</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Escola Bíblica de Jovens UMADC</span><br><span class="a-tag t-ebj">EBJ</span></td></tr>
-            <tr class="agenda-row" data-date="2026-08-17"><td><span class="a-mes">Agosto</span></td><td><span class="a-dia">17</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr class="agenda-row" data-date="2026-09-21"><td><span class="a-mes">Setembro</span></td><td><span class="a-dia">21</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr class="agenda-row" data-date="2026-10-10"><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">10</span></td><td><span class="a-hora">23h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Vigília Geral da UMADC</span><br><span class="a-tag t-vig">Vigília</span></td></tr>
-            <tr class="agenda-row" data-date="2026-10-19"><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">19</span></td><td><span class="a-hora">20h00</span></td><td><span class="a-local">Sede</span></td><td><span class="a-evento">Reunião de Líderes UMADC</span><br><span class="a-tag t-lid">Líderes</span></td></tr>
-            <tr class="agenda-row" data-date="2026-10-23"><td><span class="a-mes">Outubro</span></td><td><span class="a-dia">23</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">Anfiteatro – FCC</span></td><td><span class="a-evento">Workshop – Jovens Empreendedores UMADC</span><br><span class="a-tag t-esp">Especial</span></td></tr>
-            <tr class="agenda-row" data-date="2026-11-26"><td><span class="a-mes">Novembro</span></td><td><span class="a-dia">26–27</span></td><td><span class="a-hora">19h45</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Encerramento EJP UMADC</span><br><span class="a-tag t-ebj">EJP</span></td></tr>
-            <tr class="agenda-row" data-date="2026-11-29"><td><span class="a-mes">Novembro</span></td><td><span class="a-dia">29</span></td><td><span class="a-hora">12h00</span></td><td><span class="a-local">A definir</span></td><td><span class="a-evento">Almoço – Confraternização UMADC</span><br><span class="a-tag t-esp">Especial</span></td></tr>
-        </tbody>
-    </table>
-
-</div>
-</div>
-
-<!-- ══════════════════════════════════════
-     ABA PROJETOS
-══════════════════════════════════════ -->
-<div id="tab-projetos" class="tab-panel">
-<div class="page-wrap">
-
-    <div style="display:flex;align-items:center;gap:1rem;padding:2.5rem 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">
-        <div style="width:10px;height:10px;border-radius:50%;background:#D4470A;flex-shrink:0;box-shadow:0 0 8px rgba(212,71,10,0.6);"></div>
-        <span style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;">Ações Externas — Evangelismo na Cidade</span>
-        <span style="margin-left:auto;font-size:0.65rem;color:#A89880;background:rgba(212,71,10,0.1);border:1px solid rgba(212,71,10,0.2);padding:2px 10px;border-radius:20px;font-weight:700;">12 ações</span>
-    </div>
-    <div class="proj-grid proj-grid-ext">
-        <div class="proj-card"><div class="proj-num">Ação Externa 01</div><div class="proj-title">🌳 <em>UMADC nos Parques</em></div><div class="proj-desc">Entrega de águas personalizadas com mensagens evangelísticas nos parques de Curitiba. Abordagem respeitosa com convite à comunidade.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 02</div><div class="proj-title">🏛️ <em>Clamor na Prefeitura</em></div><div class="proj-desc">Mobilização de oração intercessória na Prefeitura e Câmara de Vereadores. Oração pelas autoridades e pela cidade.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 03</div><div class="proj-title">🚌 <em>Transportando Vida</em></div><div class="proj-desc">Evangelismo nos ônibus com abordagens breves e respeitosas. Entrega de mensagens e palavras de esperança aos passageiros.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 04</div><div class="proj-title">🎓 <em>Intervalo Vida</em></div><div class="proj-desc">Evangelismo em faculdades e universidades durante os intervalos de aula, com momentos de louvor e diálogo sobre a fé cristã.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 05</div><div class="proj-title">💡 <em>Luzeiro</em></div><div class="proj-desc">Evangelismo noturno em locais estratégicos de Curitiba com clínicas da alma — espaços de escuta, aconselhamento cristão e oração.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 06</div><div class="proj-title">🤲 <em>UMADC Mais</em></div><div class="proj-desc">Movimento de Ação e Impacto Social. Iniciativas solidárias que expressam o amor cristão de forma prática e transformadora.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 07</div><div class="proj-title">📲 <em>UMADC Digital</em></div><div class="proj-desc">Evangelismo no ambiente online via redes sociais, vídeos curtos, testemunhos, reflexões e transmissões ao vivo.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 08</div><div class="proj-title">🫂 <em>Abraço Urbano</em></div><div class="proj-desc">Abordagem humanizada com escuta ativa em espaços públicos, seguida de oração individual. Cuidado e empatia na prática.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 09</div><div class="proj-title">🎒 <em>Mochila Cheia de Esperança</em></div><div class="proj-desc">Arrecadação e entrega de mochilas e materiais escolares para crianças em situação de vulnerabilidade.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 10</div><div class="proj-title">🌿 <em>EcoMissão</em></div><div class="proj-desc">Cuidar da Criação — limpeza de praças e parques, unindo cuidado ambiental e testemunho cristão.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 11</div><div class="proj-title">🎶 <em>Som da Cidade</em></div><div class="proj-desc">Evangelismo através da música em espaços públicos — louvores, instrumentais e canções cristãs como ferramenta de impacto.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Externa 12</div><div class="proj-title">📦 <em>Palavra em Movimento</em></div><div class="proj-desc">QR Codes em outdoors levando a devocionais, vídeos ou pedidos de oração — evangelismo urbano + tecnologia.</div></div>
-    </div>
-
-    <div style="display:flex;align-items:center;gap:1rem;padding:2.5rem 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;margin-top:1rem;">
-        <div style="width:10px;height:10px;border-radius:50%;background:#4A9E8A;flex-shrink:0;box-shadow:0 0 8px rgba(74,158,138,0.6);"></div>
-        <span style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:#4A9E8A;font-weight:700;">Ações Internas — Dentro das Congregações</span>
-        <span style="margin-left:auto;font-size:0.65rem;color:#A89880;background:rgba(74,158,138,0.1);border:1px solid rgba(74,158,138,0.2);padding:2px 10px;border-radius:20px;font-weight:700;">11 ações</span>
-    </div>
-    <div class="proj-grid proj-grid-int">
-        <div class="proj-card"><div class="proj-num">Ação Interna 00</div><div class="proj-title">✍️ <em>Entrelinhas</em></div><div class="proj-desc">Comunicação escrita e falada para evangelizar lares e alcançar pessoas que não frequentam a igreja. Inclui revista Entrelinhas, Programa de Rádio e Programa UMADC.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 01</div><div class="proj-title">📖 <em>EBJ Evangelística</em></div><div class="proj-desc">Isentar a inscrição do participante e do convidado não crente. Tornar a Escola Bíblica um evento aberto à cidade.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 02</div><div class="proj-title">🌱 <em>GC – Grupo de Crescimento</em></div><div class="proj-desc">Liturgia simples com linguagem acessível para crentes e não convertidos nas sextas-feiras.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 03</div><div class="proj-title">🔍 <em>O Pedaço que Falta é Você</em></div><div class="proj-desc">Ação direcionada a jovens afastados. Alcance e restauração de vínculos com a UMADC.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 04</div><div class="proj-title">💙 <em>Clínica da Alma – Edição Igreja</em></div><div class="proj-desc">Salas de escuta e oração nas congregações, organizadas pelos jovens. Cuidado pastoral local.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 05</div><div class="proj-title">❓ <em>Pode Perguntar</em></div><div class="proj-desc">Noite aberta para perguntas difíceis. Espaço seguro para diálogos sobre fé, dúvidas e questões da vida.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 06</div><div class="proj-title">🌟 <em>Primeiros Passos</em></div><div class="proj-desc">Evento para novos convertidos, em parceria com o departamento de evangelismo.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 07</div><div class="proj-title">🎉 <em>Cultos Temáticos</em></div><div class="proj-desc">Culto do Amigo e outras temáticas que facilitam o convite e a chegada de pessoas de fora da comunidade.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 08</div><div class="proj-title">🗺️ <em>Congresso Regional</em></div><div class="proj-desc">Congresso com foco no convite de pessoas não crentes. A regional como ponto de impacto evangelístico.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 09</div><div class="proj-title">💪 <em>Treinamento para Evangelismo</em></div><div class="proj-desc">Capacitação dos jovens para o evangelismo pessoal, em parceria com o departamento de evangelismo.</div></div>
-        <div class="proj-card"><div class="proj-num">Ação Interna 10</div><div class="proj-title">🏆 <em>Congresso Geral da UMADC</em></div><div class="proj-desc">Maior evento anual da UMADC Curitiba — celebração, missão e fortalecimento de toda a juventude.</div></div>
-    </div>
-
-</div><!-- /page-wrap projetos -->
-</div>
-
-<footer>UMADC Curitiba · Sistema de Planejamento Regional 2026 · @umadccurtibaoficial</footer>
-
-<script>
-// ── DADOS DAS REGIONAIS ──────────────────────────────────
-const regionais = [
-    { nome:'Boa Vista',        congregacoes:28, populacao:268, jovens:67000, descricao:'Maior regional em habitantes. Norte da cidade.',    featured:false, coordenador:'Dc. Daniel Tararan'            },
-    { nome:'Cajuru',           congregacoes:25, populacao:241, jovens:60000, descricao:'Alta densidade. Leste da cidade.',                  featured:false, coordenador:'Coop. Paulo Bigode'             },
-    { nome:'CIC',              congregacoes:22, populacao:224, jovens:61500, descricao:'Bairro mais populoso de Curitiba. Oeste.',           featured:true,  coordenador:'Coop. Edson Luiz da Silva'      },
-    { nome:'Bairro Novo',      congregacoes:19, populacao:212, jovens:65000, descricao:'Alta densidade. Sul da cidade.',                    featured:false, coordenador:'Coop. Marcos Moreira dos Santos'},
-    { nome:'Boqueirão',        congregacoes:17, populacao:180, jovens:45000, descricao:'Corredor sul. Alta circulação.',                    featured:false, coordenador:'Pb. JimmyAlan de Oliveira'      },
-    { nome:'Tatuquara',        congregacoes:13, populacao:153, jovens:55000, descricao:'Regional mais jovem. Forte crescimento.',           featured:false, coordenador:'Coop. Dyenison Santos'          },
-    { nome:'Pinheirinho',      congregacoes:15, populacao:145, jovens:40000, descricao:'Sul da cidade. Perfil popular.',                    featured:false, coordenador:'Pb. Caio Vinícius Rezende'      },
-    { nome:'Portão',           congregacoes:12, populacao:155, jovens:38000, descricao:'Centro-sul. Mix comercial e residencial.',          featured:false, coordenador:'Coop. Pedro H. A. Ritter'       },
-    { nome:'Santa Felicidade', congregacoes:13, populacao:110, jovens:27000, descricao:'Oeste. Área mais arborizada da cidade.',            featured:false, coordenador:'Coop. Lucas Wagner Andrade'     },
-    { nome:'Matriz',           congregacoes:5,  populacao:103, jovens:22000, descricao:'Centro histórico. Alta circulação diária.',         featured:false, coordenador:'Coop. Charles de Oliveira'      }
-];
-
-// Render grid
-const grid = document.getElementById('grid');
-regionais.forEach((r, i) => {
-    const a = document.createElement('a');
-    a.href = `regional.html?regional=${encodeURIComponent(r.nome)}`;
-    a.className = 'card' + (r.featured ? ' featured' : '');
-    a.style.animationDelay = `${0.05*i+0.1}s`;
-    a.innerHTML = `
-        <div class="card-num">${String(i+1).padStart(2,'0')}</div>
-        <div class="card-badge">Regional</div>
-        <h2>${r.nome}</h2>
-        <p style="font-size:.85rem;color:var(--muted);line-height:1.4;padding-right:2rem;">${r.descricao}</p>
-        <div class="card-coord">
-            <span class="coord-label">Coordenador</span>
-            <span class="coord-nome">${r.coordenador}</span>
-        </div>
-        <div class="card-info">
-            <div class="info-item"><span class="info-value">${r.congregacoes}</span><span class="info-label">Congregações</span></div>
-            <div class="info-item"><span class="info-value">${r.populacao}k</span><span class="info-label">Habitantes</span></div>
-            <div class="info-item"><span class="info-value">${(r.jovens/1000).toFixed(0)}k</span><span class="info-label">Jovens 18-39</span></div>
-        </div>
-        <div class="card-arrow">→</div>`;
-    grid.appendChild(a);
-});
-
-// ── SISTEMA DE ABAS ──────────────────────────────────────
-function switchTab(id, btn) {
-    document.querySelectorAll('.tab-panel').forEach(p => { p.classList.remove('active'); p.style.display='none'; });
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    const panel = document.getElementById('tab-' + id);
-    panel.style.display = 'block';
-    requestAnimationFrame(() => panel.classList.add('active'));
-    btn.classList.add('active');
-    window.scrollTo({ top: 0, behavior:'smooth' });
-}
-
-// ── PRÓXIMO EVENTO ───────────────────────────────────────
-(function() {
-    const today = new Date(); today.setHours(0,0,0,0);
-    let found = false;
-    document.querySelectorAll('.agenda-row').forEach(row => {
-        if (found) return;
-        const d = new Date(row.dataset.date + 'T00:00:00');
-        if (d >= today) {
-            row.classList.add('proximo');
-            const ev = row.querySelector('.a-evento');
-            if (ev) { const b = document.createElement('span'); b.className='proximo-badge'; b.textContent='Próximo'; ev.appendChild(b); }
-            found = true;
-        }
-    });
-})();
-
-// ── BUSCA DIRETORIA ───────────────────────────────────────
-function filtrarDiretoria() {
-    const q = document.getElementById('busca-diretoria').value.toLowerCase().trim();
-    const empty = document.getElementById('busca-diretoria-empty');
-    const cards = document.querySelectorAll('#tab-diretoria .dir-card, #tab-diretoria .foto-card, #tab-diretoria .reg-dir-card');
-    let found = 0;
-    if (!q) {
-        cards.forEach(c => c.style.display = '');
-        document.querySelectorAll('#tab-diretoria .sec-label, #tab-diretoria .foto-grid, #tab-diretoria .dir-grid, #tab-diretoria .reg-dir-grid').forEach(el => el.style.display = '');
-        empty.style.display = 'none'; return;
+        const opt2 = document.createElement('option');
+        opt2.value = regional;
+        opt2.textContent = regional;
+        filtroRegionalEl.appendChild(opt2);
+      });
     }
-    cards.forEach(c => { const show = c.textContent.toLowerCase().includes(q); c.style.display = show ? '' : 'none'; if (show) found++; });
-    document.querySelectorAll('#tab-diretoria .sec-label').forEach(label => {
-        const next = label.nextElementSibling;
-        if (!next) return;
-        const hasVisible = Array.from(next.children).some(c => c.style.display !== 'none');
-        label.style.display = hasVisible ? '' : 'none';
-        next.style.display = hasVisible ? '' : 'none';
-    });
-    empty.style.display = found === 0 ? 'block' : 'none';
-}
 
-// ── CONTADORES ───────────────────────────────────────────
-const totalIgrejas = regionais.reduce((a,r) => a+r.congregacoes, 0);
-const totalPop     = regionais.reduce((a,r) => a+r.populacao, 0);
-function countUp(el, target, suffix='', duration=2000) {
-    let start=null;
-    const step = ts => {
-        if(!start) start=ts;
-        const p = Math.min((ts-start)/duration,1);
-        el.textContent = Math.floor(p*(2-p)*target)+suffix;
-        if(p<1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-}
-setTimeout(() => {
-    countUp(document.getElementById('count-igrejas'), totalIgrejas);
-    countUp(document.getElementById('count-pop'), Math.round(totalPop/10)*10, '+');
-}, 700);
+    function preencherCongregacoes(regional) {
+      congregacaoEl.innerHTML = '';
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.textContent = regional ? 'Selecione a congregação' : 'Selecione primeiro a regional';
+      congregacaoEl.appendChild(placeholder);
 
-// ── PARTÍCULAS ───────────────────────────────────────────
-const canvas=document.getElementById('particles'), ctx=canvas.getContext('2d');
-let W,H,particles=[];
-function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; }
-window.addEventListener('resize',resize); resize();
-class P { constructor(){this.x=Math.random()*W;this.y=Math.random()*H;this.vx=(Math.random()-.5)*.4;this.vy=(Math.random()-.5)*.4;this.r=Math.random()*1.5;this.a=Math.random()*.35;} update(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>W)this.vx*=-1;if(this.y<0||this.y>H)this.vy*=-1;} draw(){ctx.fillStyle=`rgba(255,255,255,${this.a})`;ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();} }
-for(let i=0;i<55;i++) particles.push(new P());
-(function anim(){ ctx.clearRect(0,0,W,H); particles.forEach(p=>{p.update();p.draw();}); requestAnimationFrame(anim); })();
-</script>
+      if (!regional || !congregacoesPorRegional[regional]) {
+        congregacaoEl.disabled = true;
+        return;
+      }
 
-<!-- PWA: service worker + install + push opt-in -->
-<script src="pwa.js" defer></script>
-<script src="push.js" defer></script>
+      congregacaoEl.disabled = false;
+      congregacoesPorRegional[regional].forEach(item => {
+        const option = document.createElement('option');
+        option.value = item;
+        option.textContent = item;
+        congregacaoEl.appendChild(option);
+      });
+    }
 
+    function mostrarAviso(msg, type = 'ok') {
+      noticeEl.textContent = msg;
+      noticeEl.className = `notice show ${type}`;
+      setTimeout(() => { noticeEl.className = 'notice'; }, 4000);
+    }
 
-<!-- ══════════════════════════════════════
-     ABA MATERIAL GRÁFICO
-══════════════════════════════════════ -->
-<div id="tab-material" class="tab-panel">
-<div class="page-wrap">
+    function formatarDataHora(valor) {
+      try {
+        return new Date(valor).toLocaleString('pt-BR');
+      } catch {
+        return valor || '';
+      }
+    }
 
-    <!-- PLANO ANUAL -->
-    <div class="material-section">
-        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:2.5rem 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Documentos Oficiais</div>
-        <div style="display:flex;flex-direction:column;gap:0.8rem;">
-            <a class="material-doc-card" href="plano-anual-umadc-2026.pdf" download style="text-decoration:none;color:inherit;">
-                <div class="material-doc-icon" style="background:rgba(212,71,10,0.15);">📋</div>
-                <div class="material-doc-info">
-                    <div class="material-doc-title">Plano Anual UMADC 2026</div>
-                    <div class="material-doc-sub">Documento completo · Gestão 2026/2027 · "Até que todos ouçam"</div>
-                </div>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D4470A" stroke-width="2.5" style="flex-shrink:0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            </a>
-        </div>
-    </div>
+    function atualizarCards(registros) {
+      totalPresentesEl.textContent = registros.length;
+      totalRegionaisEl.textContent = new Set(registros.map(r => r.regional).filter(Boolean)).size;
+      totalCongregacoesEl.textContent = new Set(registros.map(r => r.congregacao).filter(Boolean)).size;
+    }
 
-    <!-- LOGOS -->
-    <div class="material-section">
-        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Identidade Visual — Logos</div>
-        <div class="material-grid">
-            <a href="logos/umadc-ohs-branco.png" download class="material-card">
-                <img src="logos/umadc-ohs-branco.png" alt="UMADC OHS" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
-                <div class="material-card-label">UMADC</div>
-                <div class="material-card-sub">Versão Branca</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-            <a href="logos/umadc-ohs-preto.png" download class="material-card">
-                <img src="logos/umadc-ohs-preto.png" alt="UMADC Preto" style="background:white;border-radius:8px;padding:8px;">
-                <div class="material-card-label">UMADC</div>
-                <div class="material-card-sub">Versão Preta</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-            <a href="logos/familia-umadc-branco.png" download class="material-card">
-                <img src="logos/familia-umadc-branco.png" alt="Família Branco" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
-                <div class="material-card-label">Família UMADC</div>
-                <div class="material-card-sub">Versão Branca</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-            <a href="logos/familia-umadc-preto.png" download class="material-card">
-                <img src="logos/familia-umadc-preto.png" alt="Família Preto" style="background:white;border-radius:8px;padding:8px;">
-                <div class="material-card-label">Família UMADC</div>
-                <div class="material-card-sub">Versão Preta</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-            <a href="logos/ieadc-logo.png" download class="material-card">
-                <img src="logos/ieadc-logo.png" alt="IEADC" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
-                <div class="material-card-label">IEADC</div>
-                <div class="material-card-sub">Logo Oficial</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-            <a href="logos/ieadc-logo-branca.png" download class="material-card">
-                <img src="logos/ieadc-logo-branca.png" alt="IEADC Branca" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
-                <div class="material-card-label">IEADC</div>
-                <div class="material-card-sub">Versão Branca</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-        </div>
-    </div>
+    function renderTabela() {
+      const busca = buscaEl.value.trim().toLowerCase();
+      const filtroRegional = filtroRegionalEl.value;
+      const filtrados = registrosOnline.filter(item => {
+        const matchRegional = !filtroRegional || item.regional === filtroRegional;
+        const blob = `${item.nome} ${item.telefone} ${item.regional} ${item.congregacao} ${item.cargo}`.toLowerCase();
+        const matchBusca = !busca || blob.includes(busca);
+        return matchRegional && matchBusca;
+      });
 
-    <!-- TEMA 2026 -->
-    <div class="material-section">
-        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Tema 2026 — Versões</div>
-        <div class="material-grid">
-            <a href="logos/tema-2026-v1-colorido.png" download class="material-card">
-                <img src="logos/tema-2026-v1-colorido.png" alt="Tema Colorido 1" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
-                <div class="material-card-label">Tema 2026 v1</div>
-                <div class="material-card-sub">Colorido</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-            <a href="logos/tema-2026-v2-colorido.png" download class="material-card">
-                <img src="logos/tema-2026-v2-colorido.png" alt="Tema Colorido 2" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
-                <div class="material-card-label">Tema 2026 v2</div>
-                <div class="material-card-sub">Colorido</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-            <a href="logos/tema-2026-branco.png" download class="material-card">
-                <img src="logos/tema-2026-branco.png" alt="Tema Branco" style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px;">
-                <div class="material-card-label">Tema 2026</div>
-                <div class="material-card-sub">Versão Branca</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-            <a href="logos/tema-2026-preto.png" download class="material-card">
-                <img src="logos/tema-2026-preto.png" alt="Tema Preto" style="background:white;border-radius:8px;padding:8px;">
-                <div class="material-card-label">Tema 2026</div>
-                <div class="material-card-sub">Versão Preta</div>
-                <div class="material-download-btn">↓ Download</div>
-            </a>
-        </div>
-    </div>
+      listaEl.innerHTML = '';
 
-    <!-- PALETA DE CORES -->
-    <div class="material-section">
-        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Paleta de Cores Oficial</div>
-        <div class="cor-grid">
-            <div class="cor-item">
-                <div class="cor-swatch" style="background:#D4470A;"></div>
-                <div class="cor-info"><div class="cor-nome">Laranja Principal</div><div class="cor-hex">#D4470A</div></div>
-            </div>
-            <div class="cor-item">
-                <div class="cor-swatch" style="background:#4A9E8A;"></div>
-                <div class="cor-info"><div class="cor-nome">Teal Secundário</div><div class="cor-hex">#4A9E8A</div></div>
-            </div>
-            <div class="cor-item">
-                <div class="cor-swatch" style="background:#0D0A07;border:1px solid rgba(255,255,255,0.15);"></div>
-                <div class="cor-info"><div class="cor-nome">Fundo Escuro</div><div class="cor-hex">#0D0A07</div></div>
-            </div>
-            <div class="cor-item">
-                <div class="cor-swatch" style="background:#FFFFFF;"></div>
-                <div class="cor-info"><div class="cor-nome">Branco</div><div class="cor-hex">#FFFFFF</div></div>
-            </div>
-            <div class="cor-item">
-                <div class="cor-swatch" style="background:#A89880;"></div>
-                <div class="cor-info"><div class="cor-nome">Bege Texto</div><div class="cor-hex">#A89880</div></div>
-            </div>
-        </div>
-    </div>
+      if (!filtrados.length) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td colspan="6" style="color:#b7c5dd; text-align:center; padding:24px;">Nenhuma presença encontrada.</td>`;
+        listaEl.appendChild(tr);
+      } else {
+        filtrados.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item.nome || ''}</td>
+            <td>${item.telefone || ''}</td>
+            <td><span class="pill">${item.regional || ''}</span></td>
+            <td>${item.congregacao || ''}</td>
+            <td>${item.cargo || ''}</td>
+            <td>${formatarDataHora(item.createdAt || item.dataHora)}</td>
+          `;
+          listaEl.appendChild(tr);
+        });
+      }
 
-    <!-- TIPOGRAFIA -->
-    <div class="material-section">
-        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Tipografia Oficial</div>
-        <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;padding:1.8rem 2rem;display:flex;flex-direction:column;gap:1.2rem;">
-            <div>
-                <div style="font-size:0.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:0.4rem;">Família tipográfica</div>
-                <div style="font-family:'MuseoModerno',sans-serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:900;color:white;line-height:1;">MuseoModerno</div>
-                <div style="font-family:'MuseoModerno',sans-serif;font-size:1rem;font-weight:400;color:var(--muted);margin-top:0.4rem;">Regular · Medium · Bold · Black · Todos os pesos disponíveis</div>
-            </div>
-            <div style="display:flex;gap:1rem;flex-wrap:wrap;">
-                <div style="flex:1;min-width:200px;background:rgba(255,255,255,0.03);border-radius:10px;padding:1rem;">
-                    <div style="font-size:0.55rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;">Títulos</div>
-                    <div style="font-family:'MuseoModerno',sans-serif;font-size:1.4rem;font-weight:900;color:white;">Peso 900 — Black</div>
-                </div>
-                <div style="flex:1;min-width:200px;background:rgba(255,255,255,0.03);border-radius:10px;padding:1rem;">
-                    <div style="font-size:0.55rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;">Corpo de texto</div>
-                    <div style="font-family:'MuseoModerno',sans-serif;font-size:1rem;font-weight:400;color:rgba(255,255,255,0.8);">Peso 400 — Regular</div>
-                </div>
-                <div style="flex:1;min-width:200px;background:rgba(255,255,255,0.03);border-radius:10px;padding:1rem;">
-                    <div style="font-size:0.55rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.4rem;">Labels / Badges</div>
-                    <div style="font-family:'MuseoModerno',sans-serif;font-size:0.7rem;font-weight:700;color:var(--accent);letter-spacing:3px;text-transform:uppercase;">700 · UPPERCASE</div>
-                </div>
-            </div>
-            <div>
-                <div style="font-size:0.6rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:0.6rem;">Download da fonte</div>
-                <a href="fontes/MuseoModerno-VariableFont_wght.ttf" download style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.5rem 1.2rem;background:rgba(212,71,10,0.1);border:1px solid rgba(212,71,10,0.3);color:#D4470A;text-decoration:none;border-radius:20px;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:background 0.2s;" onmouseover="this.style.background='rgba(212,71,10,0.2)'" onmouseout="this.style.background='rgba(212,71,10,0.1)'">
-                    ↓ MuseoModerno Variable Font
-                </a>
-            </div>
-        </div>
-    </div>
+      atualizarCards(registrosOnline);
+    }
 
-    <!-- INSTRUÇÃO: FUNDO -->
-    <div class="material-section">
-        <div style="font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);font-weight:700;padding:0 0 1rem;border-bottom:1px solid var(--glass-border);margin-bottom:1.2rem;">Padrão de Fundo — Nova ID 2026</div>
-        <div style="background:var(--glass);border:1px solid var(--glass-border);border-radius:14px;overflow:hidden;">
-            <img src="parte_da_nova_is_visual.png" alt="Fundo padrão UMADC 2026" style="width:100%;max-height:200px;object-fit:cover;opacity:0.85;">
-            <div style="padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
-                <div>
-                    <div style="font-size:0.85rem;font-weight:700;color:white;">Fundo Oficial — Mapa Urbano</div>
-                    <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">Use com opacidade entre 8–12% sobre fundo escuro — paleta laranja, teal e terrosos</div>
-                </div>
-                <a href="parte_da_nova_is_visual.png" download style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.45rem 1rem;background:rgba(212,71,10,0.1);border:1px solid rgba(212,71,10,0.3);color:#D4470A;text-decoration:none;border-radius:20px;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;">↓ Download</a>
-            </div>
-        </div>
-    </div>
+    async function carregarRegistros() {
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('COLE_AQUI')) {
+        mostrarAviso('Cole a URL do Web App do Apps Script para ativar o modo online.', 'err');
+        return;
+      }
 
-</div>
-</div><!-- /tab-material -->
+      try {
+        const response = await fetch(APPS_SCRIPT_URL);
+        const data = await response.json();
+        registrosOnline = Array.isArray(data.registros) ? data.registros : [];
+        registrosOnline.sort((a, b) => new Date(b.createdAt || b.dataHora) - new Date(a.createdAt || a.dataHora));
+        renderTabela();
+      } catch (error) {
+        console.error(error);
+        mostrarAviso('Não foi possível carregar os registros online.', 'err');
+      }
+    }
 
-<!-- jsPDF para exportar agenda -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-<script>
-function gerarPDFAgenda() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const W = doc.internal.pageSize.getWidth();
-    const H = doc.internal.pageSize.getHeight();
+    async function registrarPresenca(payload) {
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      return response.json();
+    }
 
-    // ── FUNDO ESCURO ──
-    doc.setFillColor(13, 10, 7);
-    doc.rect(0, 0, W, H, 'F');
+    function gerarQRCode() {
+      const targetUrl = `${window.location.origin}${window.location.pathname}${window.location.search || ''}${window.location.hash || ''}`;
+      document.getElementById('qrUrl').textContent = targetUrl.startsWith('file:')
+        ? 'Publique esta página na web para que o QR funcione em outros celulares.'
+        : targetUrl;
 
-    // ── FAIXA SUPERIOR LARANJA ──
-    doc.setFillColor(212, 71, 10);
-    doc.rect(0, 0, W, 1.5, 'F');
+      const qrContainer = document.getElementById('qrcode');
+      qrContainer.innerHTML = '';
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(qrContainer, {
+          text: targetUrl,
+          width: 220,
+          height: 220,
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+    }
 
-    // ── FAIXA INFERIOR TEAL ──
-    doc.setFillColor(74, 158, 138);
-    doc.rect(0, H - 1.5, W, 1.5, 'F');
+    regionalEl.addEventListener('change', e => preencherCongregacoes(e.target.value));
+    buscaEl.addEventListener('input', renderTabela);
+    filtroRegionalEl.addEventListener('change', renderTabela);
+    document.getElementById('btnAtualizar').addEventListener('click', carregarRegistros);
 
-    // ── HEADER ──
-    doc.setFontSize(7);
-    doc.setTextColor(212, 71, 10);
-    doc.setFont('helvetica', 'bold');
-    doc.text('ASSEMBLEIA DE DEUS EM CURITIBA  ·  UMADC  ·  GESTÃO 2026/2027', W / 2, 12, { align: 'center' });
+    formEl.addEventListener('submit', async e => {
+      e.preventDefault();
 
-    doc.setFontSize(22);
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.text('AGENDA OFICIAL 2026', W / 2, 24, { align: 'center' });
+      if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes('COLE_AQUI')) {
+        mostrarAviso('Primeiro cole a URL do Web App do Apps Script.', 'err');
+        return;
+      }
 
-    doc.setFontSize(8);
-    doc.setTextColor(148, 163, 184);
-    doc.setFont('helvetica', 'normal');
-    doc.text('ATÉ QUE TODOS OUÇAM  ·  Romanos 10.14', W / 2, 31, { align: 'center' });
+      const payload = {
+        nome: document.getElementById('nome').value.trim(),
+        telefone: document.getElementById('telefone').value.trim(),
+        regional: regionalEl.value,
+        congregacao: congregacaoEl.value,
+        cargo: document.getElementById('cargo').value
+      };
 
-    // ── LINHA SEPARADORA ──
-    doc.setDrawColor(255, 255, 255, 0.1);
-    doc.setLineWidth(0.3);
-    doc.line(14, 35, W - 14, 35);
+      if (!payload.nome || !payload.telefone || !payload.regional || !payload.congregacao || !payload.cargo) {
+        mostrarAviso('Preencha todos os campos obrigatórios.', 'err');
+        return;
+      }
 
-    // ── TABELA ──
-    const eventos = [
-        ['Fev', '23', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
-        ['Mar', '16', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
-        ['Abr', '09', '19h45', 'Anfiteatro FCC', 'Aula Magna – EJP UMADC', 'EJP'],
-        ['Abr', '11', '23h00', 'A definir', 'Vigília Geral da UMADC', 'Vigília'],
-        ['Abr', '20', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
-        ['Mai', '01', '14h00', 'A definir', 'UMADC+', 'Especial'],
-        ['Jun', '15', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
-        ['Jul', '11', '23h00', 'A definir', 'Vigília Geral da UMADC', 'Vigília'],
-        ['Jul', '16–18', '19h30', 'Sede', 'Escola Bíblica de Jovens UMADC', 'EBJ'],
-        ['Ago', '17', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
-        ['Set', '21', '19h45', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
-        ['Out', '10', '23h00', 'A definir', 'Vigília Geral da UMADC', 'Vigília'],
-        ['Out', '19', '20h00', 'Sede', 'Reunião de Líderes UMADC', 'Líderes'],
-        ['Out', '23', '19h45', 'Anfiteatro FCC', 'Workshop – Jovens Empreendedores', 'Especial'],
-        ['Nov', '26–27', '19h45', 'A definir', 'Encerramento EJP UMADC', 'EJP'],
-        ['Nov', '29', '12h00', 'A definir', 'Almoço – Confraternização UMADC', 'Especial'],
-    ];
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = 'Registrando...';
 
-    const tagColors = {
-        'Líderes':  [74, 158, 138],
-        'EJP':      [120, 53, 15],
-        'Vigília':  [88, 28, 135],
-        'EBJ':      [74, 158, 138],
-        'Especial': [212, 71, 10],
-    };
-
-    doc.autoTable({
-        startY: 40,
-        head: [['Mês', 'Dia', 'Hora', 'Local', 'Evento', 'Tipo']],
-        body: eventos,
-        theme: 'plain',
-        styles: {
-            font: 'helvetica',
-            fontSize: 8.5,
-            textColor: [220, 230, 240],
-            cellPadding: { top: 3.5, right: 4, bottom: 3.5, left: 4 },
-            lineColor: [255, 255, 255, 0.06],
-            lineWidth: 0.2,
-        },
-        headStyles: {
-            fillColor: [212, 71, 10],
-            textColor: [255, 255, 255],
-            fontStyle: 'bold',
-            fontSize: 7.5,
-            halign: 'left',
-        },
-        alternateRowStyles: { fillColor: [20, 14, 9] },
-        rowStyles: { fillColor: [15, 10, 7] },
-        columnStyles: {
-            0: { cellWidth: 10, fontStyle: 'bold', textColor: [212, 71, 10] },
-            1: { cellWidth: 14, fontStyle: 'bold' },
-            2: { cellWidth: 14 },
-            3: { cellWidth: 32 },
-            4: { cellWidth: 80, fontStyle: 'bold', textColor: [255, 255, 255] },
-            5: { cellWidth: 22, halign: 'center' },
-        },
-        didParseCell(data) {
-            if (data.column.index === 5 && data.section === 'body') {
-                const tag = data.cell.raw;
-                const color = tagColors[tag] || [50, 50, 80];
-                data.cell.styles.textColor = [255, 255, 255];
-                data.cell.styles.fillColor = color;
-                data.cell.styles.fontStyle = 'bold';
-                data.cell.styles.fontSize = 7;
-            }
-        },
-        margin: { left: 14, right: 14 },
+      try {
+        const result = await registrarPresenca(payload);
+        if (result.ok) {
+          formEl.reset();
+          preencherCongregacoes('');
+          mostrarAviso(result.message || 'Presença registrada com sucesso.');
+          await carregarRegistros();
+        } else {
+          mostrarAviso(result.message || 'Não foi possível registrar a presença.', 'err');
+        }
+      } catch (error) {
+        console.error(error);
+        mostrarAviso('Falha ao enviar os dados para a planilha.', 'err');
+      } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.textContent = 'Registrar presença';
+      }
     });
 
-    // ── RODAPÉ ──
-    const finalY = doc.lastAutoTable.finalY + 8;
-    doc.setFontSize(7);
-    doc.setTextColor(100, 120, 140);
-    doc.text('UMADC Curitiba  ·  Planejamento Anual 2026  ·  "Até que todos ouçam" — Romanos 10.14', W / 2, finalY, { align: 'center' });
-    doc.text('Documento gerado em ' + new Date().toLocaleDateString('pt-BR'), W / 2, finalY + 5, { align: 'center' });
-
-    doc.save('UMADC-Agenda-2026.pdf');
-}
-</script>
-
-
-<div style="position:fixed;bottom:0.6rem;right:0.8rem;z-index:9999;font-size:0.55rem;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.2);pointer-events:none;font-family:monospace;">v2.0</div>
+    preencherRegionais();
+    preencherCongregacoes('');
+    gerarQRCode();
+    renderTabela();
+  </script>
 </body>
 </html>
